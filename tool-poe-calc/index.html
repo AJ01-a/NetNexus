@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" data-galaxy="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#02050a">
+<title>NETNEXUS // PWR-10 PoE BUDGET</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
+<style>
+:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--bg0:#02050a;--ink:#d9f4ff;--mut:#6b93ab;--panel:rgba(7,17,27,.82);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
+html[data-galaxy="it"]{--acc:#00e5ff;--acc2:#7df9ff;--accd:rgba(0,229,255,.14);--line:rgba(0,229,255,.28);--acc-glow:rgba(0,229,255,.32)}
+html[data-galaxy="gen"]{--acc:#ff9d33;--acc2:#ffc46b;--accd:rgba(255,157,51,.14);--line:rgba(255,157,51,.30);--acc-glow:rgba(255,157,51,.32)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:radial-gradient(1200px 700px at 50% -12%,#0a1e30 0%,var(--bg0) 58%) fixed,var(--bg0);color:var(--ink);font-family:var(--ui);min-height:100vh;overflow-x:hidden}
+::selection{background:var(--accd);color:var(--acc2)}
+#bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh}
+.scan{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.15) 2px 3px);box-shadow:inset 0 0 200px rgba(0,0,0,.7)}
+#topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(4,12,20,.94),rgba(4,12,20,.7));backdrop-filter:blur(10px)}
+.brand{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.22em;color:var(--acc);text-shadow:0 0 14px var(--acc-glow);white-space:nowrap}
+.brand b{color:var(--ink);font-weight:500}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.18em;border:1px solid var(--line);color:var(--acc2);padding:3px 9px;background:var(--accd);white-space:nowrap}
+.chip.ghost{color:var(--mut);border-color:rgba(107,147,171,.3);background:none}
+.spacer{flex:1}
+#clk{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.12em;white-space:nowrap}
+#clk b{color:var(--acc2);font-weight:400}
+.rtn{font-family:var(--disp);font-size:9.5px;letter-spacing:.24em;color:var(--acc);border:1px solid var(--line);background:var(--accd);padding:7px 12px;text-decoration:none;transition:.25s;white-space:nowrap}
+.rtn:hover{background:var(--acc);color:#02131c;box-shadow:0 0 18px var(--acc-glow)}
+#jstrip{position:relative;z-index:5;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--acc2);padding:8px 20px;border-bottom:1px solid rgba(107,147,171,.14);background:rgba(3,10,16,.6)}
+#jstrip .jj{color:var(--mut);letter-spacing:.2em}
+#wrap{position:relative;z-index:5;max-width:1240px;margin:24px auto 110px;padding:0 20px;display:grid;gap:18px}
+.panel{position:relative;background:var(--panel);border:1px solid var(--line);padding:18px 18px 16px;backdrop-filter:blur(10px)}
+.panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(var(--acc),var(--acc)) left 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/2px 14px;background-repeat:no-repeat;opacity:.85}
+.ptitle{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.3em;color:var(--acc);text-shadow:0 0 10px var(--acc-glow)}
+.psub{font-size:12px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;margin:4px 0 14px;font-family:var(--mono)}
+.grid2{display:grid;grid-template-columns:330px 1fr;gap:18px;align-items:start}
+@media(max-width:980px){.grid2{grid-template-columns:1fr}}
+.f{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--mut);text-transform:uppercase;margin:12px 0 5px}
+select,input[type="number"],input[type="text"]{width:100%;background:rgba(2,8,14,.85);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:13px;padding:8px 10px;outline:none}
+select:focus,input:focus{border-color:var(--acc);box-shadow:0 0 0 1px var(--accd)}
+select option{background:#04121c}
+.btn{display:inline-block;background:none;border:1px solid var(--line);color:var(--acc2);font-family:var(--disp);font-size:10px;letter-spacing:.18em;padding:9px 12px;cursor:pointer;transition:.22s;text-transform:uppercase}
+.btn:hover{background:var(--accd);border-color:var(--acc);color:var(--acc);box-shadow:0 0 16px var(--accd)}
+.btn.mini{font-family:var(--mono);padding:5px 9px;font-size:11px;letter-spacing:0}
+.btn.danger{border-color:rgba(255,71,87,.5);color:var(--red)}
+.profiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.profiles .btn{text-align:left;font-size:9px;line-height:1.6}
+.profiles .btn small{display:block;font-family:var(--mono);color:var(--mut);font-size:9.5px;letter-spacing:.06em;text-transform:none}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
+th{font-size:9.5px;letter-spacing:.22em;color:var(--mut);text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);text-transform:uppercase;font-weight:400}
+td{padding:7px 10px;border-bottom:1px solid rgba(107,147,171,.12)}
+td.r{text-align:right}
+.qty{display:inline-flex;align-items:center;gap:8px}
+.qty b{min-width:26px;text-align:center;color:var(--acc2);font-weight:400}
+.swatch{display:inline-block;width:10px;height:10px;margin-right:8px;vertical-align:middle}
+.statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:860px){.statrow{grid-template-columns:repeat(2,1fr)}}
+.stat{border:1px solid rgba(107,147,171,.25);background:rgba(2,8,14,.6);padding:11px;text-align:center}
+.stat .v{font-family:var(--mono);font-size:19px;color:var(--acc2)}
+.stat .l{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--mut);margin-top:5px;text-transform:uppercase}
+.gaugewrap{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+.gnum{font-family:var(--disp);font-size:34px;letter-spacing:.06em}
+.glab{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--mut);margin-top:4px}
+.alarm{display:none;margin-top:14px;padding:11px 14px;border:1px solid;font-family:var(--disp);font-size:11px;letter-spacing:.22em;align-items:center;gap:10px}
+.alarm.warn{display:flex;color:var(--yel);border-color:rgba(255,209,102,.6);background:rgba(60,45,6,.5);animation:apulse 1.4s ease-in-out infinite}
+.alarm.crit{display:flex;color:var(--red);border-color:var(--red);background:rgba(60,6,14,.6);animation:apulse .6s ease-in-out infinite;text-shadow:0 0 10px rgba(255,71,87,.7)}
+@keyframes apulse{50%{filter:brightness(1.5)}}
+.stack{display:flex;height:34px;border:1px solid rgba(107,147,171,.3);background:rgba(2,8,14,.6);overflow:hidden;margin-top:6px}
+.seg{height:100%;position:relative;min-width:0;transition:width .35s;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.seg+.seg{margin-left:2px}
+.seg span{font-family:var(--mono);font-size:9.5px;color:#eafcff;text-shadow:0 1px 2px rgba(0,0,0,.8);white-space:nowrap}
+.axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--mut);letter-spacing:.1em;margin-top:5px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--ink);margin-top:12px}
+.legend span{display:flex;align-items:center}
+@keyframes blink{50%{opacity:.25}}
+#foot{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;gap:22px;align-items:center;font-family:var(--mono);font-size:10px;color:rgba(107,147,171,.7);letter-spacing:.2em;padding:6px 18px;border-top:1px solid rgba(107,147,171,.15);background:rgba(3,9,14,.8);backdrop-filter:blur(6px)}
+#foot .dot{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termBtn{position:fixed;right:14px;bottom:38px;z-index:60;background:rgba(2,10,16,.92);border:1px solid var(--line);color:var(--acc2);font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;padding:7px 11px;cursor:pointer;transition:.2s}
+#termBtn:hover{border-color:var(--acc);color:var(--acc);box-shadow:0 0 14px var(--accd)}
+#term{position:fixed;left:0;right:0;bottom:0;height:240px;transform:translateY(101%);z-index:70;background:rgba(2,7,12,.97);border-top:1px solid var(--acc);font-family:var(--mono);transition:transform .35s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;box-shadow:0 -12px 50px rgba(0,0,0,.6)}
+#term.open{transform:none}
+#termHead{display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:1px solid rgba(107,147,171,.2);font-size:10px;letter-spacing:.26em;color:var(--acc)}
+#termHead .tdot{width:7px;height:7px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termHead .tx{margin-left:auto;cursor:pointer;color:var(--mut);font-size:13px;padding:0 4px}
+#termHead .tx:hover{color:var(--red)}
+#termBody{flex:1;overflow-y:auto;padding:10px 14px;font-size:11.5px;line-height:1.75}
+.tline{white-space:pre-wrap;word-break:break-word}
+.tline .tt{color:rgba(107,147,171,.6)}
+.t-info{color:#9fd8ea}.t-ok{color:var(--grn)}.t-warn{color:var(--yel)}.t-err{color:var(--red)}.t-sys{color:var(--acc2)}
+</style>
+</head>
+<body>
+<canvas id="bgfx"></canvas>
+<div class="scan"></div>
+<header id="topbar">
+  <div class="brand">◈ NETNEXUS <b>// PoE POWER BUDGET</b></div>
+  <span class="chip">PWR-10</span>
+  <span class="chip ghost">IT GALAXY</span>
+  <div class="spacer"></div>
+  <div id="clk"></div>
+  <a class="rtn" href="../index.html">◂ RETURN TO NEXUS</a>
+</header>
+<div id="jstrip"><span class="jj">◤ J.A.R.V.I.S // </span><span id="jtext"></span></div>
+
+<main id="wrap">
+  <div class="grid2">
+    <section class="panel">
+      <div class="ptitle">EQUIPMENT PROFILES</div>
+      <div class="psub">click to drop onto the switch</div>
+      <div class="profiles" id="profiles"></div>
+      <label class="f">CUSTOM DEVICE — NAME / WATTS</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="cName" value="Custom Device" style="flex:1.4">
+        <input type="number" id="cW" value="18" min="1" max="90" step="0.1" style="flex:.7">
+        <button class="btn mini" id="cAdd">+ ADD</button>
+      </div>
+      <label class="f">SWITCH POWER BUDGET</label>
+      <select id="budget">
+        <option value="195">195 W — 24-PORT ENTRY</option>
+        <option value="370" selected>370 W — 48-PORT 802.3at</option>
+        <option value="740">740 W — HIGH-DENSITY at</option>
+        <option value="1440">1440 W — 802.3bt STACK PSU</option>
+        <option value="custom">CUSTOM…</option>
+      </select>
+      <input type="number" id="budgetCustom" value="370" min="10" style="display:none;margin-top:8px">
+      <button class="btn danger" id="clearAll" style="margin-top:14px">✕ CLEAR ALL LOAD</button>
+    </section>
+
+    <section class="panel">
+      <div class="ptitle">POWER ENVELOPE — LIVE</div>
+      <div class="psub">PSE budget vs attached load · 80% planning ceiling</div>
+      <div class="statrow">
+        <div class="stat"><div class="v" id="stDraw">0 W</div><div class="l">Total Draw</div></div>
+        <div class="stat"><div class="v" id="stBudget">370 W</div><div class="l">Switch Budget</div></div>
+        <div class="stat"><div class="v" id="stRemain">370 W</div><div class="l">Headroom</div></div>
+        <div class="stat"><div class="v" id="stDevs">0</div><div class="l">Devices</div></div>
+      </div>
+      <div class="gaugewrap">
+        <svg width="150" height="150" viewBox="0 0 150 150" aria-label="Utilization gauge">
+          <circle cx="75" cy="75" r="60" fill="none" stroke="rgba(107,147,171,.18)" stroke-width="11"/>
+          <circle id="gArc" cx="75" cy="75" r="60" fill="none" stroke="#0891b2" stroke-width="11"
+                  stroke-linecap="round" stroke-dasharray="0 377" transform="rotate(-90 75 75)"/>
+          <text id="gTxt" x="75" y="72" text-anchor="middle" font-family="Orbitron" font-size="21" fill="#d9f4ff">0%</text>
+          <text x="75" y="92" text-anchor="middle" font-family="Share Tech Mono" font-size="8.5" fill="#6b93ab" letter-spacing="2">UTILIZATION</text>
+        </svg>
+        <div style="flex:1;min-width:260px">
+          <div class="f" style="margin-top:0">LOAD COMPOSITION BY DEVICE TYPE — WATTS</div>
+          <div class="stack" id="stack"></div>
+          <div class="axis"><span>0 W</span><span id="axMid">—</span><span id="axMax">—</span></div>
+          <div class="legend" id="legend"></div>
+        </div>
+      </div>
+      <div class="alarm" id="alarm"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="ptitle">ATTACHED LOAD MANIFEST</div>
+    <div class="psub">quantity math per profile</div>
+    <table>
+      <thead><tr><th>DEVICE TYPE</th><th>PoE CLASS</th><th class="r">UNIT DRAW</th><th>QTY</th><th class="r">SUBTOTAL</th><th></th></tr></thead>
+      <tbody id="loadBody"><tr><td colspan="6" style="color:var(--mut);padding:16px">NO LOAD ATTACHED — DROP EQUIPMENT PROFILES FROM THE LEFT.</td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <div class="ptitle">802.3 CLASS REFERENCE</div>
+    <div class="psub">PSE output vs power at the device — cable loss is why the numbers differ</div>
+    <table>
+      <thead><tr><th>STANDARD</th><th>TYPE / CLASS</th><th class="r">PSE PER PORT</th><th class="r">AT DEVICE (PD)</th><th>TYPICAL KIT</th></tr></thead>
+      <tbody>
+        <tr><td>802.3af</td><td>Type 1 · Class 0–3</td><td class="r">15.4 W</td><td class="r">12.95 W</td><td>Phones, fixed cameras, badge readers</td></tr>
+        <tr><td>802.3at (PoE+)</td><td>Type 2 · Class 4</td><td class="r">30 W</td><td class="r">25.5 W</td><td>PTZ cameras, Wi-Fi 6 APs, industrial stations</td></tr>
+        <tr><td>802.3bt (PoE++)</td><td>Type 3 · Class 5–6</td><td class="r">60 W</td><td class="r">51 W</td><td>Displays, compact switches</td></tr>
+        <tr><td>802.3bt (PoE++)</td><td>Type 4 · Class 7–8</td><td class="r">90 W</td><td class="r">71 W</td><td>Laptops, big PTZ, thin clients</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<footer id="foot"><span class="dot"></span><span>PWR-10 ACTIVE</span><span>PLAN TO 80% — INRUSH AND CABLE LOSS EAT THE REST</span><span style="margin-left:auto">NETNEXUS v2.1</span></footer>
+<button id="termBtn">⌬ SYS TERMINAL</button>
+<aside id="term"><div id="termHead"><span class="tdot"></span> STARK-CORE DIAGNOSTIC TERMINAL — PWR-10 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
+
+<script>
+'use strict';
+window.__nnlog=[];
+window.onerror=function(m,s,l){window.__nnlog.push(['ERR '+m+' @'+(s||'?').split('/').pop()+':'+l,'err']);return false;};
+window.addEventListener('unhandledrejection',e=>window.__nnlog.push(['PROMISE REJECTION :: '+(e.reason&&e.reason.message||e.reason),'err']));
+document.addEventListener('DOMContentLoaded',()=>{
+  const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+  const termBody=$('#termBody'),term=$('#term');
+  function T(msg,lv='info'){const d=document.createElement('div');d.className='tline t-'+lv;d.innerHTML='<span class="tt">['+new Date().toTimeString().slice(0,8)+']</span> '+String(msg).replace(/</g,'&lt;');termBody.appendChild(d);while(termBody.children.length>200)termBody.firstChild.remove();termBody.scrollTop=termBody.scrollHeight;}
+  window.__nnlog.forEach(a=>T(a[0],a[1]));window.__nnlog={push:a=>T(a[0],a[1])};
+  const _ce=console.error.bind(console),_cw=console.warn.bind(console);
+  console.error=(...a)=>{T(a.map(String).join(' '),'err');_ce(...a)};
+  console.warn=(...a)=>{T(a.map(String).join(' '),'warn');_cw(...a)};
+  $('#termBtn').addEventListener('click',()=>term.classList.toggle('open'));
+  $('#termX').addEventListener('click',()=>term.classList.remove('open'));
+  window.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='`'){e.preventDefault();term.classList.toggle('open');}});
+  if(window.__twFail)T('TAILWIND CDN UNREACHABLE — LOCAL STYLE CORE ENGAGED','warn');
+  let _jt=null;function jsay(t){T('J.A.R.V.I.S :: '+t,'sys');const el=$('#jtext');clearInterval(_jt);let i=0;_jt=setInterval(()=>{el.textContent=t.slice(0,++i)+(i<t.length?'▊':'');if(i>=t.length)clearInterval(_jt);},14);}
+  setInterval(()=>{const d=new Date();$('#clk').innerHTML='<b>'+d.toTimeString().slice(0,8)+'</b> L · '+d.toISOString().slice(11,19)+' U';},1000);
+  const cv=$('#bgfx'),cg=cv.getContext('2d');let W=innerWidth,H=innerHeight,tt=0;
+  const AR=document.documentElement.dataset.galaxy==='gen'?'255,157,51':'0,229,255';
+  function rs(){W=innerWidth;H=innerHeight;const D=Math.min(devicePixelRatio||1,1.5);cv.width=W*D;cv.height=H*D;cg.setTransform(D,0,0,D,0,0);}
+  rs();window.addEventListener('resize',rs);
+  const pts=Array.from({length:30},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14}));
+  let sweep=-200;
+  (function bg(){const dt=1/60;tt+=dt;cg.clearRect(0,0,W,H);
+    cg.strokeStyle='rgba('+AR+',.045)';cg.lineWidth=1;const sp=92,off=(tt*5)%sp;cg.beginPath();
+    for(let x=off;x<W;x+=sp){cg.moveTo(x,0);cg.lineTo(x,H)}for(let y=off*.6;y<H;y+=sp){cg.moveTo(0,y);cg.lineTo(W,y)}cg.stroke();
+    cg.fillStyle='rgba('+AR+',.5)';
+    for(const p of pts){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;cg.fillRect(p.x,p.y,1.6,1.6);}
+    sweep+=2.2;if(sweep>H+200)sweep=-200;const gr=cg.createLinearGradient(0,sweep-60,0,sweep);gr.addColorStop(0,'rgba('+AR+',0)');gr.addColorStop(1,'rgba('+AR+',.05)');cg.fillStyle=gr;cg.fillRect(0,sweep-60,W,60);
+    if(!document.hidden)requestAnimationFrame(bg);else setTimeout(bg,400);})();
+  T('MODULE KERNEL ONLINE :: PWR-10 PoE BUDGET','ok');
+
+  /* ===== categorical palette (validated, fixed order — never cycled) ===== */
+  const PAL=['#0891b2','#ea580c','#8b5cf6','#059669','#ec4899','#a16207'];
+  const CUSTOM_COLOR='#64748b';
+  const PROFILES=[
+    {id:'phone',name:'IP Phone',w:6.5,cls:'af / C2'},
+    {id:'cam',name:'Security Camera',w:15.4,cls:'af / C3'},
+    {id:'ptz',name:'PTZ Camera (Heavy)',w:30,cls:'at / C4'},
+    {id:'ap',name:'Wi-Fi 6 Access Point',w:25.5,cls:'at / C4'},
+    {id:'ind',name:'Industrial Station',w:30,cls:'at / C4'},
+    {id:'door',name:'Access Control',w:12.95,cls:'af / C3'}
+  ];
+  const LSKEY='nn-poe-v1';
+  let load=[];
+  try{load=JSON.parse(localStorage.getItem(LSKEY)||'[]');}catch(e){load=[];}
+  let lastState='ok';
+  $('#profiles').innerHTML=PROFILES.map((p,i)=>'<button class="btn" data-p="'+p.id+'"><span class="swatch" style="background:'+PAL[i]+'"></span>'+p.name.toUpperCase()+'<small>'+p.w+' W · '+p.cls+'</small></button>').join('');
+  $$('#profiles .btn').forEach(b=>b.addEventListener('click',()=>{addDev(b.dataset.p);}));
+  function addDev(pid,name,w,cls){
+    const ex=load.find(l=>l.pid===pid&&(pid!=='custom'||l.name===name));
+    if(ex){ex.qty++;}
+    else{
+      const p=PROFILES.find(x=>x.id===pid);
+      load.push(p?{pid,name:p.name,w:p.w,cls:p.cls,qty:1}:{pid:'custom',name,w,cls:'custom',qty:1});
+    }
+    T('LOAD ATTACHED :: '+(name||pid),'info');
+    render();
+  }
+  $('#cAdd').addEventListener('click',()=>{
+    const n=$('#cName').value.trim()||'Custom Device',w=Math.max(.5,Math.min(90,+$('#cW').value||18));
+    addDev('custom',n,w);
+  });
+  $('#budget').addEventListener('change',()=>{$('#budgetCustom').style.display=$('#budget').value==='custom'?'block':'none';render();});
+  $('#budgetCustom').addEventListener('input',render);
+  $('#clearAll').addEventListener('click',()=>{load=[];render();T('LOAD MANIFEST FLUSHED','warn');jsay('All load shed, sir. The switch breathes easy again.');});
+  function budget(){return $('#budget').value==='custom'?Math.max(10,+$('#budgetCustom').value||370):+$('#budget').value;}
+  function colorOf(l){
+    if(l.pid==='custom')return CUSTOM_COLOR;
+    return PAL[PROFILES.findIndex(p=>p.id===l.pid)];
+  }
+  function render(){
+    localStorage.setItem(LSKEY,JSON.stringify(load));
+    const B=budget();
+    const total=load.reduce((a,l)=>a+l.w*l.qty,0);
+    const uti=B?total/B*100:0;
+    /* manifest table */
+    $('#loadBody').innerHTML=load.length?load.map((l,i)=>
+      '<tr><td><span class="swatch" style="background:'+colorOf(l)+'"></span>'+l.name+'</td><td style="color:var(--mut)">'+l.cls+'</td><td class="r">'+l.w+' W</td>'+
+      '<td><span class="qty"><button class="btn mini" data-d="'+i+'">−</button><b>'+l.qty+'</b><button class="btn mini" data-u="'+i+'">+</button></span></td>'+
+      '<td class="r" style="color:var(--acc2)">'+(l.w*l.qty).toFixed(1)+' W</td>'+
+      '<td class="r"><button class="btn mini danger" data-x="'+i+'">✕</button></td></tr>').join(''):
+      '<tr><td colspan="6" style="color:var(--mut);padding:16px">NO LOAD ATTACHED — DROP EQUIPMENT PROFILES FROM THE LEFT.</td></tr>';
+    $$('#loadBody [data-u]').forEach(b=>b.addEventListener('click',()=>{load[+b.dataset.u].qty++;render();}));
+    $$('#loadBody [data-d]').forEach(b=>b.addEventListener('click',()=>{const l=load[+b.dataset.d];l.qty--;if(l.qty<1)load.splice(+b.dataset.d,1);render();}));
+    $$('#loadBody [data-x]').forEach(b=>b.addEventListener('click',()=>{load.splice(+b.dataset.x,1);render();}));
+    /* stats */
+    $('#stDraw').textContent=total.toFixed(1)+' W';
+    $('#stBudget').textContent=B+' W';
+    const rem=B-total;
+    $('#stRemain').textContent=rem.toFixed(1)+' W';
+    $('#stRemain').style.color=rem<0?'var(--red)':rem<B*.2?'var(--yel)':'var(--acc2)';
+    $('#stDevs').textContent=load.reduce((a,l)=>a+l.qty,0);
+    /* gauge */
+    const C=2*Math.PI*60;
+    const frac=Math.min(uti,120)/120;
+    const col=uti>100?'#ff4757':uti>80?'#ffd166':'#0891b2';
+    const arc=$('#gArc');
+    arc.setAttribute('stroke-dasharray',(frac*C*(300/360)).toFixed(1)+' '+C);
+    arc.setAttribute('stroke',col);
+    $('#gTxt').textContent=Math.round(uti)+'%';
+    $('#gTxt').setAttribute('fill',col);
+    /* stacked composition bar — scale = max(budget,total), 2px gaps, direct labels when wide */
+    const scale=Math.max(B,total)||1;
+    $('#axMax').textContent=Math.round(scale)+' W';$('#axMid').textContent=Math.round(scale/2)+' W';
+    $('#stack').innerHTML=load.filter(l=>l.qty>0).map(l=>{
+      const wts=l.w*l.qty,pct=wts/scale*100;
+      return '<div class="seg" style="width:'+pct+'%;background:'+colorOf(l)+'" title="'+l.name+' — '+l.qty+' × '+l.w+' W = '+wts.toFixed(1)+' W">'+(pct>13?'<span>'+l.name.split(' ')[0]+' '+wts.toFixed(0)+'W</span>':'')+'</div>';
+    }).join('')||'<div style="font-family:var(--mono);font-size:10px;color:var(--mut);align-self:center;padding-left:10px">NO LOAD</div>';
+    $('#legend').innerHTML=load.filter(l=>l.qty>0).map(l=>'<span><span class="swatch" style="background:'+colorOf(l)+'"></span>'+l.name+'</span>').join('');
+    /* alarms */
+    const alarm=$('#alarm');
+    let state=uti>100?'crit':uti>80?'warn':'ok';
+    alarm.className='alarm'+(state==='crit'?' crit':state==='warn'?' warn':'');
+    alarm.innerHTML=state==='crit'?'⚠ POWER BUDGET BREACHED — '+Math.abs(rem).toFixed(1)+' W OVER. SHED LOAD OR UPGRADE THE PSU.':
+                   state==='warn'?'▲ APPROACHING BUDGET CEILING — '+Math.round(uti)+'% OF PSE CAPACITY. PLAN FOR 80%.':'';
+    if(state!==lastState){
+      if(state==='crit'){T('BUDGET BREACH :: '+total.toFixed(1)+'W / '+B+'W','err');jsay('You are over budget by '+Math.abs(rem).toFixed(0)+' watts, sir. Physics will win this argument.');}
+      else if(state==='warn'){T('CEILING WARNING :: '+Math.round(uti)+'% UTILIZATION','warn');jsay('Past the eighty percent line, sir. I would leave headroom for inrush.');}
+      else if(lastState!=='ok'){T('ENVELOPE NOMINAL :: '+Math.round(uti)+'%','ok');jsay('Back inside the envelope. Much better, sir.');}
+      lastState=state;
+    }
+  }
+  render();
+  jsay('Power calculus ready, sir. Drop equipment onto the switch and watch the envelope respond.');
+});
+</script>
+</body>
+</html>

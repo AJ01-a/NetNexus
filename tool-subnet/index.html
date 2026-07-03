@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" data-galaxy="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#02050a">
+<title>NETNEXUS // NET-01 SUBNET TOOLKIT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
+<style>
+:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--bg0:#02050a;--ink:#d9f4ff;--mut:#6b93ab;--panel:rgba(7,17,27,.82);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
+html[data-galaxy="it"]{--acc:#00e5ff;--acc2:#7df9ff;--accd:rgba(0,229,255,.14);--line:rgba(0,229,255,.28);--acc-glow:rgba(0,229,255,.32)}
+html[data-galaxy="gen"]{--acc:#ff9d33;--acc2:#ffc46b;--accd:rgba(255,157,51,.14);--line:rgba(255,157,51,.30);--acc-glow:rgba(255,157,51,.32)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:radial-gradient(1200px 700px at 50% -12%,#0a1e30 0%,var(--bg0) 58%) fixed,var(--bg0);color:var(--ink);font-family:var(--ui);min-height:100vh;overflow-x:hidden}
+::selection{background:var(--accd);color:var(--acc2)}
+#bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh}
+.scan{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.15) 2px 3px);box-shadow:inset 0 0 200px rgba(0,0,0,.7)}
+#topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(4,12,20,.94),rgba(4,12,20,.7));backdrop-filter:blur(10px)}
+.brand{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.22em;color:var(--acc);text-shadow:0 0 14px var(--acc-glow);white-space:nowrap}
+.brand b{color:var(--ink);font-weight:500}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.18em;border:1px solid var(--line);color:var(--acc2);padding:3px 9px;background:var(--accd);white-space:nowrap}
+.chip.ghost{color:var(--mut);border-color:rgba(107,147,171,.3);background:none}
+.spacer{flex:1}
+#clk{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.12em;white-space:nowrap}
+#clk b{color:var(--acc2);font-weight:400}
+.rtn{font-family:var(--disp);font-size:9.5px;letter-spacing:.24em;color:var(--acc);border:1px solid var(--line);background:var(--accd);padding:7px 12px;text-decoration:none;transition:.25s;white-space:nowrap}
+.rtn:hover{background:var(--acc);color:#02131c;box-shadow:0 0 18px var(--acc-glow)}
+#jstrip{position:relative;z-index:5;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--acc2);padding:8px 20px;border-bottom:1px solid rgba(107,147,171,.14);background:rgba(3,10,16,.6)}
+#jstrip .jj{color:var(--mut);letter-spacing:.2em}
+#wrap{position:relative;z-index:5;max-width:1240px;margin:24px auto 110px;padding:0 20px;display:grid;gap:18px}
+.panel{position:relative;background:var(--panel);border:1px solid var(--line);padding:18px 18px 16px;backdrop-filter:blur(10px)}
+.panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(var(--acc),var(--acc)) left 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/2px 14px;background-repeat:no-repeat;opacity:.85}
+.ptitle{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.3em;color:var(--acc);text-shadow:0 0 10px var(--acc-glow)}
+.psub{font-size:12px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;margin:4px 0 14px;font-family:var(--mono)}
+.f{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--mut);text-transform:uppercase;margin:12px 0 5px}
+input[type="text"],select{width:100%;background:rgba(2,8,14,.85);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:13px;padding:9px 11px;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 1px var(--accd),0 0 18px var(--accd)}
+input.bad{border-color:var(--red)!important;box-shadow:0 0 0 1px rgba(255,71,87,.35),0 0 16px rgba(255,71,87,.3)!important}
+input[type="range"]{width:100%;padding:0;height:26px;accent-color:var(--acc);background:transparent;border:none}
+select option{background:#04121c}
+.btn{display:inline-block;background:none;border:1px solid var(--line);color:var(--acc2);font-family:var(--disp);font-size:10px;letter-spacing:.22em;padding:9px 14px;cursor:pointer;transition:.22s;text-transform:uppercase}
+.btn:hover{background:var(--accd);border-color:var(--acc);color:var(--acc);box-shadow:0 0 16px var(--accd)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:920px){.grid2{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
+th{font-size:9.5px;letter-spacing:.22em;color:var(--mut);text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);text-transform:uppercase;font-weight:400}
+td{padding:7px 10px;border-bottom:1px solid rgba(107,147,171,.12)}
+td.k{color:var(--mut);font-size:11px;letter-spacing:.14em;width:44%}
+td.v{color:var(--acc2)}
+.badge{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;padding:2px 8px;border:1px solid}
+.b-acc{color:var(--acc);border-color:var(--line);background:var(--accd)}
+.b-grn{color:var(--grn);border-color:rgba(46,255,158,.4);background:rgba(46,255,158,.08)}
+.b-yel{color:var(--yel);border-color:rgba(255,209,102,.4);background:rgba(255,209,102,.08)}
+.b-red{color:var(--red);border-color:rgba(255,71,87,.45);background:rgba(255,71,87,.09)}
+.statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:4px}
+.stat{border:1px solid rgba(107,147,171,.25);background:rgba(2,8,14,.6);padding:12px;text-align:center}
+.stat .v{font-family:var(--mono);font-size:19px;color:var(--acc2);text-shadow:0 0 12px var(--acc-glow)}
+.stat .l{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--mut);margin-top:6px;text-transform:uppercase}
+.codebox{position:relative}
+pre.code{background:#020a10;border:1px solid var(--line);padding:16px;font-family:var(--mono);font-size:12.5px;color:#c8ecff;overflow:auto;line-height:1.65;white-space:pre}
+.copy{position:absolute;top:10px;right:10px;z-index:2;background:rgba(2,10,16,.9);border:1px solid var(--line);color:var(--acc2);font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;padding:5px 10px;cursor:pointer;transition:.2s}
+.copy:hover{border-color:var(--acc);color:var(--acc);box-shadow:0 0 12px var(--accd)}
+.copy.ok{color:var(--grn);border-color:var(--grn)}
+.binrow{font-family:var(--mono);font-size:13px;letter-spacing:.06em;line-height:2;overflow-x:auto;white-space:nowrap}
+.binrow .lab{display:inline-block;width:92px;color:var(--mut);font-size:10px;letter-spacing:.18em}
+.bit-n{color:var(--acc);text-shadow:0 0 8px var(--acc-glow)}
+.bit-h{color:rgba(107,147,171,.85)}
+.octdot{color:rgba(107,147,171,.5)}
+.cidrbig{font-family:var(--disp);font-size:30px;color:var(--acc);text-shadow:0 0 18px var(--acc-glow);min-width:88px;text-align:center}
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+@keyframes blink{50%{opacity:.25}}
+#foot{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;gap:22px;align-items:center;font-family:var(--mono);font-size:10px;color:rgba(107,147,171,.7);letter-spacing:.2em;padding:6px 18px;border-top:1px solid rgba(107,147,171,.15);background:rgba(3,9,14,.8);backdrop-filter:blur(6px)}
+#foot .dot{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termBtn{position:fixed;right:14px;bottom:38px;z-index:60;background:rgba(2,10,16,.92);border:1px solid var(--line);color:var(--acc2);font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;padding:7px 11px;cursor:pointer;transition:.2s}
+#termBtn:hover{border-color:var(--acc);color:var(--acc);box-shadow:0 0 14px var(--accd)}
+#term{position:fixed;left:0;right:0;bottom:0;height:240px;transform:translateY(101%);z-index:70;background:rgba(2,7,12,.97);border-top:1px solid var(--acc);font-family:var(--mono);transition:transform .35s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;box-shadow:0 -12px 50px rgba(0,0,0,.6)}
+#term.open{transform:none}
+#termHead{display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:1px solid rgba(107,147,171,.2);font-size:10px;letter-spacing:.26em;color:var(--acc)}
+#termHead .tdot{width:7px;height:7px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termHead .tx{margin-left:auto;cursor:pointer;color:var(--mut);font-size:13px;padding:0 4px}
+#termHead .tx:hover{color:var(--red)}
+#termBody{flex:1;overflow-y:auto;padding:10px 14px;font-size:11.5px;line-height:1.75}
+.tline{white-space:pre-wrap;word-break:break-word}
+.tline .tt{color:rgba(107,147,171,.6)}
+.t-info{color:#9fd8ea}.t-ok{color:var(--grn)}.t-warn{color:var(--yel)}.t-err{color:var(--red)}.t-sys{color:var(--acc2)}
+</style>
+</head>
+<body>
+<canvas id="bgfx"></canvas>
+<div class="scan"></div>
+<header id="topbar">
+  <div class="brand">◈ NETNEXUS <b>// SUBNET TOOLKIT</b></div>
+  <span class="chip">NET-01</span>
+  <span class="chip ghost">IT GALAXY</span>
+  <div class="spacer"></div>
+  <div id="clk"></div>
+  <a class="rtn" href="../index.html">◂ RETURN TO NEXUS</a>
+</header>
+<div id="jstrip"><span class="jj">◤ J.A.R.V.I.S // </span><span id="jtext"></span></div>
+
+<main id="wrap">
+  <div class="grid2">
+    <section class="panel">
+      <div class="ptitle">CIDR INPUT VECTOR</div>
+      <div class="psub">address + prefix — live computation</div>
+      <label class="f" for="ip">HOST / NETWORK ADDRESS</label>
+      <input type="text" id="ip" value="192.168.10.37" spellcheck="false" autocomplete="off">
+      <label class="f">PREFIX LENGTH — SLASH CALCULATOR</label>
+      <div style="display:flex;align-items:center;gap:14px">
+        <input type="range" id="cidr" min="0" max="32" value="26" style="flex:1">
+        <div class="cidrbig" id="cidrLab">/26</div>
+      </div>
+      <label class="f" for="maskSel">SUBNET MASK (SYNCED)</label>
+      <select id="maskSel"></select>
+      <label class="f">QUICK PRESETS</label>
+      <div class="presets">
+        <button class="btn" data-c="8">/8</button>
+        <button class="btn" data-c="16">/16</button>
+        <button class="btn" data-c="24">/24</button>
+        <button class="btn" data-c="26">/26</button>
+        <button class="btn" data-c="30">/30</button>
+        <button class="btn" data-c="31">/31</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="ptitle">SEGMENT ANALYSIS</div>
+      <div class="psub">computed network boundaries</div>
+      <div class="statrow">
+        <div class="stat"><div class="v" id="stHosts">—</div><div class="l">Usable Hosts</div></div>
+        <div class="stat"><div class="v" id="stTotal">—</div><div class="l">Total Addresses</div></div>
+        <div class="stat"><div class="v" id="stClass">—</div><div class="l">Class / Scope</div></div>
+      </div>
+      <table>
+        <tbody id="resBody">
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="ptitle">BINARY LATTICE</div>
+    <div class="psub">network bits <span class="bit-n">■ accent</span> · host bits <span class="bit-h">■ dim</span></div>
+    <div class="binrow" id="binIp"></div>
+    <div class="binrow" id="binMask"></div>
+    <div class="binrow" id="binWild"></div>
+  </section>
+
+  <section class="panel">
+    <div class="ptitle">CISCO IOS FORGE</div>
+    <div class="psub">auto-generated interface + routing config matching this segment</div>
+    <div class="codebox">
+      <button class="copy" id="copyIos">⧉ COPY CONFIG</button>
+      <pre class="code" id="iosOut"></pre>
+    </div>
+  </section>
+</main>
+
+<footer id="foot"><span class="dot"></span><span>NET-01 ACTIVE</span><span>CLIENT-SIDE EXECUTION — ZERO SERVER DEPENDENCY</span><span style="margin-left:auto">NETNEXUS v2.1</span></footer>
+<button id="termBtn">⌬ SYS TERMINAL</button>
+<aside id="term"><div id="termHead"><span class="tdot"></span> STARK-CORE DIAGNOSTIC TERMINAL — NET-01 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
+
+<script>
+'use strict';
+window.__nnlog=[];
+window.onerror=function(m,s,l){window.__nnlog.push(['ERR '+m+' @'+(s||'?').split('/').pop()+':'+l,'err']);return false;};
+window.addEventListener('unhandledrejection',e=>window.__nnlog.push(['PROMISE REJECTION :: '+(e.reason&&e.reason.message||e.reason),'err']));
+document.addEventListener('DOMContentLoaded',()=>{
+  const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+  /* ===== shared kit: terminal / jarvis / clock / copy / bgfx ===== */
+  const termBody=$('#termBody'),term=$('#term');
+  function T(msg,lv='info'){const d=document.createElement('div');d.className='tline t-'+lv;d.innerHTML='<span class="tt">['+new Date().toTimeString().slice(0,8)+']</span> '+String(msg).replace(/</g,'&lt;');termBody.appendChild(d);while(termBody.children.length>200)termBody.firstChild.remove();termBody.scrollTop=termBody.scrollHeight;}
+  window.__nnlog.forEach(a=>T(a[0],a[1]));window.__nnlog={push:a=>T(a[0],a[1])};
+  const _ce=console.error.bind(console),_cw=console.warn.bind(console);
+  console.error=(...a)=>{T(a.map(String).join(' '),'err');_ce(...a)};
+  console.warn=(...a)=>{T(a.map(String).join(' '),'warn');_cw(...a)};
+  $('#termBtn').addEventListener('click',()=>term.classList.toggle('open'));
+  $('#termX').addEventListener('click',()=>term.classList.remove('open'));
+  window.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='`'){e.preventDefault();term.classList.toggle('open');}});
+  if(window.__twFail)T('TAILWIND CDN UNREACHABLE — LOCAL STYLE CORE ENGAGED','warn');
+  let _jt=null;function jsay(t){T('J.A.R.V.I.S :: '+t,'sys');const el=$('#jtext');clearInterval(_jt);let i=0;_jt=setInterval(()=>{el.textContent=t.slice(0,++i)+(i<t.length?'▊':'');if(i>=t.length)clearInterval(_jt);},14);}
+  setInterval(()=>{const d=new Date();$('#clk').innerHTML='<b>'+d.toTimeString().slice(0,8)+'</b> L · '+d.toISOString().slice(11,19)+' U';},1000);
+  function copyTxt(btn,txt){const done=()=>{const o=btn.textContent;btn.textContent='COPIED ✓';btn.classList.add('ok');setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok');},1400);T('CLIPBOARD :: PAYLOAD TRANSFERRED','ok');};
+    const fb=()=>{try{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();done();}catch(e){T('CLIPBOARD FAULT :: '+e.message,'err');}};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done).catch(fb);else fb();}
+  const cv=$('#bgfx'),cg=cv.getContext('2d');let W=innerWidth,H=innerHeight,tt=0;
+  const AR=document.documentElement.dataset.galaxy==='gen'?'255,157,51':'0,229,255';
+  function rs(){W=innerWidth;H=innerHeight;const D=Math.min(devicePixelRatio||1,1.5);cv.width=W*D;cv.height=H*D;cg.setTransform(D,0,0,D,0,0);}
+  rs();window.addEventListener('resize',rs);
+  const pts=Array.from({length:30},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14}));
+  let sweep=-200;
+  (function bg(){const dt=1/60;tt+=dt;cg.clearRect(0,0,W,H);
+    cg.strokeStyle='rgba('+AR+',.045)';cg.lineWidth=1;const sp=92,off=(tt*5)%sp;cg.beginPath();
+    for(let x=off;x<W;x+=sp){cg.moveTo(x,0);cg.lineTo(x,H)}for(let y=off*.6;y<H;y+=sp){cg.moveTo(0,y);cg.lineTo(W,y)}cg.stroke();
+    cg.fillStyle='rgba('+AR+',.5)';
+    for(const p of pts){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;cg.fillRect(p.x,p.y,1.6,1.6);}
+    sweep+=2.2;if(sweep>H+200)sweep=-200;const gr=cg.createLinearGradient(0,sweep-60,0,sweep);gr.addColorStop(0,'rgba('+AR+',0)');gr.addColorStop(1,'rgba('+AR+',.05)');cg.fillStyle=gr;cg.fillRect(0,sweep-60,W,60);
+    if(!document.hidden)requestAnimationFrame(bg);else setTimeout(bg,400);})();
+  T('MODULE KERNEL ONLINE :: NET-01 SUBNET TOOLKIT','ok');
+
+  /* ===== subnet engine ===== */
+  const ipIn=$('#ip'),cidrIn=$('#cidr'),cidrLab=$('#cidrLab'),maskSel=$('#maskSel');
+  const ip2u=s=>{const m=s.trim().match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);if(!m)return null;const o=m.slice(1).map(Number);return o.some(x=>x>255)?null:((o[0]<<24)|(o[1]<<16)|(o[2]<<8)|o[3])>>>0;};
+  const u2ip=u=>[u>>>24,(u>>>16)&255,(u>>>8)&255,u&255].join('.');
+  const maskOf=c=>c===0?0:(0xFFFFFFFF<<(32-c))>>>0;
+  for(let c=0;c<=32;c++){const o=document.createElement('option');o.value=c;o.textContent='/'+c+'  —  '+u2ip(maskOf(c));maskSel.appendChild(o);}
+  function octBits(u,cidr,cls){
+    let out='';for(let o=0;o<4;o++){for(let b=0;b<8;b++){const idx=o*8+b;const bit=(u>>>(31-idx))&1;
+      out+='<span class="'+(idx<cidr?'bit-n':'bit-h')+'">'+bit+'</span>';}
+      if(o<3)out+='<span class="octdot"> · </span>';}
+    return out;
+  }
+  function classify(u){
+    const a=u>>>24;
+    let cls=a<128?'A':a<192?'B':a<224?'C':a<240?'D':'E';
+    let scope='PUBLIC',b='b-grn';
+    if(a===10||(a===172&&((u>>>16)&255)>=16&&((u>>>16)&255)<=31)||(a===192&&((u>>>16)&255)===168)){scope='PRIVATE RFC1918';b='b-acc';}
+    else if(a===127){scope='LOOPBACK';b='b-yel';}
+    else if(a===169&&((u>>>16)&255)===254){scope='APIPA / LINK-LOCAL';b='b-yel';}
+    else if(a===100&&((u>>>16)&255)>=64&&((u>>>16)&255)<=127){scope='CGN RFC6598';b='b-yel';}
+    else if(a>=224){scope=a<240?'MULTICAST':'RESERVED';b='b-red';}
+    return {cls,scope,b};
+  }
+  let badFlag=false;
+  function compute(){
+    const c=+cidrIn.value;cidrLab.textContent='/'+c;maskSel.value=c;
+    const u=ip2u(ipIn.value);
+    if(u===null){ipIn.classList.add('bad');
+      if(!badFlag){badFlag=true;jsay('That address does not parse, sir. Four octets, nought to two-five-five each.');T('INPUT REJECTED :: MALFORMED IPv4','err');}
+      return;}
+    if(badFlag){badFlag=false;jsay('Address lock re-acquired. Computing boundaries.');}
+    ipIn.classList.remove('bad');
+    const m=maskOf(c),wc=(~m)>>>0,net=(u&m)>>>0,bc=(net|wc)>>>0;
+    const total=Math.pow(2,32-c);
+    const usable=c===32?1:c===31?2:total-2;
+    const first=c>=31?net:net+1,last=c===32?net:c===31?bc:bc-1;
+    const info=classify(u);
+    $('#stHosts').textContent=usable.toLocaleString();
+    $('#stTotal').textContent=total.toLocaleString();
+    $('#stClass').textContent=info.cls;
+    $('#resBody').innerHTML=
+      '<tr><td class="k">NETWORK ADDRESS</td><td class="v">'+u2ip(net)+'</td></tr>'+
+      '<tr><td class="k">BROADCAST ADDRESS</td><td class="v">'+(c>=31?'— (RFC 3021)':u2ip(bc))+'</td></tr>'+
+      '<tr><td class="k">FIRST USABLE HOST</td><td class="v">'+u2ip(first)+'</td></tr>'+
+      '<tr><td class="k">LAST USABLE HOST</td><td class="v">'+u2ip(last)+'</td></tr>'+
+      '<tr><td class="k">SUBNET MASK</td><td class="v">'+u2ip(m)+'</td></tr>'+
+      '<tr><td class="k">WILDCARD MASK</td><td class="v">'+u2ip(wc)+'</td></tr>'+
+      '<tr><td class="k">ADDRESS SCOPE</td><td><span class="badge '+info.b+'">'+info.scope+'</span></td></tr>';
+    $('#binIp').innerHTML='<span class="lab">ADDRESS</span>'+octBits(u,c);
+    $('#binMask').innerHTML='<span class="lab">NETMASK</span>'+octBits(m,c);
+    $('#binWild').innerHTML='<span class="lab">WILDCARD</span>'+octBits(wc,c);
+    /* IOS forge */
+    const ifaceIp=(u>net&&u<bc)||c>=31?u2ip(u):u2ip(first);
+    let ios='! NETNEXUS // SUBNET FRAMEWORK — AUTO-FORGED\n! Segment '+u2ip(net)+'/'+c+'  ·  '+usable.toLocaleString()+' usable host(s)\n!\n';
+    if(c===32){
+      ios+='interface Loopback0\n description NETNEXUS-HOST-ROUTE\n ip address '+u2ip(net)+' 255.255.255.255\n!\n';
+    }else{
+      ios+='interface GigabitEthernet0/1\n description NETNEXUS-SEGMENT_'+u2ip(net)+'_'+c+'\n ip address '+ifaceIp+' '+u2ip(m)+'\n no shutdown\n!\n';
+      if(c===31)ios+='! RFC 3021 point-to-point pair — no network/broadcast reserved\n!\n';
+    }
+    ios+='router ospf 1\n network '+u2ip(net)+' '+u2ip(wc)+' area 0\n!\n! Standard ACL matching this segment\naccess-list 10 permit '+u2ip(net)+' '+u2ip(wc)+'\n! END';
+    $('#iosOut').textContent=ios;
+    T('SEGMENT COMPUTED :: '+u2ip(net)+'/'+c+' → '+usable.toLocaleString()+' HOSTS','info');
+  }
+  ipIn.addEventListener('input',compute);
+  cidrIn.addEventListener('input',compute);
+  maskSel.addEventListener('change',()=>{cidrIn.value=maskSel.value;compute();});
+  $$('.presets .btn').forEach(b=>b.addEventListener('click',()=>{cidrIn.value=b.dataset.c;compute();}));
+  $('#copyIos').addEventListener('click',()=>copyTxt($('#copyIos'),$('#iosOut').textContent));
+  compute();
+  jsay('Subnet Framework online, sir. Feed me an address and a prefix — I shall handle the arithmetic.');
+});
+</script>
+</body>
+</html>

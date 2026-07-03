@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" data-galaxy="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#02050a">
+<title>NETNEXUS // NET-02 NETWORK DISCOVERY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
+<style>
+:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--bg0:#02050a;--ink:#d9f4ff;--mut:#6b93ab;--panel:rgba(7,17,27,.82);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
+html[data-galaxy="it"]{--acc:#00e5ff;--acc2:#7df9ff;--accd:rgba(0,229,255,.14);--line:rgba(0,229,255,.28);--acc-glow:rgba(0,229,255,.32)}
+html[data-galaxy="gen"]{--acc:#ff9d33;--acc2:#ffc46b;--accd:rgba(255,157,51,.14);--line:rgba(255,157,51,.30);--acc-glow:rgba(255,157,51,.32)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:radial-gradient(1200px 700px at 50% -12%,#0a1e30 0%,var(--bg0) 58%) fixed,var(--bg0);color:var(--ink);font-family:var(--ui);min-height:100vh;overflow-x:hidden}
+::selection{background:var(--accd);color:var(--acc2)}
+#bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh}
+.scan{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.15) 2px 3px);box-shadow:inset 0 0 200px rgba(0,0,0,.7)}
+#topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(4,12,20,.94),rgba(4,12,20,.7));backdrop-filter:blur(10px)}
+.brand{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.22em;color:var(--acc);text-shadow:0 0 14px var(--acc-glow);white-space:nowrap}
+.brand b{color:var(--ink);font-weight:500}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.18em;border:1px solid var(--line);color:var(--acc2);padding:3px 9px;background:var(--accd);white-space:nowrap}
+.chip.ghost{color:var(--mut);border-color:rgba(107,147,171,.3);background:none}
+.spacer{flex:1}
+#clk{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.12em;white-space:nowrap}
+#clk b{color:var(--acc2);font-weight:400}
+.rtn{font-family:var(--disp);font-size:9.5px;letter-spacing:.24em;color:var(--acc);border:1px solid var(--line);background:var(--accd);padding:7px 12px;text-decoration:none;transition:.25s;white-space:nowrap}
+.rtn:hover{background:var(--acc);color:#02131c;box-shadow:0 0 18px var(--acc-glow)}
+#jstrip{position:relative;z-index:5;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--acc2);padding:8px 20px;border-bottom:1px solid rgba(107,147,171,.14);background:rgba(3,10,16,.6)}
+#jstrip .jj{color:var(--mut);letter-spacing:.2em}
+#wrap{position:relative;z-index:5;max-width:1240px;margin:24px auto 110px;padding:0 20px;display:grid;gap:18px}
+.panel{position:relative;background:var(--panel);border:1px solid var(--line);padding:18px 18px 16px;backdrop-filter:blur(10px)}
+.panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(var(--acc),var(--acc)) left 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/2px 14px;background-repeat:no-repeat;opacity:.85}
+.ptitle{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.3em;color:var(--acc);text-shadow:0 0 10px var(--acc-glow)}
+.psub{font-size:12px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;margin:4px 0 14px;font-family:var(--mono)}
+.btn{display:inline-block;background:none;border:1px solid var(--line);color:var(--acc2);font-family:var(--disp);font-size:10px;letter-spacing:.22em;padding:9px 14px;cursor:pointer;transition:.22s;text-transform:uppercase}
+.btn:hover{background:var(--accd);border-color:var(--acc);color:var(--acc);box-shadow:0 0 16px var(--accd)}
+.grid2{display:grid;grid-template-columns:1.15fr 1fr;gap:18px}
+@media(max-width:920px){.grid2{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
+td{padding:7px 10px;border-bottom:1px solid rgba(107,147,171,.12)}
+td.k{color:var(--mut);font-size:11px;letter-spacing:.14em;width:42%}
+td.v{color:var(--acc2);word-break:break-all}
+.badge{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;padding:2px 8px;border:1px solid}
+.b-acc{color:var(--acc);border-color:var(--line);background:var(--accd)}
+.b-grn{color:var(--grn);border-color:rgba(46,255,158,.4);background:rgba(46,255,158,.08)}
+.b-yel{color:var(--yel);border-color:rgba(255,209,102,.4);background:rgba(255,209,102,.08)}
+.b-red{color:var(--red);border-color:rgba(255,71,87,.45);background:rgba(255,71,87,.09)}
+.bigip{font-family:var(--disp);font-size:clamp(22px,3.4vw,34px);letter-spacing:.12em;color:var(--acc);text-shadow:0 0 20px var(--acc-glow);margin:2px 0 4px;word-break:break-all}
+.status{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--mut)}
+.status.live::before{content:"● ";color:var(--grn);animation:blink 1.2s steps(1) infinite}
+.tunnel{display:none;margin:14px 0 4px;padding:12px 14px;border:1px solid var(--red);background:rgba(60,6,14,.55);font-family:var(--disp);font-size:12px;letter-spacing:.22em;color:var(--red);text-shadow:0 0 12px rgba(255,71,87,.7);align-items:center;gap:12px}
+.tunnel.on{display:flex;animation:tpulse 1.1s ease-in-out infinite}
+@keyframes tpulse{50%{background:rgba(90,10,22,.75);box-shadow:0 0 34px rgba(255,71,87,.4)}}
+.checkrow{display:flex;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid rgba(107,147,171,.12);font-family:var(--mono);font-size:12px}
+.checkrow .cl{color:var(--ink)}
+.checkrow .cd{color:var(--mut);font-size:10.5px;margin-top:2px}
+.checkrow .badge{margin-left:auto;flex-shrink:0}
+.kvgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.kv{border:1px solid rgba(107,147,171,.25);background:rgba(2,8,14,.6);padding:10px 12px}
+.kv .l{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--mut);text-transform:uppercase}
+.kv .v{font-family:var(--mono);font-size:12.5px;color:var(--acc2);margin-top:5px;word-break:break-all}
+@keyframes blink{50%{opacity:.25}}
+#foot{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;gap:22px;align-items:center;font-family:var(--mono);font-size:10px;color:rgba(107,147,171,.7);letter-spacing:.2em;padding:6px 18px;border-top:1px solid rgba(107,147,171,.15);background:rgba(3,9,14,.8);backdrop-filter:blur(6px)}
+#foot .dot{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termBtn{position:fixed;right:14px;bottom:38px;z-index:60;background:rgba(2,10,16,.92);border:1px solid var(--line);color:var(--acc2);font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;padding:7px 11px;cursor:pointer;transition:.2s}
+#termBtn:hover{border-color:var(--acc);color:var(--acc);box-shadow:0 0 14px var(--accd)}
+#term{position:fixed;left:0;right:0;bottom:0;height:240px;transform:translateY(101%);z-index:70;background:rgba(2,7,12,.97);border-top:1px solid var(--acc);font-family:var(--mono);transition:transform .35s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;box-shadow:0 -12px 50px rgba(0,0,0,.6)}
+#term.open{transform:none}
+#termHead{display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:1px solid rgba(107,147,171,.2);font-size:10px;letter-spacing:.26em;color:var(--acc)}
+#termHead .tdot{width:7px;height:7px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termHead .tx{margin-left:auto;cursor:pointer;color:var(--mut);font-size:13px;padding:0 4px}
+#termHead .tx:hover{color:var(--red)}
+#termBody{flex:1;overflow-y:auto;padding:10px 14px;font-size:11.5px;line-height:1.75}
+.tline{white-space:pre-wrap;word-break:break-word}
+.tline .tt{color:rgba(107,147,171,.6)}
+.t-info{color:#9fd8ea}.t-ok{color:var(--grn)}.t-warn{color:var(--yel)}.t-err{color:var(--red)}.t-sys{color:var(--acc2)}
+</style>
+</head>
+<body>
+<canvas id="bgfx"></canvas>
+<div class="scan"></div>
+<header id="topbar">
+  <div class="brand">◈ NETNEXUS <b>// NETWORK DISCOVERY</b></div>
+  <span class="chip">NET-02</span>
+  <span class="chip ghost">IT GALAXY</span>
+  <div class="spacer"></div>
+  <div id="clk"></div>
+  <a class="rtn" href="../index.html">◂ RETURN TO NEXUS</a>
+</header>
+<div id="jstrip"><span class="jj">◤ J.A.R.V.I.S // </span><span id="jtext"></span></div>
+
+<main id="wrap">
+  <div class="grid2">
+    <section class="panel">
+      <div class="ptitle">WAN TELEMETRY</div>
+      <div class="psub">public egress identity — fetched client-side</div>
+      <div class="status" id="wanStat">INITIALIZING PROBE…</div>
+      <div class="bigip" id="wanIp">— . — . — . —</div>
+      <div class="tunnel" id="tunnelBadge">⚠ SECURE TUNNEL ACTIVE — PROXY DATA QUERIED</div>
+      <table><tbody id="wanBody"></tbody></table>
+      <div style="margin-top:14px;display:flex;gap:10px;align-items:center">
+        <button class="btn" id="rescan">⟳ RE-SCAN EGRESS</button>
+        <span class="status" id="probeMs"></span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="ptitle">TUNNEL SIGNATURE ANALYSIS</div>
+      <div class="psub">heuristic — indicative, not definitive</div>
+      <div id="checks"></div>
+      <div style="margin-top:14px">
+        <span class="badge b-acc" id="verdict">AWAITING TELEMETRY</span>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="ptitle">LOCAL CLIENT INTEL</div>
+    <div class="psub">what this browser exposes about the machine</div>
+    <div class="kvgrid" id="clientGrid"></div>
+  </section>
+</main>
+
+<footer id="foot"><span class="dot"></span><span>NET-02 ACTIVE</span><span>QUERIES: ipwho.is → ipapi.co → ipify (FALLBACK CHAIN)</span><span style="margin-left:auto">NETNEXUS v2.1</span></footer>
+<button id="termBtn">⌬ SYS TERMINAL</button>
+<aside id="term"><div id="termHead"><span class="tdot"></span> STARK-CORE DIAGNOSTIC TERMINAL — NET-02 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
+
+<script>
+'use strict';
+window.__nnlog=[];
+window.onerror=function(m,s,l){window.__nnlog.push(['ERR '+m+' @'+(s||'?').split('/').pop()+':'+l,'err']);return false;};
+window.addEventListener('unhandledrejection',e=>window.__nnlog.push(['PROMISE REJECTION :: '+(e.reason&&e.reason.message||e.reason),'err']));
+document.addEventListener('DOMContentLoaded',()=>{
+  const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+  const termBody=$('#termBody'),term=$('#term');
+  function T(msg,lv='info'){const d=document.createElement('div');d.className='tline t-'+lv;d.innerHTML='<span class="tt">['+new Date().toTimeString().slice(0,8)+']</span> '+String(msg).replace(/</g,'&lt;');termBody.appendChild(d);while(termBody.children.length>200)termBody.firstChild.remove();termBody.scrollTop=termBody.scrollHeight;}
+  window.__nnlog.forEach(a=>T(a[0],a[1]));window.__nnlog={push:a=>T(a[0],a[1])};
+  const _ce=console.error.bind(console),_cw=console.warn.bind(console);
+  console.error=(...a)=>{T(a.map(String).join(' '),'err');_ce(...a)};
+  console.warn=(...a)=>{T(a.map(String).join(' '),'warn');_cw(...a)};
+  $('#termBtn').addEventListener('click',()=>term.classList.toggle('open'));
+  $('#termX').addEventListener('click',()=>term.classList.remove('open'));
+  window.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='`'){e.preventDefault();term.classList.toggle('open');}});
+  if(window.__twFail)T('TAILWIND CDN UNREACHABLE — LOCAL STYLE CORE ENGAGED','warn');
+  let _jt=null;function jsay(t){T('J.A.R.V.I.S :: '+t,'sys');const el=$('#jtext');clearInterval(_jt);let i=0;_jt=setInterval(()=>{el.textContent=t.slice(0,++i)+(i<t.length?'▊':'');if(i>=t.length)clearInterval(_jt);},14);}
+  setInterval(()=>{const d=new Date();$('#clk').innerHTML='<b>'+d.toTimeString().slice(0,8)+'</b> L · '+d.toISOString().slice(11,19)+' U';},1000);
+  const cv=$('#bgfx'),cg=cv.getContext('2d');let W=innerWidth,H=innerHeight,tt=0;
+  const AR=document.documentElement.dataset.galaxy==='gen'?'255,157,51':'0,229,255';
+  function rs(){W=innerWidth;H=innerHeight;const D=Math.min(devicePixelRatio||1,1.5);cv.width=W*D;cv.height=H*D;cg.setTransform(D,0,0,D,0,0);}
+  rs();window.addEventListener('resize',rs);
+  const pts=Array.from({length:30},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14}));
+  let sweep=-200;
+  (function bg(){const dt=1/60;tt+=dt;cg.clearRect(0,0,W,H);
+    cg.strokeStyle='rgba('+AR+',.045)';cg.lineWidth=1;const sp=92,off=(tt*5)%sp;cg.beginPath();
+    for(let x=off;x<W;x+=sp){cg.moveTo(x,0);cg.lineTo(x,H)}for(let y=off*.6;y<H;y+=sp){cg.moveTo(0,y);cg.lineTo(W,y)}cg.stroke();
+    cg.fillStyle='rgba('+AR+',.5)';
+    for(const p of pts){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;cg.fillRect(p.x,p.y,1.6,1.6);}
+    sweep+=2.2;if(sweep>H+200)sweep=-200;const gr=cg.createLinearGradient(0,sweep-60,0,sweep);gr.addColorStop(0,'rgba('+AR+',0)');gr.addColorStop(1,'rgba('+AR+',.05)');cg.fillStyle=gr;cg.fillRect(0,sweep-60,W,60);
+    if(!document.hidden)requestAnimationFrame(bg);else setTimeout(bg,400);})();
+  T('MODULE KERNEL ONLINE :: NET-02 NETWORK DISCOVERY','ok');
+
+  /* ===== discovery engine ===== */
+  const HOSTKEYS=/vpn|proxy|tor[- ]|hosting|host(ed|ing)?\b|datacenter|data center|cloud|server|colo|ovh|m247|digitalocean|linode|vultr|hetzner|leaseweb|choopa|datacamp|packethub|clouvider|gcore|amazon|aws|azure|google llc|oracle|alibaba|tencent/i;
+  const wanBody=$('#wanBody'),checksEl=$('#checks'),verdict=$('#verdict'),tunnelBadge=$('#tunnelBadge');
+  const row=(k,v)=>'<tr><td class="k">'+k+'</td><td class="v">'+(v??'—')+'</td></tr>';
+  function checkRow(name,desc,state){ /* state: ok|flag|na */
+    const b=state==='ok'?'<span class="badge b-grn">CLEAR</span>':state==='flag'?'<span class="badge b-red">FLAGGED</span>':'<span class="badge b-yel">N/A</span>';
+    return '<div class="checkrow"><div><div class="cl">'+name+'</div><div class="cd">'+desc+'</div></div>'+b+'</div>';
+  }
+  async function jfetch(url,ms=7000){
+    const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),ms);
+    try{const r=await fetch(url,{signal:ctl.signal});if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();}
+    finally{clearTimeout(t);}
+  }
+  async function scan(){
+    $('#wanStat').textContent='QUERYING MAIN DATA BANKS…';$('#wanStat').classList.remove('live');
+    wanBody.innerHTML='';checksEl.innerHTML='';tunnelBadge.classList.remove('on');
+    verdict.textContent='SCANNING…';verdict.className='badge b-acc';
+    const t0=performance.now();
+    let d=null,src='';
+    try{
+      const j=await jfetch('https://ipwho.is/');
+      if(j.success===false)throw new Error(j.message||'ipwho.is refused');
+      d={ip:j.ip,isp:j.connection&&j.connection.isp,org:j.connection&&j.connection.org,asn:j.connection&&j.connection.asn?'AS'+j.connection.asn:null,
+         domain:j.connection&&j.connection.domain,city:j.city,region:j.region,country:j.country,cc:j.country_code,
+         tz:j.timezone&&j.timezone.id,utc:j.timezone&&j.timezone.utc,lat:j.latitude,lon:j.longitude,type:j.type};
+      src='ipwho.is';
+    }catch(e1){
+      T('PRIMARY FEED FAULT (ipwho.is) :: '+e1.message,'warn');
+      try{
+        const j=await jfetch('https://ipapi.co/json/');
+        if(j.error)throw new Error(j.reason||'ipapi refused');
+        d={ip:j.ip,isp:j.org,org:j.org,asn:j.asn,domain:null,city:j.city,region:j.region,country:j.country_name,cc:j.country_code,
+           tz:j.timezone,utc:j.utc_offset,lat:j.latitude,lon:j.longitude,type:j.version};
+        src='ipapi.co';
+      }catch(e2){
+        T('SECONDARY FEED FAULT (ipapi.co) :: '+e2.message,'warn');
+        try{
+          const j=await jfetch('https://api.ipify.org?format=json');
+          d={ip:j.ip};src='ipify (address only)';
+        }catch(e3){
+          T('ALL WAN FEEDS UNREACHABLE :: '+e3.message,'err');
+          $('#wanStat').textContent='✖ WAN UPLINK OFFLINE — ALL FEEDS UNREACHABLE';
+          $('#wanIp').textContent='NO CARRIER';
+          verdict.textContent='TELEMETRY UNAVAILABLE';verdict.className='badge b-red';
+          jsay('The outside world is not answering, sir. I suggest checking the connection before blaming me.');
+          return;
+        }
+      }
+    }
+    const ms=Math.round(performance.now()-t0);
+    $('#probeMs').textContent='PROBE RTT ≈ '+ms+' ms · SOURCE: '+src;
+    $('#wanStat').textContent='LIVE FEED — '+src.toUpperCase();$('#wanStat').classList.add('live');
+    $('#wanIp').textContent=d.ip||'UNKNOWN';
+    wanBody.innerHTML=row('ISP',d.isp)+row('ORGANIZATION',d.org)+row('ASN',d.asn)+row('DOMAIN',d.domain)+
+      row('LOCATION',[d.city,d.region,d.country].filter(Boolean).join(', ')||null)+
+      row('GEO TIMEZONE',d.tz?d.tz+(d.utc?' ('+d.utc+')':''):null)+
+      row('COORDINATES',(d.lat!=null&&d.lon!=null)?(+d.lat).toFixed(3)+', '+(+d.lon).toFixed(3):null);
+    T('EGRESS RESOLVED :: '+(d.ip||'?')+' VIA '+src,'ok');
+    /* heuristics */
+    let flags=0,rows='';
+    const orgBlob=[d.isp,d.org,d.domain].filter(Boolean).join(' ');
+    if(orgBlob){
+      const hit=orgBlob.match(HOSTKEYS);
+      if(hit){flags++;rows+=checkRow('CARRIER KEYWORD SCAN','matched "'+hit[0].trim()+'" in "'+orgBlob.slice(0,60)+'"','flag');}
+      else rows+=checkRow('CARRIER KEYWORD SCAN','no hosting / VPN vocabulary in carrier identity','ok');
+    }else rows+=checkRow('CARRIER KEYWORD SCAN','carrier identity unavailable from feed','na');
+    const sysTz=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'unknown';
+    if(d.tz){
+      if(sysTz!==d.tz){flags++;rows+=checkRow('TIMEZONE COHERENCE','system "'+sysTz+'" vs egress "'+d.tz+'" — mismatch','flag');}
+      else rows+=checkRow('TIMEZONE COHERENCE','system clock region matches egress region','ok');
+    }else rows+=checkRow('TIMEZONE COHERENCE','geo timezone unavailable from feed','na');
+    if(d.asn){
+      rows+=checkRow('ASN REGISTRY','egress advertises '+d.asn+' — cross-check against known VPN ranges externally','ok');
+    }else rows+=checkRow('ASN REGISTRY','no ASN detail in feed','na');
+    checksEl.innerHTML=rows;
+    if(flags>0){
+      tunnelBadge.classList.add('on');
+      verdict.textContent='⚠ '+flags+' SIGNATURE(S) FLAGGED';verdict.className='badge b-red';
+      T('TUNNEL SIGNATURES :: '+flags+' FLAG(S) RAISED','warn');
+      jsay('I detect the fingerprints of a secure tunnel, sir. Your true position remains admirably obscured.');
+    }else{
+      verdict.textContent='NO TUNNEL SIGNATURES DETECTED';verdict.className='badge b-grn';
+      jsay('Your egress appears residential and unremarkable, sir. How refreshingly ordinary.');
+    }
+  }
+  $('#rescan').addEventListener('click',()=>{T('MANUAL RE-SCAN REQUESTED','info');scan();});
+
+  /* ===== local client intel ===== */
+  const kv=(l,v)=>'<div class="kv"><div class="l">'+l+'</div><div class="v">'+(v??'—')+'</div></div>';
+  function clientIntel(){
+    const n=navigator,s=screen;
+    const conn=n.connection||n.mozConnection||n.webkitConnection;
+    let html='';
+    html+=kv('PLATFORM',n.platform||'—');
+    html+=kv('CPU THREADS',n.hardwareConcurrency?n.hardwareConcurrency+' LOGICAL':'—');
+    html+=kv('DEVICE MEMORY',n.deviceMemory?'≥ '+n.deviceMemory+' GB (API CAP)':'NOT EXPOSED');
+    html+=kv('DISPLAY',s.width+'×'+s.height+' @ '+(window.devicePixelRatio||1)+'x DPR');
+    html+=kv('LANGUAGE',(n.languages||[n.language]).slice(0,3).join(', '));
+    html+=kv('SYSTEM TIMEZONE',Intl.DateTimeFormat().resolvedOptions().timeZone||'—');
+    html+=kv('CONNECTION',conn?((conn.effectiveType||'?').toUpperCase()+' · '+(conn.downlink!=null?conn.downlink+' Mb/s':'')+(conn.rtt!=null?' · RTT '+conn.rtt+'ms':'')):'API NOT EXPOSED');
+    html+=kv('AUTOMATION FLAG',n.webdriver?'WEBDRIVER=TRUE ⚠':'CLEAR');
+    html+=kv('USER AGENT',(n.userAgent||'').slice(0,90));
+    $('#clientGrid').innerHTML=html+kv('WEBRTC CANDIDATE','PROBING…')+kv('BATTERY','PROBING…');
+    /* async probes */
+    rtcProbe().then(list=>{
+      const cells=$$('#clientGrid .kv');
+      const cell=cells[cells.length-2];
+      cell.querySelector('.v').textContent=list.length?list.join(' · '):'NO CANDIDATES (BLOCKED/POLICY)';
+      T('WEBRTC PROBE :: '+(list.join(', ')||'silent'),'info');
+    });
+    if(n.getBattery){n.getBattery().then(b=>{
+      const cells=$$('#clientGrid .kv');
+      cells[cells.length-1].querySelector('.v').textContent=Math.round(b.level*100)+'% '+(b.charging?'· ON REACTOR POWER':'· DISCHARGING');
+    }).catch(()=>{});}
+    else{const cells=$$('#clientGrid .kv');cells[cells.length-1].querySelector('.v').textContent='API NOT EXPOSED';}
+  }
+  function rtcProbe(){
+    return new Promise(res=>{
+      try{
+        const pc=new RTCPeerConnection({iceServers:[]});
+        const out=new Set();
+        pc.createDataChannel('nn');
+        pc.onicecandidate=e=>{
+          if(!e.candidate){try{pc.close()}catch(_){/*noop*/}res([...out]);return;}
+          const m=e.candidate.candidate.match(/candidate:\S+ \d+ \S+ \d+ ([\w.:-]+)/);
+          if(m)out.add(m[1]);
+        };
+        pc.createOffer().then(o=>pc.setLocalDescription(o)).catch(()=>res([...out]));
+        setTimeout(()=>{try{pc.close()}catch(_){/*noop*/}res([...out]);},1800);
+      }catch(e){res([]);}
+    });
+  }
+  clientIntel();
+  scan();
+  jsay('Discovery array online. Let us see where the world believes you are, sir.');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" data-galaxy="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#02050a">
+<title>NETNEXUS // LOG-07 SYSLOG ANALYZER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
+<style>
+:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--bg0:#02050a;--ink:#d9f4ff;--mut:#6b93ab;--panel:rgba(7,17,27,.82);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
+html[data-galaxy="it"]{--acc:#00e5ff;--acc2:#7df9ff;--accd:rgba(0,229,255,.14);--line:rgba(0,229,255,.28);--acc-glow:rgba(0,229,255,.32)}
+html[data-galaxy="gen"]{--acc:#ff9d33;--acc2:#ffc46b;--accd:rgba(255,157,51,.14);--line:rgba(255,157,51,.30);--acc-glow:rgba(255,157,51,.32)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:radial-gradient(1200px 700px at 50% -12%,#0a1e30 0%,var(--bg0) 58%) fixed,var(--bg0);color:var(--ink);font-family:var(--ui);min-height:100vh;overflow-x:hidden}
+::selection{background:var(--accd);color:var(--acc2)}
+#bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh}
+.scan{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.15) 2px 3px);box-shadow:inset 0 0 200px rgba(0,0,0,.7)}
+#topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(4,12,20,.94),rgba(4,12,20,.7));backdrop-filter:blur(10px)}
+.brand{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.22em;color:var(--acc);text-shadow:0 0 14px var(--acc-glow);white-space:nowrap}
+.brand b{color:var(--ink);font-weight:500}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.18em;border:1px solid var(--line);color:var(--acc2);padding:3px 9px;background:var(--accd);white-space:nowrap}
+.chip.ghost{color:var(--mut);border-color:rgba(107,147,171,.3);background:none}
+.spacer{flex:1}
+#clk{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.12em;white-space:nowrap}
+#clk b{color:var(--acc2);font-weight:400}
+.rtn{font-family:var(--disp);font-size:9.5px;letter-spacing:.24em;color:var(--acc);border:1px solid var(--line);background:var(--accd);padding:7px 12px;text-decoration:none;transition:.25s;white-space:nowrap}
+.rtn:hover{background:var(--acc);color:#02131c;box-shadow:0 0 18px var(--acc-glow)}
+#jstrip{position:relative;z-index:5;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--acc2);padding:8px 20px;border-bottom:1px solid rgba(107,147,171,.14);background:rgba(3,10,16,.6)}
+#jstrip .jj{color:var(--mut);letter-spacing:.2em}
+#wrap{position:relative;z-index:5;max-width:1280px;margin:24px auto 110px;padding:0 20px;display:grid;gap:18px}
+.panel{position:relative;background:var(--panel);border:1px solid var(--line);padding:18px 18px 16px;backdrop-filter:blur(10px)}
+.panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(var(--acc),var(--acc)) left 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/2px 14px;background-repeat:no-repeat;opacity:.85}
+.ptitle{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.3em;color:var(--acc);text-shadow:0 0 10px var(--acc-glow)}
+.psub{font-size:12px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;margin:4px 0 14px;font-family:var(--mono)}
+textarea{width:100%;min-height:140px;background:rgba(2,8,14,.85);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:12px;padding:12px;outline:none;resize:vertical;line-height:1.6}
+textarea:focus{border-color:var(--acc);box-shadow:0 0 0 1px var(--accd),0 0 18px var(--accd)}
+input[type="text"]{background:rgba(2,8,14,.85);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:12.5px;padding:8px 11px;outline:none;flex:1;min-width:180px}
+input[type="text"]:focus{border-color:var(--acc);box-shadow:0 0 0 1px var(--accd)}
+.btn{display:inline-block;background:none;border:1px solid var(--line);color:var(--acc2);font-family:var(--disp);font-size:10px;letter-spacing:.22em;padding:9px 14px;cursor:pointer;transition:.22s;text-transform:uppercase}
+.btn:hover{background:var(--accd);border-color:var(--acc);color:var(--acc);box-shadow:0 0 16px var(--accd)}
+.btn.primary{background:var(--accd);border-color:var(--acc);color:var(--acc)}
+.btnrow{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.statrow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:860px){.statrow{grid-template-columns:repeat(2,1fr)}}
+.stat{border:1px solid rgba(107,147,171,.25);background:rgba(2,8,14,.6);padding:11px;text-align:center;cursor:pointer;transition:.2s}
+.stat:hover{border-color:var(--acc)}
+.stat.offsev{opacity:.35}
+.stat .v{font-family:var(--mono);font-size:19px;text-shadow:0 0 12px currentColor}
+.stat .l{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;color:var(--mut);margin-top:5px;text-transform:uppercase}
+.s-all .v{color:var(--acc2)}.s-err .v{color:var(--red)}.s-warn .v{color:var(--yel)}.s-ok .v{color:var(--grn)}.s-info .v{color:#9fd8ea}
+.gridwrap{max-height:520px;overflow:auto;border:1px solid rgba(107,147,171,.2)}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px}
+th{position:sticky;top:0;background:#061420;font-size:9.5px;letter-spacing:.22em;color:var(--mut);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);text-transform:uppercase;font-weight:400;z-index:2}
+td{padding:6px 10px;border-bottom:1px solid rgba(107,147,171,.1);vertical-align:top}
+td.n{color:rgba(107,147,171,.55);width:44px}
+td.t{color:var(--mut);white-space:nowrap;width:150px}
+td.src{color:var(--acc2);white-space:nowrap;width:130px;overflow:hidden;text-overflow:ellipsis;max-width:130px}
+td.msg{color:var(--ink);word-break:break-word}
+tr.r-err td.msg{color:#ffb9c0}tr.r-err{background:rgba(255,71,87,.06)}
+tr.r-warn td.msg{color:#ffe9b3}tr.r-warn{background:rgba(255,209,102,.05)}
+tr.r-ok td.msg{color:#b8ffdd}tr.r-ok{background:rgba(46,255,158,.04)}
+tr:hover{background:rgba(0,229,255,.07)!important}
+.sev{display:inline-block;font-size:9px;letter-spacing:.18em;padding:1px 7px;border:1px solid}
+.sev-err{color:var(--red);border-color:rgba(255,71,87,.5);background:rgba(255,71,87,.1)}
+.sev-warn{color:var(--yel);border-color:rgba(255,209,102,.5);background:rgba(255,209,102,.1)}
+.sev-ok{color:var(--grn);border-color:rgba(46,255,158,.5);background:rgba(46,255,158,.08)}
+.sev-info{color:#9fd8ea;border-color:rgba(159,216,234,.4);background:rgba(159,216,234,.07)}
+mark{background:var(--accd);color:var(--acc);border-bottom:1px solid var(--acc)}
+@keyframes blink{50%{opacity:.25}}
+#foot{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;gap:22px;align-items:center;font-family:var(--mono);font-size:10px;color:rgba(107,147,171,.7);letter-spacing:.2em;padding:6px 18px;border-top:1px solid rgba(107,147,171,.15);background:rgba(3,9,14,.8);backdrop-filter:blur(6px)}
+#foot .dot{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termBtn{position:fixed;right:14px;bottom:38px;z-index:60;background:rgba(2,10,16,.92);border:1px solid var(--line);color:var(--acc2);font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;padding:7px 11px;cursor:pointer;transition:.2s}
+#termBtn:hover{border-color:var(--acc);color:var(--acc);box-shadow:0 0 14px var(--accd)}
+#term{position:fixed;left:0;right:0;bottom:0;height:240px;transform:translateY(101%);z-index:70;background:rgba(2,7,12,.97);border-top:1px solid var(--acc);font-family:var(--mono);transition:transform .35s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;box-shadow:0 -12px 50px rgba(0,0,0,.6)}
+#term.open{transform:none}
+#termHead{display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:1px solid rgba(107,147,171,.2);font-size:10px;letter-spacing:.26em;color:var(--acc)}
+#termHead .tdot{width:7px;height:7px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termHead .tx{margin-left:auto;cursor:pointer;color:var(--mut);font-size:13px;padding:0 4px}
+#termHead .tx:hover{color:var(--red)}
+#termBody{flex:1;overflow-y:auto;padding:10px 14px;font-size:11.5px;line-height:1.75}
+.tline{white-space:pre-wrap;word-break:break-word}
+.tline .tt{color:rgba(107,147,171,.6)}
+.t-info{color:#9fd8ea}.t-ok{color:var(--grn)}.t-warn{color:var(--yel)}.t-err{color:var(--red)}.t-sys{color:var(--acc2)}
+</style>
+</head>
+<body>
+<canvas id="bgfx"></canvas>
+<div class="scan"></div>
+<header id="topbar">
+  <div class="brand">◈ NETNEXUS <b>// SYSLOG ANALYZER</b></div>
+  <span class="chip">LOG-07</span>
+  <span class="chip ghost">IT GALAXY</span>
+  <div class="spacer"></div>
+  <div id="clk"></div>
+  <a class="rtn" href="../index.html">◂ RETURN TO NEXUS</a>
+</header>
+<div id="jstrip"><span class="jj">◤ J.A.R.V.I.S // </span><span id="jtext"></span></div>
+
+<main id="wrap">
+  <section class="panel">
+    <div class="ptitle">RAW LOG INGESTION</div>
+    <div class="psub">paste system / firewall / network logs — parsed line-by-line, entirely in-browser</div>
+    <textarea id="raw" spellcheck="false" placeholder="Paste raw syslog here…"></textarea>
+    <div class="btnrow">
+      <button class="btn primary" id="parse">▸ PARSE STREAM</button>
+      <button class="btn" id="sample">◈ LOAD SAMPLE DATA</button>
+      <button class="btn" id="clear">✕ CLEAR</button>
+      <span style="font-family:var(--mono);font-size:10.5px;color:var(--mut);letter-spacing:.14em" id="parseInfo"></span>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="ptitle">SEVERITY GRID</div>
+    <div class="psub">click a severity tile to toggle it — search filters live</div>
+    <div class="statrow" style="margin-bottom:14px">
+      <div class="stat s-all" id="stAll"><div class="v">0</div><div class="l">TOTAL LINES</div></div>
+      <div class="stat s-err" data-s="err"><div class="v">0</div><div class="l">CRITICAL / ERROR</div></div>
+      <div class="stat s-warn" data-s="warn"><div class="v">0</div><div class="l">WARNING</div></div>
+      <div class="stat s-ok" data-s="ok"><div class="v">0</div><div class="l">SUCCESS / UP</div></div>
+      <div class="stat s-info" data-s="info"><div class="v">0</div><div class="l">INFO / OTHER</div></div>
+    </div>
+    <div class="btnrow" style="margin:0 0 12px">
+      <input type="text" id="q" placeholder="SEARCH MESSAGE / SOURCE…" spellcheck="false">
+      <button class="btn" id="exportBtn">⧉ COPY FILTERED</button>
+    </div>
+    <div class="gridwrap">
+      <table>
+        <thead><tr><th>#</th><th>TIMESTAMP</th><th>SOURCE</th><th>SEV</th><th>MESSAGE</th></tr></thead>
+        <tbody id="grid"><tr><td colspan="5" style="color:var(--mut);padding:20px">NO STREAM LOADED — PASTE LOGS OR LOAD THE SAMPLE.</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer id="foot"><span class="dot"></span><span>LOG-07 ACTIVE</span><span>PARSER CAP: 3000 LINES PER PASS</span><span style="margin-left:auto">NETNEXUS v2.1</span></footer>
+<button id="termBtn">⌬ SYS TERMINAL</button>
+<aside id="term"><div id="termHead"><span class="tdot"></span> STARK-CORE DIAGNOSTIC TERMINAL — LOG-07 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
+
+<script>
+'use strict';
+window.__nnlog=[];
+window.onerror=function(m,s,l){window.__nnlog.push(['ERR '+m+' @'+(s||'?').split('/').pop()+':'+l,'err']);return false;};
+window.addEventListener('unhandledrejection',e=>window.__nnlog.push(['PROMISE REJECTION :: '+(e.reason&&e.reason.message||e.reason),'err']));
+document.addEventListener('DOMContentLoaded',()=>{
+  const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+  const termBody=$('#termBody'),term=$('#term');
+  function T(msg,lv='info'){const d=document.createElement('div');d.className='tline t-'+lv;d.innerHTML='<span class="tt">['+new Date().toTimeString().slice(0,8)+']</span> '+String(msg).replace(/</g,'&lt;');termBody.appendChild(d);while(termBody.children.length>200)termBody.firstChild.remove();termBody.scrollTop=termBody.scrollHeight;}
+  window.__nnlog.forEach(a=>T(a[0],a[1]));window.__nnlog={push:a=>T(a[0],a[1])};
+  const _ce=console.error.bind(console),_cw=console.warn.bind(console);
+  console.error=(...a)=>{T(a.map(String).join(' '),'err');_ce(...a)};
+  console.warn=(...a)=>{T(a.map(String).join(' '),'warn');_cw(...a)};
+  $('#termBtn').addEventListener('click',()=>term.classList.toggle('open'));
+  $('#termX').addEventListener('click',()=>term.classList.remove('open'));
+  window.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='`'){e.preventDefault();term.classList.toggle('open');}});
+  if(window.__twFail)T('TAILWIND CDN UNREACHABLE — LOCAL STYLE CORE ENGAGED','warn');
+  let _jt=null;function jsay(t){T('J.A.R.V.I.S :: '+t,'sys');const el=$('#jtext');clearInterval(_jt);let i=0;_jt=setInterval(()=>{el.textContent=t.slice(0,++i)+(i<t.length?'▊':'');if(i>=t.length)clearInterval(_jt);},14);}
+  setInterval(()=>{const d=new Date();$('#clk').innerHTML='<b>'+d.toTimeString().slice(0,8)+'</b> L · '+d.toISOString().slice(11,19)+' U';},1000);
+  function copyTxt(btn,txt){const done=()=>{const o=btn.textContent;btn.textContent='COPIED ✓';setTimeout(()=>{btn.textContent=o;},1400);T('CLIPBOARD :: PAYLOAD TRANSFERRED','ok');};
+    const fb=()=>{try{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();done();}catch(e){T('CLIPBOARD FAULT :: '+e.message,'err');}};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done).catch(fb);else fb();}
+  const cv=$('#bgfx'),cg=cv.getContext('2d');let W=innerWidth,H=innerHeight,tt=0;
+  const AR=document.documentElement.dataset.galaxy==='gen'?'255,157,51':'0,229,255';
+  function rs(){W=innerWidth;H=innerHeight;const D=Math.min(devicePixelRatio||1,1.5);cv.width=W*D;cv.height=H*D;cg.setTransform(D,0,0,D,0,0);}
+  rs();window.addEventListener('resize',rs);
+  const pts=Array.from({length:30},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14}));
+  let sweep=-200;
+  (function bg(){const dt=1/60;tt+=dt;cg.clearRect(0,0,W,H);
+    cg.strokeStyle='rgba('+AR+',.045)';cg.lineWidth=1;const sp=92,off=(tt*5)%sp;cg.beginPath();
+    for(let x=off;x<W;x+=sp){cg.moveTo(x,0);cg.lineTo(x,H)}for(let y=off*.6;y<H;y+=sp){cg.moveTo(0,y);cg.lineTo(W,y)}cg.stroke();
+    cg.fillStyle='rgba('+AR+',.5)';
+    for(const p of pts){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;cg.fillRect(p.x,p.y,1.6,1.6);}
+    sweep+=2.2;if(sweep>H+200)sweep=-200;const gr=cg.createLinearGradient(0,sweep-60,0,sweep);gr.addColorStop(0,'rgba('+AR+',0)');gr.addColorStop(1,'rgba('+AR+',.05)');cg.fillStyle=gr;cg.fillRect(0,sweep-60,W,60);
+    if(!document.hidden)requestAnimationFrame(bg);else setTimeout(bg,400);})();
+  T('MODULE KERNEL ONLINE :: LOG-07 SYSLOG ANALYZER','ok');
+
+  /* ===== parser ===== */
+  const RE_TS=/^(?:<\d+>)?\s*((?:[A-Z][a-z]{2}\s+\d{1,2}\s[\d:]{8})|(?:\d{4}-\d{2}-\d{2}[T ][\d:.]{8,12}(?:Z|[+-]\d{2}:?\d{2})?))/;
+  const RE_ASA=/%ASA-(\d)-\d+/;
+  const RE_IOS=/%[A-Z0-9_]+-(\d)-[A-Z0-9_]+/;
+  const K_ERR=/\b(emerg(ency)?|alert|crit(ical)?|error|err\b|fail(ed|ure)?|denied|deny|drop(ped)?|down|unreachable|refused|invalid|corrupt|panic|fatal|timeout)\b/i;
+  const K_WARN=/\b(warn(ing)?|retransmit|degraded|deprecat|exceed(ed)?|throttl|retry|slow|high (cpu|memory)|flap)\b/i;
+  const K_OK=/\b(success(ful(ly)?)?|accepted|established|connected|up\b|online|restored|complete(d)?|ok\b|passed|logged in)\b/i;
+  let entries=[],sevOn={err:true,warn:true,ok:true,info:true};
+  function classify(line){
+    const mA=line.match(RE_ASA)||line.match(RE_IOS);
+    if(mA){const n=+mA[1];if(n<=3)return 'err';if(n===4)return 'warn';if(K_OK.test(line))return 'ok';return 'info';}
+    if(K_ERR.test(line))return 'err';
+    if(K_WARN.test(line))return 'warn';
+    if(K_OK.test(line))return 'ok';
+    return 'info';
+  }
+  function parse(){
+    const t0=performance.now();
+    const lines=$('#raw').value.split(/\r?\n/).filter(l=>l.trim()).slice(0,3000);
+    entries=lines.map((line,i)=>{
+      const ts=(line.match(RE_TS)||[])[1]||'—';
+      let rest=ts==='—'?line:line.slice(line.indexOf(ts)+ts.length).trim();
+      let src='—';
+      const sm=rest.match(/^([\w.\-\/]+)\s+([\w\-\/()\[\].]+:)?/);
+      if(sm){src=sm[1];rest=rest.slice(sm[0].length).trim()||rest;}
+      return {i:i+1,ts,src,msg:rest||line,sev:classify(line)};
+    });
+    const ms=(performance.now()-t0).toFixed(1);
+    $('#parseInfo').textContent=entries.length+' LINES · '+ms+' ms';
+    T('STREAM PARSED :: '+entries.length+' LINES IN '+ms+' ms','ok');
+    const errs=entries.filter(e=>e.sev==='err').length;
+    if(errs>0)jsay(errs+' critical entr'+(errs===1?'y':'ies')+' in the stream, sir. I have painted them red for your convenience.');
+    else jsay('Stream parsed. Remarkably little on fire today, sir.');
+    render();
+  }
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  function render(){
+    const q=$('#q').value.trim().toLowerCase();
+    const view=entries.filter(e=>sevOn[e.sev]&&(!q||e.msg.toLowerCase().includes(q)||e.src.toLowerCase().includes(q)));
+    const counts={err:0,warn:0,ok:0,info:0};
+    entries.forEach(e=>counts[e.sev]++);
+    $('#stAll .v').textContent=entries.length;
+    $$('.stat[data-s]').forEach(st=>{st.querySelector('.v').textContent=counts[st.dataset.s];st.classList.toggle('offsev',!sevOn[st.dataset.s]);});
+    const SEVLAB={err:'ERROR',warn:'WARN',ok:'OK',info:'INFO'};
+    const hl=t=>{const e2=esc(t);if(!q)return e2;const idx=e2.toLowerCase().indexOf(q);if(idx<0)return e2;return e2.slice(0,idx)+'<mark>'+e2.slice(idx,idx+q.length)+'</mark>'+e2.slice(idx+q.length);};
+    $('#grid').innerHTML=view.length?view.slice(0,3000).map(e=>
+      '<tr class="r-'+e.sev+'"><td class="n">'+e.i+'</td><td class="t">'+esc(e.ts)+'</td><td class="src">'+hl(e.src)+'</td><td><span class="sev sev-'+e.sev+'">'+SEVLAB[e.sev]+'</span></td><td class="msg">'+hl(e.msg)+'</td></tr>').join(''):
+      '<tr><td colspan="5" style="color:var(--mut);padding:20px">NO LINES MATCH THE CURRENT FILTERS.</td></tr>';
+  }
+  $('#parse').addEventListener('click',parse);
+  $('#clear').addEventListener('click',()=>{$('#raw').value='';entries=[];render();$('#parseInfo').textContent='';T('BUFFER FLUSHED','info');});
+  $('#q').addEventListener('input',render);
+  $$('.stat[data-s]').forEach(st=>st.addEventListener('click',()=>{sevOn[st.dataset.s]=!sevOn[st.dataset.s];render();}));
+  $('#exportBtn').addEventListener('click',()=>{
+    const q=$('#q').value.trim().toLowerCase();
+    const view=entries.filter(e=>sevOn[e.sev]&&(!q||e.msg.toLowerCase().includes(q)||e.src.toLowerCase().includes(q)));
+    copyTxt($('#exportBtn'),view.map(e=>'['+e.ts+'] ['+e.sev.toUpperCase()+'] '+e.src+' '+e.msg).join('\n'));
+  });
+  $('#sample').addEventListener('click',()=>{
+    $('#raw').value=[
+'Jul  3 08:12:01 CORE-SW-01 %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet1/0/24, changed state to up',
+'Jul  3 08:12:04 CORE-SW-01 %SYS-5-CONFIG_I: Configured from console by nnadmin on vty0 (10.10.8.4)',
+'Jul  3 08:13:22 FW-EDGE %ASA-4-106023: Deny tcp src outside:198.51.100.77/52113 dst inside:10.10.20.15/3389 by access-group "OUTSIDE_IN"',
+'Jul  3 08:13:25 FW-EDGE %ASA-6-302013: Built outbound TCP connection 88412 for outside:142.250.72.14/443',
+'Jul  3 08:14:02 srv-web01 sshd[2214]: Failed password for invalid user admin from 203.0.113.99 port 40122 ssh2',
+'Jul  3 08:14:05 srv-web01 sshd[2214]: Connection closed by invalid user admin 203.0.113.99 port 40122 [preauth]',
+'Jul  3 08:14:40 srv-web01 sshd[2290]: Accepted publickey for deploy from 10.10.8.4 port 51022 ssh2',
+'Jul  3 08:15:11 CORE-SW-01 %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet1/0/7, changed state to down',
+'Jul  3 08:15:11 CORE-SW-01 %LINK-3-UPDOWN: Interface GigabitEthernet1/0/7, changed state to down',
+'2026-07-03T08:16:20.114Z srv-db01 postgres[811]: WARNING: checkpoint occurring too frequently (24 seconds apart)',
+'2026-07-03T08:16:44.902Z srv-db01 postgres[811]: ERROR: deadlock detected — process 4471 waits for ShareLock',
+'Jul  3 08:17:00 UPS-RACK2 upsmon[402]: UPS on battery — utility power lost',
+'Jul  3 08:17:41 UPS-RACK2 upsmon[402]: Utility power restored — battery at 96%',
+'Jul  3 08:18:13 FW-EDGE %ASA-1-106021: Deny protocol reverse path check from 10.10.99.9 to 10.10.20.1 on interface inside',
+'Jul  3 08:19:37 srv-app02 systemd[1]: nn-agent.service: Main process exited, code=exited, status=1/FAILURE',
+'Jul  3 08:19:37 srv-app02 systemd[1]: nn-agent.service: Failed with result exit-code',
+'Jul  3 08:20:02 srv-app02 systemd[1]: nn-agent.service: Service restarted successfully',
+'Jul  3 08:21:19 WLC-01 %DOT11-6-ASSOC: Client 3c:2e:f9:1a:22:8b associated to AP-FLOOR2-07'
+    ].join('\n');
+    T('SAMPLE STREAM LOADED :: 18 LINES','info');
+    parse();
+  });
+  jsay('Event analyzer standing by, sir. Paste the stream — red means trouble, green means someone fixed it.');
+});
+</script>
+</body>
+</html>

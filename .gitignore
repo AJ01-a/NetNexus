@@ -1,0 +1,13 @@
+# OneDrive / OS metadata
+desktop.ini
+Thumbs.db
+.DS_Store
+
+# Machine-local Claude Code settings
+.claude/settings.local.json
+
+# Archived previous build (not part of the current project)
+_legacy/
+
+# Node (only used for local validation tooling, never committed)
+node_modules/
