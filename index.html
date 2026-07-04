@@ -91,6 +91,10 @@ html[data-galaxy="gen"] #gknob{left:27px}
   letter-spacing:.16em;padding:6px 10px;cursor:pointer;transition:.25s;white-space:nowrap}
 .cbtn:hover{background:var(--accd);border-color:var(--acc);color:var(--acc);box-shadow:0 0 14px var(--accd)}
 .cbtn.off{color:var(--mut);border-color:rgba(107,147,171,.3)}
+select.cbtn{appearance:none;-webkit-appearance:none;max-width:150px;text-overflow:ellipsis;
+  background:rgba(2,8,14,.85) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6'%3E%3Cpath d='M0 0h8L4 6z' fill='%236b93ab'/%3E%3C/svg%3E") no-repeat right 8px center;padding-right:22px}
+select.cbtn option{background:#04121c;color:var(--ink)}
+body.mobile #voxSel{display:none}
 #clk{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.12em;text-align:right;line-height:1.5;white-space:nowrap}
 #clk b{color:var(--acc2);font-weight:400}
 /* ---------- space / core ---------- */
@@ -334,6 +338,7 @@ body.mobile #ticker{display:none}
     <span class="gl gg">GENERAL</span>
   </div>
   <button class="cbtn mic" id="micbtn" type="button" title="Voice commands — click, then speak"><span class="micdot"></span> LISTEN</button>
+  <select class="cbtn" id="voxSel" title="Choose the voice NEXUS speaks with"><option value="">VOX: AUTO</option></select>
   <button class="cbtn" id="vbtn" type="button">◈ VOICE: ON</button>
   <button class="cbtn" id="tbtn" type="button">⌬ TERMINAL</button>
   <div id="clk"><b id="clkL">--:--:--</b> LOCAL<br><span id="clkU">--:--:--</span> UTC</div>
@@ -352,7 +357,7 @@ body.mobile #ticker{display:none}
 <!-- ============ ORBITAL SPACE ============ -->
 <main id="space">
   <div id="corewrap">
-    <div id="core" title="J.A.R.V.I.S. Core">
+    <div id="core" title="NEXUS Core">
       <div id="coreGlow"></div>
       <div class="rwrap rw1"><svg id="ringA" viewBox="0 0 200 200"></svg></div>
       <div class="rwrap rw2"><svg id="ringB" viewBox="0 0 200 200"></svg></div>
@@ -360,7 +365,7 @@ body.mobile #ticker{display:none}
       <div class="rwrap rw4"><svg id="ringD" viewBox="0 0 200 200"></svg></div>
       <div id="lens"><div id="pupil"></div></div>
       <div id="fbars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div id="jlabel">J.A.R.V.I.S.</div>
+      <div id="jlabel">NEXUS</div>
       <div id="jcap" style="position:absolute;left:50%;top:calc(100% + 72px);transform:translateX(-50%);font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--mut);white-space:nowrap;max-width:82vw;overflow:hidden;text-overflow:ellipsis;text-align:center"></div>
     </div>
   </div>
@@ -488,20 +493,43 @@ document.addEventListener('DOMContentLoaded', () => {
   window.toolRegistry = toolRegistry;
   T('MODULE REGISTRY :: ' + toolRegistry.length + ' MODULES INDEXED', 'ok');
 
-  /* ================= JARVIS VOICE CORE ================= */
+  /* ================= NEXUS VOICE CORE ================= */
   const corewrap = $('#corewrap'), jcap = $('#jcap'), fbars = $$('#fbars i');
   let voiceOn = (localStorage.getItem('nn-voice') ?? 'on') === 'on';
-  let voice = null, barTimer = null, capTimer = null, jarvisSpeaking = false;
+  let voice = null, barTimer = null, capTimer = null, nexusSpeaking = false;
+  /* NEXUS vocal profile — deep, measured, faintly menacing. Pitch dropped for the dark timbre;
+     actual voice depends on what the OS provides (Edge's "Guy"/"Davis"/"Christopher" get closest). */
+  const VOX = { name: localStorage.getItem('nn-voxname') || '', pitch: 0.62, rate: 0.94 };
   function pickVoice(){
     try {
       const vs = speechSynthesis.getVoices(); if (!vs.length) return null;
-      return vs.find(v => /en-GB/i.test(v.lang) && /daniel|george|ryan|arthur|male/i.test(v.name))
-          || vs.find(v => /en-GB/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || vs[0];
+      if (VOX.name){ const m = vs.find(v => v.name === VOX.name); if (m) return m; }
+      const en = vs.filter(v => /^en/i.test(v.lang));
+      return en.find(v => /davis|\bguy\b|christopher|eric|andrew|brian|roger|ryan multilingual/i.test(v.name))
+          || en.find(v => /david|mark|james|fred|\balex\b|daniel|george/i.test(v.name))
+          || en.find(v => /male/i.test(v.name)) || en[0] || vs[0];
     } catch(e){ return null; }
   }
+  const voxSel = $('#voxSel');
+  function fillVox(){
+    try {
+      const en = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
+      if (!en.length) return;
+      const cur = (voice && voice.name) || VOX.name;
+      voxSel.innerHTML = '<option value="">VOX: AUTO (DEEP)</option>' +
+        en.map(v => '<option value="' + v.name.replace(/"/g, '&quot;') + '"' + (v.name === cur && VOX.name ? ' selected' : '') + '>' +
+          v.name.replace(/^Microsoft |^Google | - .*| Online.*|\(Natural\)/g, '').slice(0, 22) + '</option>').join('');
+    } catch(e){}
+  }
   if ('speechSynthesis' in window){
-    voice = pickVoice();
-    speechSynthesis.onvoiceschanged = () => { voice = pickVoice(); };
+    voice = pickVoice(); fillVox();
+    speechSynthesis.onvoiceschanged = () => { voice = pickVoice(); fillVox(); };
+    voxSel.addEventListener('change', () => {
+      VOX.name = voxSel.value; localStorage.setItem('nn-voxname', VOX.name);
+      voice = pickVoice();
+      say('Voice calibration accepted. This is how I sound now, sir.');
+      T('VOX PROFILE :: ' + (VOX.name || 'AUTO'), 'info');
+    });
   } else T('WEB SPEECH API UNAVAILABLE — TEXT-ONLY MODE', 'warn');
   function typeCap(text){
     clearInterval(capTimer); let i = 0; jcap.textContent = '';
@@ -515,19 +543,23 @@ document.addEventListener('DOMContentLoaded', () => {
     corewrap.classList.remove('speaking'); clearInterval(barTimer);
     fbars.forEach(b => b.style.height = '3px');
   }
-  function say(text){
-    T('J.A.R.V.I.S :: ' + text, 'sys'); typeCap(text);
-    if (!voiceOn || !('speechSynthesis' in window)) return;
+  function say(text, onDone){
+    T('NEXUS :: ' + text, 'sys'); typeCap(text);
+    let doneFired = false;
+    const done = () => { if (doneFired) return; doneFired = true; if (onDone) onDone(); };
+    if (!voiceOn || !('speechSynthesis' in window)){ setTimeout(done, 150); return; }
     try {
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       if (voice) u.voice = voice;
-      u.rate = 0.98; u.pitch = 0.85; u.volume = 1;
-      u.onstart = () => { jarvisSpeaking = true; barsOn(); };
-      u.onend = () => { jarvisSpeaking = false; barsOff(); };
-      u.onerror = () => { jarvisSpeaking = false; barsOff(); };
+      u.rate = VOX.rate; u.pitch = VOX.pitch; u.volume = 1;
+      u.onstart = () => { nexusSpeaking = true; barsOn(); };
+      u.onend = () => { nexusSpeaking = false; barsOff(); done(); };
+      u.onerror = () => { nexusSpeaking = false; barsOff(); done(); };
       speechSynthesis.speak(u);
-    } catch(e){ barsOff(); T('SPEECH SYNTH FAULT :: ' + e.message, 'warn'); }
+      /* some engines never fire onend — never leave a caller hanging */
+      setTimeout(done, 1200 + text.length * 90);
+    } catch(e){ barsOff(); T('SPEECH SYNTH FAULT :: ' + e.message, 'warn'); done(); }
   }
   window.NN_say = say;
   const vbtn = $('#vbtn');
@@ -565,7 +597,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#tick').innerHTML = Array(2).fill(
     '<b>◈ NETNEXUS v2.1</b> — STARK-CORE DIGITAL ENVIRONMENT &nbsp;·&nbsp; 19 MODULES REGISTERED &nbsp;·&nbsp; ' +
     '<b>IT GALAXY</b> 12 BODIES &nbsp;·&nbsp; <b>GENERAL GALAXY</b> 7 BODIES &nbsp;·&nbsp; ORBITAL MECHANICS: TRUE-3D PERSPECTIVE &nbsp;·&nbsp; ' +
-    'J.A.R.V.I.S. NEURAL LATTICE: SYNCED &nbsp;·&nbsp; EMITTER ARRAY: NOMINAL &nbsp;·&nbsp; ERROR INTERCEPTOR: ARMED [CTRL+`] &nbsp;·&nbsp; '
+    'NEXUS NEURAL LATTICE: SYNCED &nbsp;·&nbsp; EMITTER ARRAY: NOMINAL &nbsp;·&nbsp; ERROR INTERCEPTOR: ARMED [CTRL+`] &nbsp;·&nbsp; '
   ).join('');
 
   /* ================= SHARED STATE ================= */
@@ -579,7 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
     NN.gx = clamp(e.gamma / 45, -1, 1); NN.gy = clamp((e.beta - 40) / 45, -1, 1);
   });
 
-  /* ================= JARVIS RING FORGE ================= */
+  /* ================= NEXUS RING FORGE ================= */
   function forgeRing(svg, cfg){
     const mk = (tag, at) => { const el = document.createElementNS(NS, tag); for (const k in at) el.setAttribute(k, at[k]); svg.appendChild(el); return el; };
     mk('circle', { cx:100, cy:100, r:cfg.r, fill:'none', stroke:'currentColor', 'stroke-width':cfg.w, opacity:.6, 'stroke-dasharray':cfg.d1 });
@@ -884,12 +916,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     NN.mode = 'warp';
-    say(tool.line);
     T('ENGAGE MODULE :: ' + tool.id + ' → ' + tool.path, 'sys');
     holo.classList.remove('on'); clearInterval(metricTimer);
     warpBurst(1100); warpOutPlanets(7);
     corewrap.style.transition = 'filter .8s'; corewrap.style.filter = 'brightness(1.9) blur(2px)';
-    setTimeout(() => { window.location.href = tool.path; }, 980);
+    /* navigate only after NEXUS finishes the line (and the warp animation lands) — no more mid-sentence cutoffs */
+    const t0 = performance.now(); let gone = false;
+    const go = () => { if (gone) return; gone = true; window.location.href = tool.path; };
+    say(tool.line, () => setTimeout(go, Math.max(0, 1050 - (performance.now() - t0))));
+    setTimeout(go, 5000);   /* hard cap — a stuck speech engine never holds the warp hostage */
   }
   window.NN_warpTo = warpTo;
 
@@ -969,56 +1004,118 @@ document.addEventListener('DOMContentLoaded', () => {
     'tool-game-tactical':['game','games','gaming','mods','fps','benchmark','loadout'],
     'tool-finance-flow':['finance','budget','subscriptions','expenses','cash flow','ledger']
   };
-  const vnorm = s => (s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+  const vnorm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+  /* common speech-to-text mishearings → canonical vocabulary */
+  const MISHEAR = [
+    [/\bsub ?nets?(ting)?\b/g,'subnet'], [/\bsabnet|subnit|sudden it\b/g,'subnet'], [/\bc ?i ?d ?r\b/g,'cidr'],
+    [/\b(sys|cyst|sis) ?log\b/g,'syslog'], [/\bmac address(es)?\b/g,'mac'], [/\bo ?u ?i\b/g,'oui'],
+    [/\bp ?o ?e\b/g,'poe'], [/\bpower over (ethernet|internet)\b/g,'poe'], [/\b(cm|see em|c m) ?trace\b/g,'cmtrace'],
+    [/\bpass ?words?\b/g,'password'], [/\bcript[oa]\b/g,'crypto'], [/\bsisco|sysco|cisco's\b/g,'cisco'],
+    [/\bdesk ?side\b/g,'deskside'], [/\bwar+anty|warrantee\b/g,'warranty'], [/\bpomodoro|promodoro|pomadoro\b/g,'pomodoro'],
+    [/\bresume|resumay\b/g,'resume'], [/\bfinances?\b/g,'finance'], [/\bconvert or\b/g,'converter'],
+    [/\btool ?kits?\b/g,'toolkit'], [/\bcompress or\b/g,'compressor']
+  ];
+  const fixHearing = v => { MISHEAR.forEach(([re, to]) => v = v.replace(re, to)); return v; };
+  /* Levenshtein with early bail — powers fuzzy token matching */
+  function lev(a, b){
+    if (a === b) return 0;
+    if (Math.abs(a.length - b.length) > 2) return 9;
+    const m = a.length, n = b.length; let prev = Array.from({length: n + 1}, (_, j) => j);
+    for (let i = 1; i <= m; i++){
+      const cur = [i];
+      for (let j = 1; j <= n; j++)
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = cur;
+    }
+    return prev[n];
+  }
+  const fuzzTol = w => w.length <= 3 ? 0 : w.length <= 6 ? 1 : 2;
+  /* does the heard text contain `word`, tolerating transcription slop? */
+  function fuzzyHas(tokens, joined, word){
+    if (word.includes(' ')) return joined.includes(word);
+    const tol = fuzzTol(word);
+    if (tol === 0) return tokens.includes(word);
+    return tokens.some(tk => Math.abs(tk.length - word.length) <= tol && lev(tk, word) <= tol);
+  }
+  const STOP = new Set(['the','a','an','and','amp','to','for','me','my','up','open','launch','start','show','go','run','please','can','you','module','tool','toolkit']);
   function resolveTool(raw){
-    const v = vnorm(raw); if (!v) return null;
+    const v = fixHearing(vnorm(raw)); if (!v) return { tool: null, score: 0 };
+    const tokens = v.split(' ');
     let best = null, score = 0;
     for (const t of toolRegistry){
       let s = 0;
       const title = vnorm(t.title);
       if (v.includes(title)) s += 12;
-      title.split(' ').filter(w => w.length > 2 && !['the','and','amp'].includes(w)).forEach(w => { if (v.includes(w)) s += 3; });
+      title.split(' ').filter(w => w.length > 2 && !STOP.has(w)).forEach(w => { if (fuzzyHas(tokens, v, w)) s += 4; });
       if (v.includes(vnorm(t.code))) s += 8;
-      const idfrag = t.id.replace('tool-', '').replace(/-/g, ' ');
-      if (v.includes(idfrag)) s += 6;
-      t.tags.forEach(tag => { if (v.includes(vnorm(tag))) s += 4; });
-      (VOICE_ALIAS[t.id] || []).forEach(a => { if (v.includes(a)) s += 7; });
+      t.id.replace('tool-', '').split('-').forEach(w => { if (w.length > 2 && fuzzyHas(tokens, v, w)) s += 4; });
+      t.tags.forEach(tag => { if (fuzzyHas(tokens, v, vnorm(tag))) s += 4; });
+      (VOICE_ALIAS[t.id] || []).forEach(a => { if (a.includes(' ') ? v.includes(a) : fuzzyHas(tokens, v, a)) s += 6; });
       if (s > score){ score = s; best = t; }
     }
-    return score >= 4 ? best : null;
+    return { tool: best, score };
   }
-  function galaxyIntent(v){
-    if (/\bgeneral\b/.test(v)) return 'gen';
-    if (/(?:\bit\b|\bi t\b|tech|information technology)\s*(?:galaxy|tab|mode|side|section)/.test(v)) return 'it';
-    if (/(?:galaxy|tab|mode|side)\s*(?:for\s*)?(?:\bit\b|tech)/.test(v)) return 'it';
-    if (/\b(switch|toggle|other|next|flip|change|swap)\b.*\b(galaxy|tab|mode|side)\b/.test(v)) return 'toggle';
+  function galaxyIntent(v, tokens){
+    if (fuzzyHas(tokens, v, 'general')) return 'gen';
+    if (/(?:\bit\b|\bi t\b|\btech\b|information technology)\s*(?:galaxy|galaxies|tab|mode|side|section)/.test(v)) return 'it';
+    if (/(?:galaxy|galaxies|tab|mode|side)\s*(?:for\s*)?(?:\bit\b|tech)/.test(v)) return 'it';
+    if (/\b(switch|toggle|other|next|flip|change|swap|second|go back)\b/.test(v) && /\b(galaxy|galaxies|tab|mode|side|section)\b/.test(v)) return 'toggle';
     return null;
   }
+  const MISS_LINES = [
+    'Say again, sir? A module name is all I need — “subnet”, “passwords”, “focus”…',
+    'That one escaped me, sir. Name a module, or say “switch galaxy”.',
+    'I caught only noise on that pass. One more time, slowly, sir.'
+  ];
+  let missStreak = 0;
   function runCommand(raw){
-    const v = vnorm(raw); if (!v) return;
+    let v = vnorm(raw); if (!v || v.length < 3) return;   /* ignore stray noise */
+    v = fixHearing(v);
+    const tokens = v.split(' ');
     T('VOICE ▸ "' + raw.trim() + '"', 'info');
-    if (/\b(stop listening|stop voice|disable voice|stop the mic|mute (the )?mic|that.?s all)\b/.test(v)){ stopListen(); say('Voice interface disengaged, sir.'); return; }
-    if (/\b(help|what can you (do|say)|commands|capabilities|options|how do i)\b/.test(v)){
-      say('You may say: open a module by name, switch to the I-T or General galaxy, search for a keyword, or ask for a status report, sir.'); return; }
-    if (/\b(status|report|diagnostic|sitrep|systems|how are you)\b/.test(v)){ say(quips[Math.floor(Math.random() * quips.length)]); return; }
-    const gal = galaxyIntent(v);
-    if (gal){
+    if (/\b(stop listening|stop voice|disable voice|stop the mic|mute (the )?mic|that.?s all|goodbye|shut up)\b/.test(v)){ missStreak = 0; stopListen(); say('Voice interface disengaged, sir.'); return; }
+    if (/\b(help|what can you (do|say|hear)|commands|capabilities|options|how do i)\b/.test(v)){
+      missStreak = 0;
+      say('Name any module — subnet, passwords, markets, focus. Or say: switch galaxy, search for a keyword, status report.'); return; }
+    if (/\b(status|report|diagnostic|sitrep|systems|how are you)\b/.test(v)){ missStreak = 0; say(quips[Math.floor(Math.random() * quips.length)]); return; }
+    const gal = galaxyIntent(v, tokens);
+    const resolved = resolveTool(raw);
+    if (gal && (!resolved.tool || resolved.score < 6)){
+      missStreak = 0;
       const target = gal === 'toggle' ? (NN.galaxy === 'it' ? 'gen' : 'it') : gal;
-      if (target === NN.galaxy) say('Already in the ' + (target === 'it' ? 'I-T' : 'General') + ' galaxy, sir.');
+      if (target === NN.galaxy) say('We are already in the ' + (target === 'it' ? 'I-T' : 'General') + ' galaxy, sir.');
       else switchGalaxy(target);
       return;
     }
     const sm = v.match(/^(?:search|find|look up|look for|filter|query)\s+(?:for\s+)?(.+)$/);
     if (sm){
+      missStreak = 0;
       q.value = sm[1]; matches = searchMatch(q.value); hot = matches.length ? 0 : -1; paintSearch();
-      say(matches.length ? ('Filtering for ' + sm[1] + ', sir. ' + matches.length + ' match' + (matches.length > 1 ? 'es found' : '') + '.') : ('Nothing matches ' + sm[1] + ' in the data banks, sir.'));
+      say(matches.length ? ('Filtering for ' + sm[1] + '. ' + matches.length + ' match' + (matches.length > 1 ? 'es' : '') + ' on screen, sir.') : ('Nothing matches ' + sm[1] + ' in the data banks, sir.'));
       return;
     }
-    if (/\b(clear|reset|deselect|go home|command deck|nexus)\b/.test(v) && !resolveTool(raw)){
-      q.value = ''; matches = []; paintSearch(); say('Command deck cleared, sir.'); return; }
-    const tool = resolveTool(raw);
-    if (tool){ warpTo(tool); return; }   /* warpTo announces + warps + redirects */
-    say('I didn’t catch a valid command, sir. Try “open the subnet toolkit” or “switch to the general galaxy”.');
+    if (/\b(clear|reset|deselect|go home|command deck)\b/.test(v) && resolved.score < 4){
+      missStreak = 0; q.value = ''; matches = []; paintSearch(); say('Command deck cleared, sir.'); return; }
+    /* deduction tiers: confident → warp; plausible → warp with acknowledgement; else assist */
+    if (resolved.tool && resolved.score >= 6){ missStreak = 0; warpTo(resolved.tool); return; }
+    if (resolved.tool && resolved.score >= 3){
+      missStreak = 0;
+      T('VOICE DEDUCTION :: best guess "' + resolved.tool.title + '" (score ' + resolved.score + ')', 'info');
+      warpTo(resolved.tool); return;   /* warpTo names the module aloud — self-confirming */
+    }
+    /* nothing plausible — surface nearest matches visually instead of nagging */
+    const near = searchMatch(v);
+    if (near.length){
+      missStreak = 0;
+      q.value = v; matches = near; hot = 0; paintSearch();
+      say('Not certain what you meant, sir — the closest matches are on screen. Say the one you want.');
+      return;
+    }
+    missStreak++;
+    say(missStreak >= 3
+      ? 'Perhaps the microphone dislikes me, sir. Try short names: “subnet”, “cisco”, “markets” — or type it in the search bar.'
+      : MISS_LINES[(missStreak - 1) % MISS_LINES.length]);
   }
   function showHud(on){ voicehud.classList.toggle('on', on); micbtn.classList.toggle('live', on); }
   function initRecog(){
@@ -1026,7 +1123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     r.lang = 'en-US'; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
     r.onstart = () => { showHud(true); vhHint.textContent = 'LISTENING…'; T('VOICE RECOGNITION :: ONLINE', 'ok'); };
     r.onresult = ev => {
-      if (jarvisSpeaking) return;   /* ignore JARVIS hearing itself */
+      if (nexusSpeaking) return;   /* ignore NEXUS hearing itself */
       let interim = '', finalTxt = '';
       for (let i = ev.resultIndex; i < ev.results.length; i++){
         const res = ev.results[i];
@@ -1119,7 +1216,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ['HOLOGRAPHIC EMITTER ARRAY........... <span class="ok">ONLINE</span>'],
     ['PARALLAX LAB ENVIRONMENT............ <span class="ok">3 LAYERS</span>'],
     ['ORBITAL MECHANICS ENGINE............ <span class="ok">CALIBRATED</span>'],
-    ['J.A.R.V.I.S. NEURAL LATTICE......... <span class="ok">SYNCED</span>'],
+    ['NEXUS NEURAL LATTICE......... <span class="ok">SYNCED</span>'],
     ['MODULE REGISTRY..................... <span class="ok">19 INDEXED</span>'],
     ['ERROR STREAM INTERCEPTOR............ <span class="ok">ARMED</span>'],
     ['&gt; ENTERING COMMAND DECK', 'dim']

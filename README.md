@@ -16,10 +16,11 @@ Each tool is a self-contained `index.html` inside its own folder and can be open
 
 ## The Command Deck (`index.html`)
 
-The hub is a 3D orbital interface where the 19 tools orbit a central **J.A.R.V.I.S.** core as planets:
+The hub is a 3D orbital interface where the 19 tools orbit a central **NEXUS** core as planets:
 
 - **3-layer parallax background** — a drifting diagnostic grid, a cursor-reactive node lattice with click shockwaves, and cascading foreground telemetry (binary rain, graphs, a radar sweep).
-- **J.A.R.V.I.S. core** — concentric vector rings on independent axes, a cursor-tracking lens, and the browser's Web Speech API for spoken responses with live frequency bars. Click the core for a random diagnostic quip.
+- **NEXUS core** — concentric vector rings on independent axes, a cursor-tracking lens, and the browser's Web Speech API for spoken responses with live frequency bars. Click the core for a random diagnostic quip. A **VOX picker** in the command bar lets you choose which installed system voice NEXUS speaks with (pitched low by default).
+- **Voice commands** — click **LISTEN** (or the mic button on phones) and speak naturally: *"open the subnet toolkit"*, *"passwords"*, *"switch to the general galaxy"*, *"search cisco"*, *"status report"*. An on-device fuzzy intent engine tolerates transcription slop and deduces the closest module; nothing you say leaves the browser except the browser's own speech-to-text. Requires Chrome/Edge + mic permission.
 - **True-3D orbital mechanics** — cards scale, dim, blur, and re-layer with `sin`/`cos`; hovering one pauses the orbit and opens a glassmorphic live-metrics preview.
 - **Galaxy switch** — a space-warp transition between the **IT Galaxy** (cyan) and **General Galaxy** (hyper-glow orange).
 - **Search engine** — live keyword/tag filtering over a module registry; `Enter` triggers the warp + spoken hand-off + redirect. Unresolved queries shake the field with a `QUERY UNRESOLVED IN MAIN DATA BANKS` warning.

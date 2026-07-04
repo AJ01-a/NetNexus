@@ -104,7 +104,7 @@ tr.copyable td.v::after{content:" ⧉";opacity:.35;font-size:10px}
   <div id="clk"></div>
   <a class="rtn" href="../index.html">◂ RETURN TO NEXUS</a>
 </header>
-<div id="jstrip"><span class="jj">◤ J.A.R.V.I.S // </span><span id="jtext"></span></div>
+<div id="jstrip"><span class="jj">◤ NEXUS // </span><span id="jtext"></span></div>
 
 <main id="wrap">
   <section class="panel">
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('#termX').addEventListener('click',()=>term.classList.remove('open'));
   window.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='`'){e.preventDefault();term.classList.toggle('open');}});
   if(window.__twFail)T('TAILWIND CDN UNREACHABLE — LOCAL STYLE CORE ENGAGED','warn');
-  let _jt=null;function jsay(t){T('J.A.R.V.I.S :: '+t,'sys');const el=$('#jtext');clearInterval(_jt);let i=0;_jt=setInterval(()=>{el.textContent=t.slice(0,++i)+(i<t.length?'▊':'');if(i>=t.length)clearInterval(_jt);},14);}
+  let _jt=null;function jsay(t){T('NEXUS :: '+t,'sys');const el=$('#jtext');clearInterval(_jt);let i=0;_jt=setInterval(()=>{el.textContent=t.slice(0,++i)+(i<t.length?'▊':'');if(i>=t.length)clearInterval(_jt);},14);}
   setInterval(()=>{const d=new Date();$('#clk').innerHTML='<b>'+d.toTimeString().slice(0,8)+'</b> L · '+d.toISOString().slice(11,19)+' U';},1000);
   function copyPlain(txt){const fb=()=>{try{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();T('CLIPBOARD :: '+txt,'ok');}catch(e){T('CLIPBOARD FAULT','err');}};
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(()=>T('CLIPBOARD :: '+txt,'ok')).catch(fb);else fb();}
