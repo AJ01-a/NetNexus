@@ -2,7 +2,7 @@
 <html lang="en" data-galaxy="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#02050a">
 <title>NETNEXUS // STARK-CORE COMMAND DECK</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -223,16 +223,81 @@ html[data-galaxy="gen"] #gknob{left:27px}
 #bootBox .dim{color:var(--mut)}
 #bootBar{height:3px;background:rgba(0,229,255,.15);margin-top:18px;overflow:hidden}
 #bootBar i{display:block;height:100%;width:0;background:var(--acc,#00e5ff);box-shadow:0 0 12px var(--acc,#00e5ff);transition:width .3s}
-/* ---------- grid fallback (small screens) ---------- */
-#space.gridmode{position:fixed;inset:64px 0 30px;overflow-y:auto}
-#space.gridmode #corewrap{position:relative;left:auto;top:auto;transform:none;margin:24px auto 10px;width:200px;height:200px}
-#space.gridmode #field{position:relative;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:12px;padding:16px 16px 60px}
-#space.gridmode .planet{position:relative;width:auto;transform:none!important;opacity:1!important;filter:none!important}
-@media (max-width:740px){
-  .brand b{display:none}
-  #clk{display:none}
-  #holo{right:12px;width:min(280px,86vw)}
+/* ---------- voice command button + listening HUD ---------- */
+.cbtn.mic{display:flex;align-items:center;gap:7px}
+.cbtn.mic .micdot{width:8px;height:8px;border-radius:50%;background:var(--mut);box-shadow:none;transition:.25s}
+.cbtn.mic.live{border-color:var(--acc);color:var(--acc);background:var(--accd);box-shadow:0 0 16px var(--accd)}
+.cbtn.mic.live .micdot{background:var(--red);box-shadow:0 0 10px var(--red);animation:micpulse 1s ease-in-out infinite}
+@keyframes micpulse{50%{transform:scale(1.5);opacity:.5}}
+.cbtn.mic.off{opacity:.5}
+#voicehud{position:fixed;left:50%;bottom:44px;transform:translate(-50%,20px);z-index:66;display:none;align-items:center;gap:14px;
+  padding:12px 16px;min-width:min(420px,92vw);max-width:92vw;
+  background:linear-gradient(160deg,rgba(8,22,36,.94),rgba(4,12,20,.9));border:1px solid var(--acc);
+  backdrop-filter:blur(14px);box-shadow:0 0 40px var(--acc-glow),inset 0 0 24px rgba(0,0,0,.4);
+  opacity:0;transition:opacity .28s,transform .3s cubic-bezier(.2,.9,.3,1.2)}
+#voicehud.on{display:flex;opacity:1;transform:translate(-50%,0)}
+#voicehud .vh-ring{position:relative;width:34px;height:34px;flex-shrink:0}
+#voicehud .vh-ring span{position:absolute;inset:0;border:1.5px solid var(--acc);border-radius:50%;opacity:0;animation:vhwave 1.8s ease-out infinite}
+#voicehud .vh-ring span:nth-child(2){animation-delay:.6s}
+#voicehud .vh-ring span:nth-child(3){animation-delay:1.2s}
+#voicehud .vh-ring::after{content:"⏺";position:absolute;inset:0;display:grid;place-items:center;color:var(--acc);font-size:15px;text-shadow:0 0 10px var(--acc-glow)}
+@keyframes vhwave{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.25);opacity:0}}
+#voicehud .vh-body{flex:1;min-width:0}
+#voicehud #vhHint{font-family:var(--disp);font-size:9px;letter-spacing:.28em;color:var(--acc);text-shadow:0 0 8px var(--acc-glow)}
+#voicehud #vhText{font-family:var(--mono);font-size:12.5px;color:var(--ink);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.92}
+#voicehud #vhStop{flex-shrink:0;background:none;border:1px solid var(--line);color:var(--mut);font-family:var(--mono);font-size:13px;
+  width:28px;height:28px;cursor:pointer;transition:.2s}
+#voicehud #vhStop:hover{border-color:var(--red);color:var(--red)}
+
+/* ============ MOBILE / TOUCH GUI — animations preserved ============ */
+@keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.94)}to{opacity:1;transform:none}}
+body.mobile{overflow-x:hidden;overflow-y:auto;height:auto;min-height:100dvh;-webkit-text-size-adjust:100%}
+/* header collapses to a clean stacked bar — fixes the cut-off */
+body.mobile #cmdbar{position:sticky;flex-wrap:wrap;height:auto;gap:8px 9px;
+  padding:calc(7px + env(safe-area-inset-top)) 12px 8px;row-gap:8px}
+body.mobile .brand{font-size:13px;letter-spacing:.16em}
+body.mobile .brand b,body.mobile .chip,body.mobile #clk{display:none}
+body.mobile #sform{order:10;flex:1 1 100%;max-width:none;margin:0}
+body.mobile #q{font-size:12px;letter-spacing:.04em;padding:10px 34px 10px 32px}
+body.mobile #gswitch{font-size:8px;gap:6px;margin-left:auto}
+body.mobile #gtrack{width:38px;height:16px}
+body.mobile html[data-galaxy="gen"] #gknob,body.mobile #gknob{top:2px}
+body.mobile #vbtn{display:none}
+body.mobile .cbtn:not(.mic){font-size:9px;padding:6px 8px}
+/* background canvases keep animating (unchanged, they are fixed) */
+/* orbit space becomes a scrollable animated dashboard */
+body.mobile #space{position:relative;inset:auto;z-index:10;min-height:auto;display:block;padding-bottom:4px}
+body.mobile .hud{display:none}
+body.mobile #holo{display:none}
+body.mobile #corewrap{position:relative;left:auto;top:auto;transform:none!important;
+  margin:16px auto 78px;width:min(52vw,210px);height:min(52vw,210px);perspective:700px}
+body.mobile #jlabel{display:none}
+body.mobile #fbars{top:calc(100% + 12px)}
+body.mobile #jcap{top:calc(100% + 46px);font-size:11px;max-width:88vw;white-space:normal;line-height:1.45}
+body.mobile #field{position:relative;inset:auto;display:grid;grid-template-columns:1fr 1fr;
+  gap:11px;padding:2px 12px calc(104px + env(safe-area-inset-bottom))}
+body.mobile .planet{position:relative;left:auto;top:auto;width:auto;
+  transform:none;opacity:1;filter:none!important;z-index:auto;animation:cardIn .5s ease backwards;
+  padding:13px 13px 12px}
+body.mobile .planet .pname{font-size:11.5px}
+body.mobile .planet .ptags{font-size:8px}
+body.mobile .planet.match{animation:matchpulse 1.1s ease-in-out infinite}
+body.mobile .planet:active{border-color:var(--acc);background:rgba(9,24,38,.96);box-shadow:0 0 24px var(--acc-glow)}
+/* voice command becomes a floating action button */
+body.mobile #micbtn{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:67;
+  width:58px;height:58px;border-radius:50%;justify-content:center;gap:0;padding:0;font-size:0;
+  border-color:var(--acc);color:var(--acc);background:linear-gradient(160deg,rgba(8,22,36,.95),rgba(4,12,20,.92));
+  box-shadow:0 6px 26px rgba(0,0,0,.5),0 0 18px var(--acc-glow)}
+body.mobile #micbtn::before{content:"⏺";font-size:22px}
+body.mobile #micbtn .micdot{position:absolute;top:9px;right:9px;width:9px;height:9px}
+body.mobile #micbtn.live{animation:fabpulse 1.4s ease-in-out infinite}
+@keyframes fabpulse{50%{box-shadow:0 6px 26px rgba(0,0,0,.5),0 0 30px var(--acc-glow)}}
+body.mobile #voicehud{bottom:calc(86px + env(safe-area-inset-bottom));min-width:auto;width:min(440px,92vw)}
+body.mobile #ticker{display:none}
+@media (max-width:400px){ body.mobile #field{grid-template-columns:1fr} }
+/* reduced motion: keep it usable, calm the pulses */
+@media (prefers-reduced-motion: reduce){
+  .planet.match,.cbtn.mic.live .micdot,#micbtn.live,#voicehud .vh-ring span{animation-duration:2.4s}
 }
 .hidden{display:none!important}
 </style>
@@ -268,10 +333,21 @@ html[data-galaxy="gen"] #gknob{left:27px}
     <div id="gtrack"><div id="gknob"></div></div>
     <span class="gl gg">GENERAL</span>
   </div>
+  <button class="cbtn mic" id="micbtn" type="button" title="Voice commands — click, then speak"><span class="micdot"></span> LISTEN</button>
   <button class="cbtn" id="vbtn" type="button">◈ VOICE: ON</button>
   <button class="cbtn" id="tbtn" type="button">⌬ TERMINAL</button>
   <div id="clk"><b id="clkL">--:--:--</b> LOCAL<br><span id="clkU">--:--:--</span> UTC</div>
 </header>
+
+<!-- ============ VOICE COMMAND HUD ============ -->
+<div id="voicehud">
+  <div class="vh-ring"><span></span><span></span><span></span></div>
+  <div class="vh-body">
+    <div id="vhHint">LISTENING…</div>
+    <div id="vhText">try “open the subnet toolkit” or “switch to the general galaxy”</div>
+  </div>
+  <button id="vhStop" type="button" title="Stop listening">✕</button>
+</div>
 
 <!-- ============ ORBITAL SPACE ============ -->
 <main id="space">
@@ -415,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ================= JARVIS VOICE CORE ================= */
   const corewrap = $('#corewrap'), jcap = $('#jcap'), fbars = $$('#fbars i');
   let voiceOn = (localStorage.getItem('nn-voice') ?? 'on') === 'on';
-  let voice = null, barTimer = null, capTimer = null;
+  let voice = null, barTimer = null, capTimer = null, jarvisSpeaking = false;
   function pickVoice(){
     try {
       const vs = speechSynthesis.getVoices(); if (!vs.length) return null;
@@ -447,7 +523,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const u = new SpeechSynthesisUtterance(text);
       if (voice) u.voice = voice;
       u.rate = 0.98; u.pitch = 0.85; u.volume = 1;
-      u.onstart = barsOn; u.onend = barsOff; u.onerror = barsOff;
+      u.onstart = () => { jarvisSpeaking = true; barsOn(); };
+      u.onend = () => { jarvisSpeaking = false; barsOff(); };
+      u.onerror = () => { jarvisSpeaking = false; barsOff(); };
       speechSynthesis.speak(u);
     } catch(e){ barsOff(); T('SPEECH SYNTH FAULT :: ' + e.message, 'warn'); }
   }
@@ -713,7 +791,8 @@ document.addEventListener('DOMContentLoaded', () => {
       el.addEventListener('blur', () => { if (focusedP === p) focusedP = null; el.classList.remove('focused'); holoHideSoon(); });
       el.addEventListener('click', () => warpTo(tool));
       el.addEventListener('keydown', e => { if (e.key === 'Enter') warpTo(tool); });
-      if (warpIn){
+      if (NN.mobile) el.style.animationDelay = (Math.min(i, 14) * 0.045) + 's';   /* staggered card entrance */
+      if (warpIn && !NN.mobile){
         const q = computePose(p);
         const ox = W / 2 + (q.x - W / 2) * 5, oy = H * .52 + (q.y - H * .52) * 5;
         el.style.transform = 'translate3d(' + ox + 'px,' + oy + 'px,0) translate(-50%,-50%) scale(4)';
@@ -741,6 +820,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const hMetrics = $('#hMetrics');
   let metricTimer = null;
   function holoShow(tool){
+    if (NN.mobile) return;   /* mobile taps open directly — no hover preview */
     clearTimeout(holoHide); holoTool = tool;
     $('#hCode').textContent = 'MODULE // ' + tool.code + ' — ' + tool.galaxy.toUpperCase() + ' GALAXY';
     $('#hName').textContent = tool.title;
@@ -863,6 +943,124 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.addEventListener('click', e => { if (!sform.contains(e.target)) sugg.classList.remove('on'); });
 
+  /* ================= VOICE COMMAND ENGINE (on-device intent parser) ================= */
+  const micbtn = $('#micbtn'), voicehud = $('#voicehud'), vhText = $('#vhText'), vhHint = $('#vhHint');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recog = null, wantListen = false, restartTimer = null;
+  /* extra spoken phrasings beyond each tool's tags/title */
+  const VOICE_ALIAS = {
+    'tool-subnet':['subnet','subnetting','cidr','ip calculator','netmask'],
+    'tool-network':['network discovery','my ip','my i p','public ip','whats my ip','vpn check','who am i'],
+    'tool-hardware':['hardware','motherboard','beep codes','wiring','pinout'],
+    'tool-crypto':['password','passwords','generate password','password generator','ssh key','token generator'],
+    'tool-deskside':['deskside','active directory','unlock account','powershell','sccm'],
+    'tool-cisco':['cisco','router config','ospf','a a a','vpn config','tunnel'],
+    'tool-syslog':['syslog','log analyzer','logs','event log'],
+    'tool-mac-lookup':['mac','mac address','mac lookup','vendor lookup','o u i'],
+    'tool-asset-router':['asset','warranty','service tag','serial number','warranty check'],
+    'tool-poe-calc':['poe','power over ethernet','power budget','switch power','wattage'],
+    'tool-cmtrace':['cmtrace','sccm log','trace log','mecm'],
+    'tool-converter':['converter','unit converter','time zone','timezone','byte converter','world clock'],
+    'tool-vibe-focus':['focus','pomodoro','timer','study','ambient','white noise','music'],
+    'tool-resume-editor':['resume','resume editor','cv','curriculum vitae'],
+    'tool-image-compressor':['image compressor','compress image','compress photo','webp','shrink image'],
+    'tool-mp3-converter':['audio','audio bay','mp3','convert audio','wav'],
+    'tool-market-tracker':['market','stocks','crypto prices','bitcoin','investments','ticker'],
+    'tool-game-tactical':['game','games','gaming','mods','fps','benchmark','loadout'],
+    'tool-finance-flow':['finance','budget','subscriptions','expenses','cash flow','ledger']
+  };
+  const vnorm = s => (s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+  function resolveTool(raw){
+    const v = vnorm(raw); if (!v) return null;
+    let best = null, score = 0;
+    for (const t of toolRegistry){
+      let s = 0;
+      const title = vnorm(t.title);
+      if (v.includes(title)) s += 12;
+      title.split(' ').filter(w => w.length > 2 && !['the','and','amp'].includes(w)).forEach(w => { if (v.includes(w)) s += 3; });
+      if (v.includes(vnorm(t.code))) s += 8;
+      const idfrag = t.id.replace('tool-', '').replace(/-/g, ' ');
+      if (v.includes(idfrag)) s += 6;
+      t.tags.forEach(tag => { if (v.includes(vnorm(tag))) s += 4; });
+      (VOICE_ALIAS[t.id] || []).forEach(a => { if (v.includes(a)) s += 7; });
+      if (s > score){ score = s; best = t; }
+    }
+    return score >= 4 ? best : null;
+  }
+  function galaxyIntent(v){
+    if (/\bgeneral\b/.test(v)) return 'gen';
+    if (/(?:\bit\b|\bi t\b|tech|information technology)\s*(?:galaxy|tab|mode|side|section)/.test(v)) return 'it';
+    if (/(?:galaxy|tab|mode|side)\s*(?:for\s*)?(?:\bit\b|tech)/.test(v)) return 'it';
+    if (/\b(switch|toggle|other|next|flip|change|swap)\b.*\b(galaxy|tab|mode|side)\b/.test(v)) return 'toggle';
+    return null;
+  }
+  function runCommand(raw){
+    const v = vnorm(raw); if (!v) return;
+    T('VOICE ▸ "' + raw.trim() + '"', 'info');
+    if (/\b(stop listening|stop voice|disable voice|stop the mic|mute (the )?mic|that.?s all)\b/.test(v)){ stopListen(); say('Voice interface disengaged, sir.'); return; }
+    if (/\b(help|what can you (do|say)|commands|capabilities|options|how do i)\b/.test(v)){
+      say('You may say: open a module by name, switch to the I-T or General galaxy, search for a keyword, or ask for a status report, sir.'); return; }
+    if (/\b(status|report|diagnostic|sitrep|systems|how are you)\b/.test(v)){ say(quips[Math.floor(Math.random() * quips.length)]); return; }
+    const gal = galaxyIntent(v);
+    if (gal){
+      const target = gal === 'toggle' ? (NN.galaxy === 'it' ? 'gen' : 'it') : gal;
+      if (target === NN.galaxy) say('Already in the ' + (target === 'it' ? 'I-T' : 'General') + ' galaxy, sir.');
+      else switchGalaxy(target);
+      return;
+    }
+    const sm = v.match(/^(?:search|find|look up|look for|filter|query)\s+(?:for\s+)?(.+)$/);
+    if (sm){
+      q.value = sm[1]; matches = searchMatch(q.value); hot = matches.length ? 0 : -1; paintSearch();
+      say(matches.length ? ('Filtering for ' + sm[1] + ', sir. ' + matches.length + ' match' + (matches.length > 1 ? 'es found' : '') + '.') : ('Nothing matches ' + sm[1] + ' in the data banks, sir.'));
+      return;
+    }
+    if (/\b(clear|reset|deselect|go home|command deck|nexus)\b/.test(v) && !resolveTool(raw)){
+      q.value = ''; matches = []; paintSearch(); say('Command deck cleared, sir.'); return; }
+    const tool = resolveTool(raw);
+    if (tool){ warpTo(tool); return; }   /* warpTo announces + warps + redirects */
+    say('I didn’t catch a valid command, sir. Try “open the subnet toolkit” or “switch to the general galaxy”.');
+  }
+  function showHud(on){ voicehud.classList.toggle('on', on); micbtn.classList.toggle('live', on); }
+  function initRecog(){
+    const r = new SR();
+    r.lang = 'en-US'; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
+    r.onstart = () => { showHud(true); vhHint.textContent = 'LISTENING…'; T('VOICE RECOGNITION :: ONLINE', 'ok'); };
+    r.onresult = ev => {
+      if (jarvisSpeaking) return;   /* ignore JARVIS hearing itself */
+      let interim = '', finalTxt = '';
+      for (let i = ev.resultIndex; i < ev.results.length; i++){
+        const res = ev.results[i];
+        if (res.isFinal) finalTxt += res[0].transcript; else interim += res[0].transcript;
+      }
+      if (interim) vhText.textContent = interim;
+      if (finalTxt){ vhText.textContent = finalTxt; vhHint.textContent = 'PROCESSING…'; runCommand(finalTxt); setTimeout(() => { if (wantListen) vhHint.textContent = 'LISTENING…'; }, 900); }
+    };
+    r.onerror = e => {
+      T('VOICE ERR :: ' + e.error, 'warn');
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed'){
+        wantListen = false; showHud(false); say('I need microphone permission to hear you, sir. Do enable it in the address bar.');
+      } else if (e.error === 'no-speech'){ vhHint.textContent = 'DIDN’T HEAR ANYTHING…'; }
+    };
+    r.onend = () => { if (wantListen){ restartTimer = setTimeout(() => { try { r.start(); } catch(_){} }, 300); } else { showHud(false); } };
+    return r;
+  }
+  function startListen(){
+    if (!SR){ say('Voice recognition is not available in this browser, sir. Chrome or Edge will hear you.'); T('VOICE RECOGNITION :: UNSUPPORTED', 'warn'); return; }
+    if (!recog) recog = initRecog();
+    wantListen = true; showHud(true);
+    try { recog.start(); } catch(_){ /* already running */ }
+    say('Listening, sir. What shall I open?');
+  }
+  function stopListen(){
+    wantListen = false; clearTimeout(restartTimer);
+    if (recog){ try { recog.stop(); } catch(_){} }
+    showHud(false); T('VOICE RECOGNITION :: OFFLINE', 'info');
+  }
+  micbtn.addEventListener('click', () => { if (wantListen) stopListen(); else startListen(); });
+  $('#vhStop').addEventListener('click', stopListen);
+  if (!SR){ micbtn.classList.add('off'); micbtn.title = 'Voice input needs Chrome or Edge'; T('SPEECH RECOGNITION API UNAVAILABLE — MIC DISABLED', 'warn'); }
+  window.NN_voice = { start: startListen, stop: stopListen, run: runCommand };
+
   /* ================= HUD READOUTS ================= */
   const hudTL = $('#hudTL'), hudBL = $('#hudBL'), hudBR = $('#hudBR');
   setInterval(() => {
@@ -871,13 +1069,21 @@ document.addEventListener('DOMContentLoaded', () => {
     hudBR.innerHTML = 'GALAXY <b>' + (NN.galaxy === 'it' ? 'IT — 12 BODIES' : 'GENERAL — 7 BODIES') + '</b><br>UPLINK <b>STABLE</b><br>MODE <b>' + NN.mode.toUpperCase() + '</b>';
   }, 620);
 
-  /* ================= RESPONSIVE MODE ================= */
-  function checkSmall(){
-    NN.small = innerWidth < 760 || innerHeight < 540;
-    space.classList.toggle('gridmode', NN.small);
-    if (NN.small) planets.forEach(p => { p.el.style.transform = ''; p.el.style.opacity = ''; p.el.style.filter = ''; p.el.style.zIndex = ''; });
+  /* ================= RESPONSIVE / ADAPTIVE LAYOUT ================= */
+  let wasMobile = null;
+  function applyLayout(){
+    const coarse = (window.matchMedia && matchMedia('(pointer:coarse)').matches);
+    const m = innerWidth < 860 || innerHeight < 520 || (coarse && innerWidth < 1100);
+    NN.mobile = m; NN.small = m;
+    document.body.classList.toggle('mobile', m);
+    space.classList.toggle('gridmode', m);
+    if (m) planets.forEach(p => { p.el.style.transform = ''; p.el.style.opacity = ''; p.el.style.filter = ''; p.el.style.zIndex = ''; });
+    if (wasMobile !== null && wasMobile !== m && planets.length) buildPlanets(NN.galaxy, false);
+    if (wasMobile !== m) T('LAYOUT :: ' + (m ? 'MOBILE GUI ENGAGED' : 'DESKTOP ORBIT ENGAGED'), 'info');
+    wasMobile = m;
   }
-  window.addEventListener('resize', () => { sizeAll(); checkSmall(); });
+  window.addEventListener('resize', () => { sizeAll(); applyLayout(); });
+  window.addEventListener('orientationchange', () => setTimeout(() => { sizeAll(); applyLayout(); }, 220));
 
   /* ================= MAIN LOOP ================= */
   let last = performance.now(), perfAcc = 0, perfN = 0, perfChecked = false;
@@ -948,10 +1154,10 @@ document.addEventListener('DOMContentLoaded', () => {
   boot.addEventListener('click', finishBoot);
 
   /* ================= IGNITION ================= */
+  applyLayout();
   buildPlanets('it', false);
-  checkSmall();
   T('ORBITAL FIELD POPULATED :: IT GALAXY — 12 BODIES', 'ok');
-  T('AWAITING COMMAND, SIR.', 'sys');
+  T((SR ? 'VOICE COMMAND ENGINE ARMED — CLICK “LISTEN”. ' : '') + 'AWAITING COMMAND, SIR.', 'sys');
 });
 </script>
 </body>

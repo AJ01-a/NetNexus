@@ -85,6 +85,20 @@ svg.chart{display:block;min-width:420px}
 .tline{white-space:pre-wrap;word-break:break-word}
 .tline .tt{color:rgba(107,147,171,.6)}
 .t-info{color:#9fd8ea}.t-ok{color:var(--grn)}.t-warn{color:var(--yel)}.t-err{color:var(--red)}.t-sys{color:var(--acc2)}
+/*NNMOBILE*/
+@media (max-width:640px){
+  html,body{overflow-x:hidden}
+  #topbar{flex-wrap:wrap;gap:8px 10px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px}
+  #topbar .spacer{display:none}
+  #clk{display:none}
+  .brand{font-size:12px;letter-spacing:.14em}
+  .rtn{margin-left:auto}
+  #jstrip{font-size:11px;padding:7px 12px}
+  #wrap{margin:16px auto 96px!important;padding:0 12px!important}
+  #foot{font-size:9px;gap:10px;letter-spacing:.12em}
+  #foot span:nth-child(3){display:none}
+  #term{height:52vh}
+}
 </style>
 </head>
 <body>
