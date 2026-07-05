@@ -160,6 +160,134 @@ import * as THREE from 'three';
     lines.position.z = 5; fgGroup.add(lines);
   }
 
+  /* ====================== VOLUMETRIC NEXUS REACTOR ======================
+     Augments (never replaces) the DOM core. Rendered behind the DOM eye at the
+     core's live screen position; reacts to speaking / LISTENING state.
+     Desktop-only — mobile keeps the lightweight background. */
+  const coreEl = document.getElementById('corewrap');
+  const micEl = document.getElementById('micbtn');
+  let coreCX = W / 2, coreCY = H * .52, coreR = Math.min(W, H) * .23, hasCore = false;
+  function measureCore() {
+    if (!coreEl) { hasCore = false; return; }
+    const r = coreEl.getBoundingClientRect();
+    if (r.width < 12) { hasCore = false; return; }
+    coreCX = r.left + r.width / 2; coreCY = r.top + r.height / 2; coreR = r.width / 2; hasCore = true;
+  }
+  measureCore();
+
+  let reactor = null, heat = .15;
+  if (!coarse) {
+    reactor = new THREE.Group(); reactor.position.z = 12; scene.add(reactor);
+
+    /* inner plasma orb (back-side Fresnel → volumetric glow around the eye) */
+    const orbMat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.BackSide,
+      uniforms: { uC: { value: accColor().clone() }, uC2: { value: acc2Color().clone() }, uHeat: { value: heat }, uTime: { value: 0 } },
+      vertexShader: `varying vec3 vN,vV; void main(){ vec4 mv=modelViewMatrix*vec4(position,1.0); vN=normalize(normalMatrix*normal); vV=normalize(-mv.xyz); gl_Position=projectionMatrix*mv;}`,
+      fragmentShader: `precision highp float; varying vec3 vN,vV; uniform vec3 uC,uC2; uniform float uHeat,uTime;
+        void main(){ float f=pow(1.0-max(dot(vN,vV),0.0),2.5); float p=0.65+0.35*sin(uTime*3.0);
+          vec3 col=mix(uC,uC2,f*(0.5+0.5*uHeat)); float a=f*(0.32+0.5*uHeat)*(0.82+0.18*p); gl_FragColor=vec4(col,a);} `
+    });
+    const orb = new THREE.Mesh(new THREE.SphereGeometry(0.5, 40, 40), orbMat);
+    reactor.add(orb);
+
+    /* two counter-rotating icosahedral energy shells */
+    const shellMat = () => new THREE.LineBasicMaterial({ color: accColor().clone(), transparent: true, opacity: .55, depthWrite: false, blending: THREE.AdditiveBlending });
+    const shellA = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(0.98, 1)), shellMat());
+    const shellB = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.28, 1)), shellMat());
+    shellB.material.opacity = .28;
+    reactor.add(shellA, shellB);
+
+    /* three thin 3D energy rings (true-3D echo of the DOM SVG rings) */
+    const rings = [];
+    const ringMat = new THREE.MeshBasicMaterial({ color: accColor().clone(), transparent: true, opacity: .5, depthWrite: false, blending: THREE.AdditiveBlending });
+    [[1.14, 0, 0], [1.36, Math.PI / 2.4, .3], [1.02, 1.1, -.5]].forEach(([rad, rx, ry]) => {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(rad, 0.008, 6, 120), ringMat.clone());
+      ring.rotation.set(rx, ry, 0); rings.push(ring); reactor.add(ring);
+    });
+
+    /* orbiting particle cluster (tilted rings → swirling nucleus) */
+    const PC = 320;
+    const parts = new Array(PC);
+    for (let i = 0; i < PC; i++) parts[i] = { r: .72 + Math.random() * .78, inc: (Math.random() - .5) * .95, ph: Math.random() * 6.28, sp: .25 + Math.random() * .6 };
+    const pPos = new Float32Array(PC * 3);
+    const pGeo = new THREE.BufferGeometry(); pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+    const pMat = new THREE.PointsMaterial({ size: 2.6 * DPR, map: dot, transparent: true, depthWrite: false, opacity: .9, blending: THREE.AdditiveBlending, color: acc2Color().clone(), sizeAttenuation: false });
+    const cluster = new THREE.Points(pGeo, pMat); reactor.add(cluster);
+
+    reactor.userData = { orb, orbMat, shellA, shellB, rings, parts, pPos, pGeo, pMat, cluster, ringMat };
+  }
+  function updateReactor(now, dt, NN) {
+    if (!reactor) return;
+    if (!hasCore) measureCore();
+    reactor.visible = hasCore;
+    if (!hasCore) return;
+    const speaking = coreEl.classList.contains('speaking');
+    const listening = !!(micEl && micEl.classList.contains('live'));
+    const target = listening ? 1.0 : speaking ? 0.72 : 0.15;
+    heat += (target - heat) * Math.min(1, dt * 4);
+    const t = now / 1000;
+    const acc = accColor(), acc2 = acc2Color();
+    const u = reactor.userData;
+
+    reactor.position.set(wx(coreCX), wy(coreCY), 12);
+    const breathe = 1 + Math.sin(t * (speaking ? 7 : 1.6)) * (0.015 + 0.05 * heat);
+    reactor.scale.setScalar(coreR * breathe);
+    /* subtle tilt echoing the DOM core's mouse tilt */
+    reactor.rotation.x = (NN.pmy - .5) * -0.5;
+    reactor.rotation.y = (NN.pmx - .5) * 0.5 + t * (0.05 + 0.22 * heat);
+
+    u.orbMat.uniforms.uHeat.value = heat; u.orbMat.uniforms.uTime.value = t;
+    u.orbMat.uniforms.uC.value.copy(acc); u.orbMat.uniforms.uC2.value.copy(acc2);
+    u.shellA.rotation.y = t * (0.35 + 0.7 * heat); u.shellA.rotation.x = t * 0.22;
+    u.shellB.rotation.y = -t * (0.28 + 0.5 * heat); u.shellB.rotation.z = t * 0.18;
+    u.shellA.material.color.copy(acc); u.shellB.material.color.copy(acc);
+    u.shellA.material.opacity = 0.4 + 0.4 * heat;
+    u.rings.forEach((r, i) => { r.material.color.copy(acc); r.material.opacity = 0.32 + 0.4 * heat; r.rotation.z = t * (0.3 + i * 0.12) * (i % 2 ? -1 : 1); });
+    u.pMat.color.copy(acc2); u.pMat.size = (2.2 + 1.4 * heat) * DPR;
+
+    const pull = 1 - 0.22 * heat, spin = 0.5 + 2.2 * heat;
+    for (let i = 0; i < u.parts.length; i++) {
+      const p = u.parts[i], a = p.ph + t * p.sp * spin, rr = p.r * pull;
+      u.pPos[i * 3] = Math.cos(a) * rr; u.pPos[i * 3 + 1] = p.inc * rr; u.pPos[i * 3 + 2] = Math.sin(a) * rr;
+    }
+    u.pGeo.attributes.position.needsUpdate = true;
+  }
+
+  /* ======================= WARP BURST (replaces #warpfx) =======================
+     Radial streaks + a shock ring firing out of the core on navigation / galaxy jumps. */
+  const WSTREAK = coarse ? 80 : 160;
+  const warp = { active: false, t0: 0, dur: 900, parts: new Array(WSTREAK) };
+  for (let i = 0; i < WSTREAK; i++) warp.parts[i] = { a: 0, r0: 0, sp: 0, len: 0 };
+  const warpPos = new Float32Array(WSTREAK * 2 * 3);
+  const warpGeo = new THREE.BufferGeometry(); warpGeo.setAttribute('position', new THREE.BufferAttribute(warpPos, 3));
+  const warpMat = new THREE.LineBasicMaterial({ color: accColor().clone(), transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
+  const warpLines = new THREE.LineSegments(warpGeo, warpMat); warpLines.visible = false; warpLines.frustumCulled = false; scene.add(warpLines);
+  const ringGeo = new THREE.RingGeometry(0.92, 1.0, 96);
+  const ringMatW = new THREE.MeshBasicMaterial({ color: acc2Color().clone(), transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
+  const shockRing = new THREE.Mesh(ringGeo, ringMatW); shockRing.visible = false; scene.add(shockRing);
+  function fireWarp(dur) {
+    warp.active = true; warp.t0 = performance.now(); warp.dur = Math.max(400, dur || 900);
+    for (const p of warp.parts) { p.a = Math.random() * 6.283; p.r0 = 24 + Math.random() * 90; p.sp = 700 + Math.random() * 1500; p.len = 24 + Math.random() * 120; }
+    warpLines.visible = true; shockRing.visible = true;
+  }
+  function updateWarp(now) {
+    if (!warp.active) return;
+    const el = now - warp.t0, p = el / warp.dur;
+    if (p >= 1) { warp.active = false; warpLines.visible = false; shockRing.visible = false; warpMat.opacity = 0; ringMatW.opacity = 0; return; }
+    const cx = wx(coreCX), cy = wy(coreCY), fade = 1 - p, sec = el / 1000;
+    warpMat.color.copy(accColor()); warpMat.opacity = fade * 0.9;
+    for (let i = 0; i < warp.parts.length; i++) {
+      const q = warp.parts[i], r = q.r0 + q.sp * sec, r2 = r + q.len * (0.4 + fade), ca = Math.cos(q.a), sa = Math.sin(q.a);
+      warpPos[i * 6] = cx + ca * r; warpPos[i * 6 + 1] = cy + sa * r; warpPos[i * 6 + 2] = 16;
+      warpPos[i * 6 + 3] = cx + ca * r2; warpPos[i * 6 + 4] = cy + sa * r2; warpPos[i * 6 + 5] = 16;
+    }
+    warpGeo.attributes.position.needsUpdate = true;
+    shockRing.position.set(cx, cy, 15);
+    shockRing.scale.setScalar(coreR * (0.4 + p * 4.2));
+    ringMatW.color.copy(acc2Color()); ringMatW.opacity = fade * fade * 0.8;
+  }
+
   /* ripples (kinetic shockwaves), fed from the page via API.ripple() */
   const ripples = [];
 
@@ -167,7 +295,7 @@ import * as THREE from 'three';
   const API = {
     active: true,
     ripple(sx, sy) { if (ripples.length < 24) ripples.push({ x: wx(sx), y: wy(sy), r: 6, a: 1 }); },
-    burst() {/* warp burst — implemented in a later step */},
+    burst(dur) { measureCore(); fireWarp(dur); },
     dispose() { cleanup(); }
   };
   /* guarded first render — if a shader fails to compile/link, abort to the 2D fallback
@@ -193,6 +321,7 @@ import * as THREE from 'three';
     camera.aspect = W / H; camera.position.z = camZ(); camera.updateProjectionMatrix();
     gridUniforms.uRes.value.set(W, H);
     gridMesh.geometry.dispose(); gridMesh.geometry = new THREE.PlaneGeometry(W, H);
+    measureCore();
   }
   addEventListener('resize', resize, { passive: true });
 
@@ -273,6 +402,8 @@ import * as THREE from 'three';
       lines.visible = true;
     } else if (lines) lines.visible = false;
 
+    updateReactor(now, dt, NN);
+    updateWarp(now);
     renderer.render(scene, camera);
   }
   raf = requestAnimationFrame(frame);
