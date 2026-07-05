@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#02050a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><polygon points='32,5 55,18.5 55,45.5 32,59 9,45.5 9,18.5' fill='%23041018' stroke='%2300e5ff' stroke-width='2.5'/><circle cx='32' cy='32' r='15' fill='none' stroke='%2300e5ff' stroke-width='1.5' opacity='.55'/><circle cx='32' cy='32' r='8' fill='%2300e5ff'/><circle cx='47' cy='32' r='2.6' fill='%237df9ff'/></svg>">
 <title>NETNEXUS // STARK-CORE COMMAND DECK</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -468,6 +469,15 @@ document.addEventListener('DOMContentLoaded', () => {
     { id:'tool-converter', title:'Unit & Time Zone Converter', tags:['convert','units','bytes','timezone','utc','storage','gigabyte','time'], path:'./tool-converter/index.html',
       galaxy:'it', code:'UTL-12', glyph:'⇌', desc:'Dual-column instrumentation — digital storage conversions and global datacenter time offsets.',
       m:[['UNIT MATRIX','U',10],['TZ FEEDS','ZN',11],['DRIFT','s',0.001]], line:'Deploying universal conversion instruments, sir.' },
+    { id:'tool-regex', title:'Regex Laboratory', tags:['regex','regexp','pattern','match','validate','grep','replace','capture'], path:'./tool-regex/index.html',
+      galaxy:'it', code:'DEV-13', glyph:'∷', desc:'Live regular-expression bench — real-time match highlighting, capture groups, substitution, and a field-tested pattern library.',
+      m:[['MATCH ENGINE','ns',120],['PATTERN LIB','RGX',14],['CAPTURE','GRP',9]], line:'Regex laboratory online. Show me a pattern worth solving, sir.' },
+    { id:'tool-json', title:'JSON & Data Forge', tags:['json','format','minify','validate','csv','yaml','jwt','tree','beautify'], path:'./tool-json/index.html',
+      galaxy:'it', code:'DEV-14', glyph:'⬗', desc:'Format, validate, and minify JSON, convert between JSON and CSV, and decode JWT payloads — every byte processed locally.',
+      m:[['PARSE','MB/s',180],['CSV BRIDGE','%',100],['JWT DECODE','ms',0.3]], line:'Data forge engaged. Feed me your payload, sir.' },
+    { id:'tool-encoder', title:'Encoder & Hash Terminal', tags:['base64','url','encode','decode','hex','sha','hash','uuid','entity'], path:'./tool-encoder/index.html',
+      galaxy:'it', code:'SEC-15', glyph:'⧉', desc:'Base64, URL, HTML-entity and hex transforms plus SHA-1/256/384/512 digests and UUID minting — all in-browser.',
+      m:[['CODECS','FMT',8],['SHA CORE','bit',512],['UUID GEN','v4',1]], line:'Encoding terminal ready. Nothing leaves this machine, sir.' },
     { id:'tool-vibe-focus', title:'Vibe & Focus Workspace', tags:['pomodoro','focus','notes','lofi','noise','markdown','timer','ambient'], path:'./tool-vibe-focus/index.html',
       galaxy:'gen', code:'GEN-13', glyph:'◉', desc:'Pomodoro execution timer, generated ambient soundscapes, and a persistent markdown canvas.',
       m:[['FOCUS CLK','min',25],['NOISE GEN','CH',4],['NOTE SYNC','%',100]], line:'Dimming the lights for deep focus, sir.' },
@@ -488,7 +498,16 @@ document.addEventListener('DOMContentLoaded', () => {
       m:[['MOD LEDGER','REC',0],['FPS TARGET','fps',60],['LINK GRID','URL',12]], line:'Tactical operations center, at your service, sir.' },
     { id:'tool-finance-flow', title:'Finance Flow Ledger', tags:['subscription','budget','expense','cash','ledger','burn','money','finance'], path:'./tool-finance-flow/index.html',
       galaxy:'gen', code:'GEN-19', glyph:'◈', desc:'Private subscription ledger — burn rates, renewal radar, and HUD charts, 100% local.',
-      m:[['BURN CALC','%',100],['EXT SYNC','API',0],['RENEW SCAN','d',30]], line:'Opening the private ledger. Your secrets are safe with me, sir.' }
+      m:[['BURN CALC','%',100],['EXT SYNC','API',0],['RENEW SCAN','d',30]], line:'Opening the private ledger. Your secrets are safe with me, sir.' },
+    { id:'tool-color', title:'Color Studio', tags:['color','hex','rgb','hsl','palette','contrast','wcag','gradient','picker'], path:'./tool-color/index.html',
+      galaxy:'gen', code:'GEN-20', glyph:'◐', desc:'Pick, convert and harmonize colors — HEX/RGB/HSL, shade ramps, WCAG contrast scoring, and copy-ready CSS gradients.',
+      m:[['GAMUT','fmt',3],['WCAG CHECK','AA',1],['SHADE RAMP','stp',10]], line:'Color studio illuminated. Let us make something beautiful, sir.' },
+    { id:'tool-text', title:'Text Toolkit', tags:['text','word','count','case','sort','dedupe','slug','lorem','reverse'], path:'./tool-text/index.html',
+      galaxy:'gen', code:'GEN-21', glyph:'Ξ', desc:'Word & character counters, case conversion, line sort/dedupe, find & replace, slugify, and lorem-ipsum — instant and private.',
+      m:[['COUNTERS','MET',5],['CASE MODES','FN',6],['THROUGHPUT','ch/s',900000]], line:'Text toolkit deployed. Every character accounted for, sir.' },
+    { id:'tool-calc', title:'Everyday Calculators', tags:['calculator','tip','split','loan','mortgage','percentage','bmi','interest','budget'], path:'./tool-calc/index.html',
+      galaxy:'gen', code:'GEN-22', glyph:'⊞', desc:'Practical math on tap — tip & bill splitting, loan amortization, a percentage solver, and a body-metrics calculator.',
+      m:[['MODULES','CALC',4],['AMORT','mo',360],['PRECISION','dp',2]], line:'Running the numbers, sir. The mathematics never lie.' }
   ];
   window.toolRegistry = toolRegistry;
   T('MODULE REGISTRY :: ' + toolRegistry.length + ' MODULES INDEXED', 'ok');
@@ -594,9 +613,11 @@ document.addEventListener('DOMContentLoaded', () => {
     clkL.textContent = d.toTimeString().slice(0,8);
     clkU.textContent = d.toISOString().slice(11,19);
   }, 1000);
+  const itCount  = toolRegistry.filter(t => t.galaxy === 'it').length;
+  const genCount = toolRegistry.filter(t => t.galaxy === 'gen').length;
   $('#tick').innerHTML = Array(2).fill(
-    '<b>◈ NETNEXUS v2.1</b> — STARK-CORE DIGITAL ENVIRONMENT &nbsp;·&nbsp; 19 MODULES REGISTERED &nbsp;·&nbsp; ' +
-    '<b>IT GALAXY</b> 12 BODIES &nbsp;·&nbsp; <b>GENERAL GALAXY</b> 7 BODIES &nbsp;·&nbsp; ORBITAL MECHANICS: TRUE-3D PERSPECTIVE &nbsp;·&nbsp; ' +
+    '<b>◈ NETNEXUS v2.1</b> — STARK-CORE DIGITAL ENVIRONMENT &nbsp;·&nbsp; ' + toolRegistry.length + ' MODULES REGISTERED &nbsp;·&nbsp; ' +
+    '<b>IT GALAXY</b> ' + itCount + ' BODIES &nbsp;·&nbsp; <b>GENERAL GALAXY</b> ' + genCount + ' BODIES &nbsp;·&nbsp; ORBITAL MECHANICS: TRUE-3D PERSPECTIVE &nbsp;·&nbsp; ' +
     'NEXUS NEURAL LATTICE: SYNCED &nbsp;·&nbsp; EMITTER ARRAY: NOMINAL &nbsp;·&nbsp; ERROR INTERCEPTOR: ARMED [CTRL+`] &nbsp;·&nbsp; '
   ).join('');
 
@@ -821,8 +842,8 @@ document.addEventListener('DOMContentLoaded', () => {
       el.addEventListener('mouseleave', () => { NN.tspeed = 1; if (focusedP === p) focusedP = null; el.classList.remove('focused'); holoHideSoon(); });
       el.addEventListener('focus', () => { focusedP = p; el.classList.add('focused'); holoShow(tool); });
       el.addEventListener('blur', () => { if (focusedP === p) focusedP = null; el.classList.remove('focused'); holoHideSoon(); });
-      el.addEventListener('click', () => warpTo(tool));
-      el.addEventListener('keydown', e => { if (e.key === 'Enter') warpTo(tool); });
+      el.addEventListener('click', () => warpTo(tool, {fast:true}));
+      el.addEventListener('keydown', e => { if (e.key === 'Enter') warpTo(tool, {fast:true}); });
       if (NN.mobile) el.style.animationDelay = (Math.min(i, 14) * 0.045) + 's';   /* staggered card entrance */
       if (warpIn && !NN.mobile){
         const q = computePose(p);
@@ -877,7 +898,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   holo.addEventListener('mouseenter', () => { clearTimeout(holoHide); NN.tspeed = 0; });
   holo.addEventListener('mouseleave', holoHideSoon);
-  $('#hGo').addEventListener('click', () => { if (holoTool) warpTo(holoTool); });
+  $('#hGo').addEventListener('click', () => { if (holoTool) warpTo(holoTool, {fast:true}); });
 
   /* ================= GALAXY SWITCH + WARP ================= */
   function warpOutPlanets(scale){
@@ -907,12 +928,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 640);
   }
   $('#gswitch').addEventListener('click', () => switchGalaxy(NN.galaxy === 'it' ? 'gen' : 'it'));
-  function warpTo(tool){
+  function warpTo(tool, opts){
+    opts = opts || {};
     if (NN.mode === 'warp') return;
     if (tool.galaxy !== NN.galaxy){
-      say('Rerouting across galaxies, sir.');
+      if (!opts.fast) say('Rerouting across galaxies, sir.');
       switchGalaxy(tool.galaxy, true);
-      setTimeout(() => warpTo(tool), 1750);
+      setTimeout(() => warpTo(tool, opts), opts.fast ? 1050 : 1750);
       return;
     }
     NN.mode = 'warp';
@@ -920,11 +942,19 @@ document.addEventListener('DOMContentLoaded', () => {
     holo.classList.remove('on'); clearInterval(metricTimer);
     warpBurst(1100); warpOutPlanets(7);
     corewrap.style.transition = 'filter .8s'; corewrap.style.filter = 'brightness(1.9) blur(2px)';
-    /* navigate only after NEXUS finishes the line (and the warp animation lands) — no more mid-sentence cutoffs */
-    const t0 = performance.now(); let gone = false;
+    let gone = false;
     const go = () => { if (gone) return; gone = true; window.location.href = tool.path; };
-    say(tool.line, () => setTimeout(go, Math.max(0, 1050 - (performance.now() - t0))));
-    setTimeout(go, 5000);   /* hard cap — a stuck speech engine never holds the warp hostage */
+    /* A deliberate CLICK/tap wants to GO — the module opens the moment the warp animation reads,
+       NEXUS keeps talking (his line resumes in the tool's own strip). A VOICE command still waits
+       for the spoken confirmation so it's never cut mid-sentence. */
+    if (opts.fast){
+      say(tool.line);              /* fire-and-forget — don't hold the redirect hostage */
+      setTimeout(go, 560);         /* enough for the warp to land; feels instant */
+    } else {
+      const t0 = performance.now();
+      say(tool.line, () => setTimeout(go, Math.max(0, 1050 - (performance.now() - t0))));
+      setTimeout(go, 5000);        /* hard cap — a stuck speech engine never holds the warp hostage */
+    }
   }
   window.NN_warpTo = warpTo;
 
@@ -1002,7 +1032,13 @@ document.addEventListener('DOMContentLoaded', () => {
     'tool-mp3-converter':['audio','audio bay','mp3','convert audio','wav'],
     'tool-market-tracker':['market','stocks','crypto prices','bitcoin','investments','ticker'],
     'tool-game-tactical':['game','games','gaming','mods','fps','benchmark','loadout'],
-    'tool-finance-flow':['finance','budget','subscriptions','expenses','cash flow','ledger']
+    'tool-finance-flow':['finance','budget','subscriptions','expenses','cash flow','ledger'],
+    'tool-regex':['regex','regexp','regular expression','pattern','pattern match','grep'],
+    'tool-json':['json','data forge','format json','minify','csv','jwt','json to csv','pretty print'],
+    'tool-encoder':['encoder','encode','decode','base64','base 64','url encode','hash','sha','sha256','uuid','epoch','timestamp'],
+    'tool-color':['color','colour','color studio','hex','rgb','palette','contrast','gradient','color picker'],
+    'tool-text':['text','text toolkit','word count','character count','case converter','lorem','lorem ipsum','uppercase','lowercase','slug'],
+    'tool-calc':['calculator','calculate','tip','tip calculator','split the bill','loan','mortgage','percentage','percent','b m i','body mass']
   };
   const vnorm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -1163,7 +1199,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(() => {
     hudTL.innerHTML = 'SYS.PWR <b>' + (95.8 + Math.random() * 3.4).toFixed(1) + '%</b><br>CORE TEMP <b>' + (32.5 + Math.random() * 4.2).toFixed(1) + '°C</b><br>EMITTERS <b>NOMINAL</b>';
     hudBL.innerHTML = 'ORBITAL CLK <b>' + NN.t.toFixed(2) + '</b><br>FRAME <b>' + Math.round(NN.fps) + ' FPS</b><br>LATTICE <b>' + nodes.length + ' NODES</b>';
-    hudBR.innerHTML = 'GALAXY <b>' + (NN.galaxy === 'it' ? 'IT — 12 BODIES' : 'GENERAL — 7 BODIES') + '</b><br>UPLINK <b>STABLE</b><br>MODE <b>' + NN.mode.toUpperCase() + '</b>';
+    hudBR.innerHTML = 'GALAXY <b>' + (NN.galaxy === 'it' ? 'IT — ' + itCount + ' BODIES' : 'GENERAL — ' + genCount + ' BODIES') + '</b><br>UPLINK <b>STABLE</b><br>MODE <b>' + NN.mode.toUpperCase() + '</b>';
   }, 620);
 
   /* ================= RESPONSIVE / ADAPTIVE LAYOUT ================= */

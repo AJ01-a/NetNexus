@@ -1,6 +1,6 @@
 # ◈ NETNEXUS — STARK-CORE Digital Environment
 
-A cinematic, fully client-side toolbox of **19 IT & productivity utilities** wrapped in an Iron-Man-style holographic HUD. Everything runs in the browser — no server, no build step, no bundler. Open `index.html` and go.
+A cinematic, fully client-side toolbox of **25 IT & productivity utilities** wrapped in an Iron-Man-style holographic HUD. Everything runs in the browser — no server, no build step, no bundler. Open `index.html` and go.
 
 > **v2.1** · Vanilla HTML5 / CSS3 / ES6+ · Tailwind (Play CDN, with a hand-written style-core fallback) · zero backend.
 
@@ -16,7 +16,7 @@ Each tool is a self-contained `index.html` inside its own folder and can be open
 
 ## The Command Deck (`index.html`)
 
-The hub is a 3D orbital interface where the 19 tools orbit a central **NEXUS** core as planets:
+The hub is a 3D orbital interface where the 25 tools orbit a central **NEXUS** core as planets:
 
 - **3-layer parallax background** — a drifting diagnostic grid, a cursor-reactive node lattice with click shockwaves, and cascading foreground telemetry (binary rain, graphs, a radar sweep).
 - **NEXUS core** — concentric vector rings on independent axes, a cursor-tracking lens, and the browser's Web Speech API for spoken responses with live frequency bars. Click the core for a random diagnostic quip. A **VOX picker** in the command bar lets you choose which installed system voice NEXUS speaks with (pitched low by default).
@@ -30,7 +30,7 @@ The hub is a 3D orbital interface where the 19 tools orbit a central **NEXUS** c
 
 ## Tools
 
-### IT Galaxy (12)
+### IT Galaxy (15)
 
 | Code | Tool | What it does |
 |------|------|--------------|
@@ -46,8 +46,11 @@ The hub is a 3D orbital interface where the 19 tools orbit a central **NEXUS** c
 | PWR-10 | **PoE Power Budget** | Drop device profiles against a switch budget; live utilization gauge, stacked composition chart, and breach alarms. |
 | LOG-11 | **CMTrace Reader** | Drag-and-drop SCCM/MECM `.log` parsing into a CMTrace-style grid with severity highlighting and jump-to-error. |
 | UTL-12 | **Unit & Time Converter** | Digital-storage conversions (decimal & binary) alongside a DST-aware global datacenter time-zone board. |
+| DEV-13 | **Regex Laboratory** | Live regex bench with real-time match highlighting, capture & named groups, substitution preview, and a 14-pattern field library (email/IP/MAC/UUID/…) plus a token cheat-sheet. |
+| DEV-14 | **JSON & Data Forge** | Format/validate/minify JSON with syntax highlighting and error line/col, convert JSON↔CSV, and decode JWT header/payload with expiry checks — every byte local. |
+| SEC-15 | **Encoder & Hash Terminal** | Two-way Base64/Base64URL/URL/HTML-entity/hex/binary/ROT13/Unicode transforms, SHA-1/256/384/512 digests via WebCrypto, UUIDv4 minting, and a bidirectional epoch↔date converter. |
 
-### General Galaxy (7)
+### General Galaxy (10)
 
 | Code | Tool | What it does |
 |------|------|--------------|
@@ -58,6 +61,9 @@ The hub is a 3D orbital interface where the 19 tools orbit a central **NEXUS** c
 | GEN-17 | **Market Tracker** | Live crypto cards with 7-day sparklines via the CoinGecko public API, a persistent watchlist, and deep-linked semiconductor/tech equities. |
 | GEN-18 | **Tactical Game Tracker** | Per-profile mod ledger, graphics-config log, FPS benchmark charts (avg vs 1% low), and a saved link matrix — all local. |
 | GEN-19 | **Finance Flow** | 100% private subscription ledger — burn-rate metrics, category donut, 12-month projection, and renewal radar, stored only in `localStorage`. |
+| GEN-20 | **Color Studio** | Pick/convert HEX·RGB·HSL·HSV·CMYK, generate a 10-step shade ramp and complementary/analogous/triadic harmonies, score WCAG 2.1 contrast (AA/AAA), and forge copy-ready CSS gradients. |
+| GEN-21 | **Text Toolkit** | Live counters (chars/words/sentences/lines/paragraphs/reading-time), case conversion (incl. camel/snake/kebab), line sort/dedupe/shuffle, find & replace (literal or regex), slugify, and a Lorem-ipsum generator with undo. |
+| GEN-22 | **Everyday Calculators** | Tip & bill split, fixed-rate loan/mortgage amortization, a triple percentage solver, and a metric/imperial BMI calculator with healthy-range readouts. |
 
 ---
 
