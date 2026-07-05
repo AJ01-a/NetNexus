@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
 <style>
 /* ============ STARK-CORE VISUAL ENGINE v2.1 ============ */
 :root{
@@ -37,6 +38,10 @@ body{
 ::selection{background:var(--accd);color:var(--acc2)}
 canvas.layer{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none}
 #L1{z-index:1}#L2{z-index:2}#L3{z-index:3}#warpfx{z-index:40;position:fixed;inset:0;pointer-events:none}
+/* consolidated WebGL layer (only shown once nexus-gl.js confirms a live context) */
+#gl{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;display:none}
+body.gl-active #gl{display:block}
+body.gl-active #L1,body.gl-active #L2,body.gl-active #warpfx{display:none}
 .scan{position:fixed;inset:0;z-index:44;pointer-events:none;opacity:.55;
   background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.15) 2px 3px);
   box-shadow:inset 0 0 220px rgba(0,0,0,.75);}
@@ -308,6 +313,7 @@ body.mobile #ticker{display:none}
 </style>
 </head>
 <body>
+<canvas id="gl"></canvas>
 <canvas id="L1" class="layer"></canvas>
 <canvas id="L2" class="layer"></canvas>
 <canvas id="L3" class="layer"></canvas>
@@ -633,6 +639,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ================= SHARED STATE ================= */
   const NN = { t: 0, speed: 1, tspeed: 1, mode: 'run', galaxy: 'it', mx: innerWidth/2, my: innerHeight/2,
                pmx: .5, pmy: .5, gx: 0, gy: 0, small: false, low: false, fps: 60 };
+  window.__NN = NN;   /* live state bridge for the WebGL layer (nexus-gl.js) */
   const ACC = { it: '0,229,255', gen: '255,157,51' };
   const accRGB = () => ACC[NN.galaxy];
   window.addEventListener('pointermove', e => { NN.mx = e.clientX; NN.my = e.clientY; }, { passive: true });
@@ -704,6 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = e.target.id;
     if (id === 'space' || id === 'field' || e.target === document.body){
       waves.push({ x: e.clientX, y: e.clientY, r: 6, a: 1 });
+      if (window.NEXUSGL && window.NEXUSGL.active) window.NEXUSGL.ripple(e.clientX, e.clientY);
       T('KINETIC RIPPLE @ ' + e.clientX + ',' + e.clientY, 'info');
     }
   });
@@ -793,6 +801,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* warp streak overlay */
   let streaks = null;
   function warpBurst(dur){
+    if (window.NEXUSGL && window.NEXUSGL.active){ window.NEXUSGL.burst(dur); return; }
     streaks = { until: performance.now() + dur, parts: Array.from({ length: 150 }, () => ({
       a: Math.random() * Math.PI * 2, r: 30 + Math.random() * 90, sp: 700 + Math.random() * 1300, w: .6 + Math.random() * 1.8 })) };
   }
@@ -1237,9 +1246,8 @@ document.addEventListener('DOMContentLoaded', () => {
     NN.fps = lerp(NN.fps, dt > 0 ? 1 / dt : 60, .05);
     NN.pmx = lerp(NN.pmx, NN.mx / W, .07); NN.pmy = lerp(NN.pmy, NN.my / H, .07);
     if (!document.hidden){
-      drawL1(dt); drawL2(dt);
+      if (!(window.NEXUSGL && window.NEXUSGL.active)){ drawL1(dt); drawL2(dt); drawWarp(dt); }
       if (!NN.low) drawL3(dt);
-      drawWarp(dt);
       orbitStep(dt);
       /* lens tracking + core tilt with inertia */
       const px = (NN.pmx - .5) * 2, py = (NN.pmy - .5) * 2;
@@ -1305,5 +1313,6 @@ document.addEventListener('DOMContentLoaded', () => {
   T((SR ? 'VOICE COMMAND ENGINE ARMED — CLICK “LISTEN”. ' : '') + 'AWAITING COMMAND, SIR.', 'sys');
 });
 </script>
+<script type="module" src="./gl/nexus-gl.js"></script>
 </body>
 </html>
