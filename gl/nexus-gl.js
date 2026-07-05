@@ -411,10 +411,12 @@ import * as THREE from 'three';
     const dt = clamp((now - last) / 1000, 0, .05); last = now;
     const NN = window.__NN || { mx: W / 2, my: H / 2, pmx: .5, pmy: .5, t: now / 1000, speed: 1, low: false };
 
-    /* idle throttle: if the pointer is still and nothing is animating, halve the cadence */
+    /* idle throttle: halve cadence only when truly idle — never while the reactor
+       is hot (speaking / LISTENING / warping) or a ripple is live. */
+    const hot = warp.active || (coreEl && coreEl.classList.contains('speaking')) || (micEl && micEl.classList.contains('live'));
     const moved = Math.abs(NN.mx - lastMx) + Math.abs(NN.my - lastMy) > 1.5;
     lastMx = NN.mx; lastMy = NN.my;
-    idle = moved || ripples.length ? 0 : idle + dt;
+    idle = (moved || ripples.length || hot) ? 0 : idle + dt;
     if (idle > 1.2 && (now & 1)) return; /* skip ~half the frames when truly idle */
 
     const acc = accColor(), acc2 = acc2Color();

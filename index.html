@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
 <script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+<script defer src="./vendor/gsap.min.js"></script>
 <style>
 /* ============ STARK-CORE VISUAL ENGINE v2.1 ============ */
 :root{
@@ -313,6 +314,14 @@ body.mobile #ticker{display:none}
   .planet.match,.cbtn.mic.live .micdot,#micbtn.live,#voicehud .vh-ring span{animation-duration:2.4s}
 }
 .hidden{display:none!important}
+/* ---------- glassmorphism / depth polish (safe: no transform props) ---------- */
+#cmdbar{backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 10px 34px rgba(0,0,0,.42)}
+.planet{backdrop-filter:blur(11px) saturate(1.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 8px 22px rgba(0,0,0,.3)}
+#holo{backdrop-filter:blur(18px) saturate(1.35);-webkit-backdrop-filter:blur(18px) saturate(1.35);
+  box-shadow:0 24px 66px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08)}
+#term{backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3)}
+.hud{text-shadow:0 0 12px rgba(2,5,10,.7);will-change:transform}
 </style>
 </head>
 <body>
@@ -432,7 +441,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const _cerr = console.error.bind(console), _cwarn = console.warn.bind(console);
   console.error = (...a) => { T(a.map(String).join(' '), 'err'); _cerr(...a); };
   console.warn  = (...a) => { T(a.map(String).join(' '), 'warn'); _cwarn(...a); };
-  function termToggle(force){ term.classList.toggle('open', force); }
+  function termToggle(force){
+    const open = term.classList.toggle('open', force);
+    /* GSAP: cascade the log lines like an OS panel unfolding (children only —
+       never the panel transform, which CSS owns for the slide). */
+    if (open && window.gsap) window.gsap.from('#termBody .tline', { y: 8, opacity: 0, stagger: 0.012, duration: .3, ease: 'power2.out', overwrite: 'auto' });
+    return open;
+  }
   $('#tbtn').addEventListener('click', () => termToggle());
   $('#termX').addEventListener('click', () => termToggle(false));
   window.addEventListener('keydown', e => { if (e.ctrlKey && e.key === '`') { e.preventDefault(); termToggle(); } });
@@ -1256,6 +1271,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const px = (NN.pmx - .5) * 2, py = (NN.pmy - .5) * 2;
       $('#pupil').style.transform = 'translate(' + (px * 16) + 'px,' + (py * 16) + 'px)';
       $('#core').style.transform = 'rotateY(' + (px * 9) + 'deg) rotateX(' + (-py * 9) + 'deg)';
+      /* subtle holographic parallax on the corner HUD readouts (depth cue) */
+      hudTL.style.transform = 'translate3d(' + (px * -7) + 'px,' + (py * -7) + 'px,0)';
+      hudBL.style.transform = 'translate3d(' + (px * -7) + 'px,' + (py * 7) + 'px,0)';
+      hudBR.style.transform = 'translate3d(' + (px * 7) + 'px,' + (py * 7) + 'px,0)';
     }
     if (!perfChecked && now > 9000){
       perfAcc += dt; perfN++;
@@ -1297,6 +1316,12 @@ document.addEventListener('DOMContentLoaded', () => {
     boot.classList.add('done');
     setTimeout(() => boot.remove(), 800);
     T('BOOT SEQUENCE COMPLETE — ALL SYSTEMS NOMINAL', 'ok');
+    /* GSAP: OS-boot cascade of the command chrome (safe elements only —
+       core/planets keep their own per-frame transforms). */
+    if (window.gsap){
+      window.gsap.from('#cmdbar > *', { y: -14, opacity: 0, stagger: 0.05, duration: .5, ease: 'power3.out' });
+      window.gsap.from(['.hud', '#ticker'], { opacity: 0, duration: 1.0, delay: .2, ease: 'power1.out' });
+    }
     tryGreet();
   }
   BL.forEach((l, i) => setTimeout(() => {
