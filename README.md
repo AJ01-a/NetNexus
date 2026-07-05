@@ -1,6 +1,6 @@
 # ◈ NETNEXUS — STARK-CORE Digital Environment
 
-A cinematic, fully client-side toolbox of **25 IT & productivity utilities** wrapped in an Iron-Man-style holographic HUD. Everything runs in the browser — no server, no build step, no bundler. Open `index.html` and go.
+A cinematic, fully client-side toolbox of **28 IT & productivity utilities** wrapped in an Iron-Man-style holographic HUD. Everything runs in the browser — no server, no build step, no bundler. Open `index.html` and go.
 
 > **v2.1** · Vanilla HTML5 / CSS3 / ES6+ · Tailwind (Play CDN, with a hand-written style-core fallback) · zero backend.
 
@@ -16,7 +16,7 @@ Each tool is a self-contained `index.html` inside its own folder and can be open
 
 ## The Command Deck (`index.html`)
 
-The hub is a 3D orbital interface where the 25 tools orbit a central **NEXUS** core as planets:
+The hub is a 3D orbital interface where the 28 tools orbit a central **NEXUS** core as planets:
 
 - **3-layer parallax background** — a drifting diagnostic grid, a cursor-reactive node lattice with click shockwaves, and cascading foreground telemetry (binary rain, graphs, a radar sweep).
 - **NEXUS core** — concentric vector rings on independent axes, a cursor-tracking lens, and the browser's Web Speech API for spoken responses with live frequency bars. Click the core for a random diagnostic quip. A **VOX picker** in the command bar lets you choose which installed system voice NEXUS speaks with (pitched low by default).
@@ -50,7 +50,7 @@ The hub is a 3D orbital interface where the 25 tools orbit a central **NEXUS** c
 | DEV-14 | **JSON & Data Forge** | Format/validate/minify JSON with syntax highlighting and error line/col, convert JSON↔CSV, and decode JWT header/payload with expiry checks — every byte local. |
 | SEC-15 | **Encoder & Hash Terminal** | Two-way Base64/Base64URL/URL/HTML-entity/hex/binary/ROT13/Unicode transforms, SHA-1/256/384/512 digests via WebCrypto, UUIDv4 minting, and a bidirectional epoch↔date converter. |
 
-### General Galaxy (10)
+### General Galaxy (13)
 
 | Code | Tool | What it does |
 |------|------|--------------|
@@ -64,6 +64,9 @@ The hub is a 3D orbital interface where the 25 tools orbit a central **NEXUS** c
 | GEN-20 | **Color Studio** | Pick/convert HEX·RGB·HSL·HSV·CMYK, generate a 10-step shade ramp and complementary/analogous/triadic harmonies, score WCAG 2.1 contrast (AA/AAA), and forge copy-ready CSS gradients. |
 | GEN-21 | **Text Toolkit** | Live counters (chars/words/sentences/lines/paragraphs/reading-time), case conversion (incl. camel/snake/kebab), line sort/dedupe/shuffle, find & replace (literal or regex), slugify, and a Lorem-ipsum generator with undo. |
 | GEN-22 | **Everyday Calculators** | Tip & bill split, fixed-rate loan/mortgage amortization, a triple percentage solver, and a metric/imperial BMI calculator with healthy-range readouts. |
+| GEN-23 | **QR Code Studio** | From-scratch QR encoder (byte mode, Reed-Solomon ECC, automatic version + mask) for text/URL/WiFi/email/phone/SMS payloads; adjustable ECC, colors, and quiet zone; exports PNG & SVG — verified by independent round-trip decode. |
+| GEN-24 | **Date & Age Calculator** | Age to the day, duration between dates (with business-day counts), date add/subtract with month-clamping, and single-date facts — ISO week, day-of-year, quarter, leap year. |
+| GEN-25 | **Random & Decision Maker** | Dice (any sides + modifier), coin flips, ranged/unique numbers, list pickers, shuffles, and fair team splitters — all drawn unbiased from `crypto.getRandomValues`. |
 
 ---
 

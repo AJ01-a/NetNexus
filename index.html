@@ -507,7 +507,16 @@ document.addEventListener('DOMContentLoaded', () => {
       m:[['COUNTERS','MET',5],['CASE MODES','FN',6],['THROUGHPUT','ch/s',900000]], line:'Text toolkit deployed. Every character accounted for, sir.' },
     { id:'tool-calc', title:'Everyday Calculators', tags:['calculator','tip','split','loan','mortgage','percentage','bmi','interest','budget'], path:'./tool-calc/index.html',
       galaxy:'gen', code:'GEN-22', glyph:'⊞', desc:'Practical math on tap — tip & bill splitting, loan amortization, a percentage solver, and a body-metrics calculator.',
-      m:[['MODULES','CALC',4],['AMORT','mo',360],['PRECISION','dp',2]], line:'Running the numbers, sir. The mathematics never lie.' }
+      m:[['MODULES','CALC',4],['AMORT','mo',360],['PRECISION','dp',2]], line:'Running the numbers, sir. The mathematics never lie.' },
+    { id:'tool-qr', title:'QR Code Studio', tags:['qr','qr code','barcode','generate','wifi','url','scan','link','vcard'], path:'./tool-qr/index.html',
+      galaxy:'gen', code:'GEN-23', glyph:'▦', desc:'Forge scan-ready QR codes for links, WiFi, email and SMS — a from-scratch encoder rendered locally and exportable as PNG or SVG.',
+      m:[['VERSIONS','v',40],['ECC LVL','n',4],['EXPORT','fmt',2]], line:'QR studio online. Give me a payload and I will forge the code, sir.' },
+    { id:'tool-datecalc', title:'Date & Age Calculator', tags:['date','age','days','duration','calendar','birthday','countdown','weekday','week'], path:'./tool-datecalc/index.html',
+      galaxy:'gen', code:'GEN-24', glyph:'◷', desc:'Age to the day, duration between dates, business-day counts, date arithmetic, and ISO week / day-of-year facts.',
+      m:[['MODES','fn',4],['DAY CALC','%',100],['ISO WEEK','w',53]], line:'Date engine ready. The calendar holds no secrets, sir.' },
+    { id:'tool-random', title:'Random & Decision Maker', tags:['random','dice','coin','flip','picker','shuffle','teams','decision','number','raffle'], path:'./tool-random/index.html',
+      galaxy:'gen', code:'GEN-25', glyph:'⚄', desc:'Dice, coin flips, number ranges, list pickers, shuffles, and fair team splitters — seeded from crypto.getRandomValues.',
+      m:[['CSPRNG','bit',32],['MODES','fn',6],['BIAS','%',0]], line:'Randomizer primed. Let fate decide, sir.' }
   ];
   window.toolRegistry = toolRegistry;
   T('MODULE REGISTRY :: ' + toolRegistry.length + ' MODULES INDEXED', 'ok');
@@ -1038,7 +1047,10 @@ document.addEventListener('DOMContentLoaded', () => {
     'tool-encoder':['encoder','encode','decode','base64','base 64','url encode','hash','sha','sha256','uuid','epoch','timestamp'],
     'tool-color':['color','colour','color studio','hex','rgb','palette','contrast','gradient','color picker'],
     'tool-text':['text','text toolkit','word count','character count','case converter','lorem','lorem ipsum','uppercase','lowercase','slug'],
-    'tool-calc':['calculator','calculate','tip','tip calculator','split the bill','loan','mortgage','percentage','percent','b m i','body mass']
+    'tool-calc':['calculator','calculate','tip','tip calculator','split the bill','loan','mortgage','percentage','percent','b m i','body mass'],
+    'tool-qr':['qr','qr code','q r code','barcode','bar code','generate qr','wifi code','scan code'],
+    'tool-datecalc':['date','date calculator','age','age calculator','how old','days between','countdown','birthday','week number'],
+    'tool-random':['random','randomizer','dice','roll','roll dice','coin','coin flip','flip a coin','pick','picker','shuffle','decision','decide','teams','raffle']
   };
   const vnorm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();

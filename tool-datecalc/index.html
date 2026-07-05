@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" data-galaxy="gen">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#02050a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><polygon points='32,5 55,18.5 55,45.5 32,59 9,45.5 9,18.5' fill='%23041018' stroke='%2300e5ff' stroke-width='2.5'/><circle cx='32' cy='32' r='15' fill='none' stroke='%2300e5ff' stroke-width='1.5' opacity='.55'/><circle cx='32' cy='32' r='8' fill='%2300e5ff'/><circle cx='47' cy='32' r='2.6' fill='%237df9ff'/></svg>">
+<title>NETNEXUS // GEN-24 DATE &amp; AGE CALCULATOR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
+<style>
+:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--bg0:#02050a;--ink:#d9f4ff;--mut:#6b93ab;--panel:rgba(7,17,27,.82);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
+html[data-galaxy="gen"]{--acc:#ff9d33;--acc2:#ffc46b;--accd:rgba(255,157,51,.14);--line:rgba(255,157,51,.30);--acc-glow:rgba(255,157,51,.32)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:radial-gradient(1200px 700px at 50% -12%,#0a1e30 0%,var(--bg0) 58%) fixed,var(--bg0);color:var(--ink);font-family:var(--ui);min-height:100vh;overflow-x:hidden}
+::selection{background:var(--accd);color:var(--acc2)}
+#bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh}
+.scan{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.15) 2px 3px);box-shadow:inset 0 0 200px rgba(0,0,0,.7)}
+#topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(4,12,20,.94),rgba(4,12,20,.7));backdrop-filter:blur(10px)}
+.brand{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.22em;color:var(--acc);text-shadow:0 0 14px var(--acc-glow);white-space:nowrap}
+.brand b{color:var(--ink);font-weight:500}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.18em;border:1px solid var(--line);color:var(--acc2);padding:3px 9px;background:var(--accd);white-space:nowrap}
+.chip.ghost{color:var(--mut);border-color:rgba(107,147,171,.3);background:none}
+.spacer{flex:1}
+#clk{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.12em;white-space:nowrap}
+#clk b{color:var(--acc2);font-weight:400}
+.rtn{font-family:var(--disp);font-size:9.5px;letter-spacing:.24em;color:var(--acc);border:1px solid var(--line);background:var(--accd);padding:7px 12px;text-decoration:none;transition:.25s;white-space:nowrap}
+.rtn:hover{background:var(--acc);color:#02131c;box-shadow:0 0 18px var(--acc-glow)}
+#jstrip{position:relative;z-index:5;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--acc2);padding:8px 20px;border-bottom:1px solid rgba(107,147,171,.14);background:rgba(3,10,16,.6)}
+#jstrip .jj{color:var(--mut);letter-spacing:.2em}
+#wrap{position:relative;z-index:5;max-width:1080px;margin:22px auto 96px;padding:0 20px}
+.mode-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.mtab{background:none;border:1px solid var(--line);color:var(--mut);font-family:var(--mono);font-size:11px;letter-spacing:.1em;padding:8px 15px;cursor:pointer;transition:.2s}
+.mtab.on{background:var(--accd);border-color:var(--acc);color:var(--acc);box-shadow:0 0 12px var(--accd)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:840px){.cols{grid-template-columns:1fr}}
+.panel{position:relative;background:var(--panel);border:1px solid var(--line);padding:18px;backdrop-filter:blur(10px)}
+.panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(var(--acc),var(--acc)) left 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/2px 14px;background-repeat:no-repeat;opacity:.85}
+.ptitle{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.3em;color:var(--acc);text-shadow:0 0 10px var(--acc-glow)}
+.psub{font-size:12px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;margin:4px 0 12px;font-family:var(--mono)}
+.f{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--mut);text-transform:uppercase;margin:12px 0 5px}
+input,select{width:100%;background:rgba(2,8,14,.85);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:14px;padding:9px 11px;outline:none}
+input:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 1px var(--accd),0 0 18px var(--accd)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rmain{font-family:var(--disp);font-size:34px;font-weight:900;color:var(--acc);text-shadow:0 0 18px var(--acc-glow);line-height:1.12;word-break:break-word}
+.rsub{font-family:var(--mono);font-size:11.5px;color:var(--mut);letter-spacing:.08em;margin:6px 0 16px}
+.rrow{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:13px;padding:8px 0;border-bottom:1px solid rgba(107,147,171,.12)}
+.rrow .k{color:var(--mut);letter-spacing:.06em}
+.rrow .v{color:var(--acc2);text-align:right}
+@keyframes blink{50%{opacity:.25}}
+#foot{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;gap:22px;align-items:center;font-family:var(--mono);font-size:10px;color:rgba(107,147,171,.7);letter-spacing:.2em;padding:6px 18px;border-top:1px solid rgba(107,147,171,.15);background:rgba(3,9,14,.8);backdrop-filter:blur(6px)}
+#foot .dot{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termBtn{position:fixed;right:14px;bottom:38px;z-index:60;background:rgba(2,10,16,.92);border:1px solid var(--line);color:var(--acc2);font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;padding:7px 11px;cursor:pointer;transition:.2s}
+#termBtn:hover{border-color:var(--acc);color:var(--acc);box-shadow:0 0 14px var(--accd)}
+#term{position:fixed;left:0;right:0;bottom:0;height:240px;transform:translateY(101%);z-index:70;background:rgba(2,7,12,.97);border-top:1px solid var(--acc);font-family:var(--mono);transition:transform .35s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;box-shadow:0 -12px 50px rgba(0,0,0,.6)}
+#term.open{transform:none}
+#termHead{display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:1px solid rgba(107,147,171,.2);font-size:10px;letter-spacing:.26em;color:var(--acc)}
+#termHead .tdot{width:7px;height:7px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termHead .tx{margin-left:auto;cursor:pointer;color:var(--mut);font-size:13px;padding:0 4px}
+#termHead .tx:hover{color:var(--red)}
+#termBody{flex:1;overflow-y:auto;padding:10px 14px;font-size:11.5px;line-height:1.75}
+.tline{white-space:pre-wrap;word-break:break-word}
+.tline .tt{color:rgba(107,147,171,.6)}
+.t-info{color:#9fd8ea}.t-ok{color:var(--grn)}.t-warn{color:var(--yel)}.t-err{color:var(--red)}.t-sys{color:var(--acc2)}
+@media (max-width:640px){
+  html,body{overflow-x:hidden}
+  #topbar{flex-wrap:wrap;gap:8px 10px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px}
+  #topbar .spacer{display:none}#clk{display:none}
+  .brand{font-size:12px;letter-spacing:.14em}.rtn{margin-left:auto}
+  #jstrip{font-size:11px;padding:7px 12px}
+  #wrap{margin:16px auto 92px!important;padding:0 12px!important}
+  .rmain{font-size:28px}
+  #foot{font-size:9px;gap:10px;letter-spacing:.12em}#foot span:nth-child(3){display:none}
+  #term{height:52vh}
+}
+</style>
+</head>
+<body>
+<canvas id="bgfx"></canvas>
+<div class="scan"></div>
+<header id="topbar">
+  <div class="brand">◈ NETNEXUS <b>// DATE &amp; AGE CALCULATOR</b></div>
+  <span class="chip">GEN-24</span>
+  <span class="chip ghost">GENERAL GALAXY</span>
+  <div class="spacer"></div>
+  <div id="clk"></div>
+  <a class="rtn" href="../index.html">◂ RETURN TO NEXUS</a>
+</header>
+<div id="jstrip"><span class="jj">◤ NEXUS // </span><span id="jtext"></span></div>
+
+<main id="wrap">
+  <div class="mode-tabs" id="modes">
+    <button class="mtab on" data-m="age" type="button">AGE</button>
+    <button class="mtab" data-m="dur" type="button">DURATION</button>
+    <button class="mtab" data-m="add" type="button">ADD / SUBTRACT</button>
+    <button class="mtab" data-m="day" type="button">DAY FACTS</button>
+  </div>
+  <div class="cols">
+    <section class="panel">
+      <div class="ptitle">INPUT</div>
+      <div class="psub" id="pdesc">enter your dates</div>
+
+      <div class="fm" data-fm="age"><label class="f">DATE OF BIRTH</label><input type="date" id="a_birth"></div>
+
+      <div class="fm" data-fm="dur" hidden>
+        <label class="f">FROM</label><input type="date" id="d_from">
+        <label class="f">TO</label><input type="date" id="d_to">
+      </div>
+
+      <div class="fm" data-fm="add" hidden>
+        <label class="f">START DATE</label><input type="date" id="s_date">
+        <label class="f">DIRECTION / AMOUNT / UNIT</label>
+        <div class="duo" style="grid-template-columns:1fr 1fr"><select id="s_dir"><option value="1">ADD +</option><option value="-1">SUBTRACT −</option></select><input type="number" id="s_amt" value="30"></div>
+        <label class="f">UNIT</label><select id="s_unit"><option value="days">Days</option><option value="weeks">Weeks</option><option value="months">Months</option><option value="years">Years</option></select>
+      </div>
+
+      <div class="fm" data-fm="day" hidden><label class="f">DATE</label><input type="date" id="w_date"></div>
+    </section>
+
+    <section class="panel">
+      <div class="ptitle">RESULT</div>
+      <div class="psub">live</div>
+      <div id="results"></div>
+    </section>
+  </div>
+</main>
+
+<footer id="foot"><span class="dot"></span><span>GEN-24 ACTIVE</span><span>AGE · DURATION · DATE MATH · WEEK NUMBERS — COMPUTED LOCALLY</span><span style="margin-left:auto">NETNEXUS v2.1</span></footer>
+<button id="termBtn">⌬ SYS TERMINAL</button>
+<aside id="term"><div id="termHead"><span class="tdot"></span> STARK-CORE DIAGNOSTIC TERMINAL — GEN-24 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
+
+<script>
+'use strict';
+window.__nnlog=[];
+window.onerror=function(m,s,l){window.__nnlog.push(['ERR '+m+' @'+(s||'?').split('/').pop()+':'+l,'err']);return false;};
+window.addEventListener('unhandledrejection',e=>window.__nnlog.push(['PROMISE REJECTION :: '+(e.reason&&e.reason.message||e.reason),'err']));
+document.addEventListener('DOMContentLoaded',()=>{
+  const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+  const termBody=$('#termBody'),term=$('#term');
+  function T(msg,lv='info'){const d=document.createElement('div');d.className='tline t-'+lv;d.innerHTML='<span class="tt">['+new Date().toTimeString().slice(0,8)+']</span> '+String(msg).replace(/</g,'&lt;');termBody.appendChild(d);while(termBody.children.length>200)termBody.firstChild.remove();termBody.scrollTop=termBody.scrollHeight;}
+  window.__nnlog.forEach(a=>T(a[0],a[1]));window.__nnlog={push:a=>T(a[0],a[1])};
+  const _ce=console.error.bind(console),_cw=console.warn.bind(console);
+  console.error=(...a)=>{T(a.map(String).join(' '),'err');_ce(...a)};
+  console.warn=(...a)=>{T(a.map(String).join(' '),'warn');_cw(...a)};
+  $('#termBtn').addEventListener('click',()=>term.classList.toggle('open'));
+  $('#termX').addEventListener('click',()=>term.classList.remove('open'));
+  window.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='`'){e.preventDefault();term.classList.toggle('open');}});
+  if(window.__twFail)T('TAILWIND CDN UNREACHABLE — LOCAL STYLE CORE ENGAGED','warn');
+  let _jt=null;function jsay(t){T('NEXUS :: '+t,'sys');const el=$('#jtext');clearInterval(_jt);let i=0;_jt=setInterval(()=>{el.textContent=t.slice(0,++i)+(i<t.length?'▊':'');if(i>=t.length)clearInterval(_jt);},14);}
+  setInterval(()=>{const d=new Date();$('#clk').innerHTML='<b>'+d.toTimeString().slice(0,8)+'</b> L';},1000);
+  const cv=$('#bgfx'),cg=cv.getContext('2d');let W=innerWidth,H=innerHeight,tt=0;
+  const AR=document.documentElement.dataset.galaxy==='gen'?'255,157,51':'0,229,255';
+  function rs(){W=innerWidth;H=innerHeight;const D=Math.min(devicePixelRatio||1,1.5);cv.width=W*D;cv.height=H*D;cg.setTransform(D,0,0,D,0,0);}
+  rs();window.addEventListener('resize',rs);
+  const pts=Array.from({length:30},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14}));
+  let sweep=-200;
+  (function bg(){const dt=1/60;tt+=dt;cg.clearRect(0,0,W,H);cg.strokeStyle='rgba('+AR+',.045)';cg.lineWidth=1;const sp=92,off=(tt*5)%sp;cg.beginPath();for(let x=off;x<W;x+=sp){cg.moveTo(x,0);cg.lineTo(x,H)}for(let y=off*.6;y<H;y+=sp){cg.moveTo(0,y);cg.lineTo(W,y)}cg.stroke();cg.fillStyle='rgba('+AR+',.5)';for(const p of pts){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;cg.fillRect(p.x,p.y,1.6,1.6);}sweep+=2.2;if(sweep>H+200)sweep=-200;const gr=cg.createLinearGradient(0,sweep-60,0,sweep);gr.addColorStop(0,'rgba('+AR+',0)');gr.addColorStop(1,'rgba('+AR+',.05)');cg.fillStyle=gr;cg.fillRect(0,sweep-60,W,60);if(!document.hidden)requestAnimationFrame(bg);else setTimeout(bg,400);})();
+  T('MODULE KERNEL ONLINE :: GEN-24 DATE & AGE CALCULATOR','ok');
+
+  /* ===== DATE ENGINE ===== */
+  const results=$('#results'),pdesc=$('#pdesc');
+  let mode='age';
+  const DAY=864e5;
+  const parse=id=>{const v=$('#'+id).value;if(!v)return null;const [y,m,d]=v.split('-').map(Number);return new Date(y,m-1,d);};
+  const cm=n=>n.toLocaleString('en-US');
+  const fmt=d=>d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const midnight=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  function ymd(a,b){let y=b.getFullYear()-a.getFullYear(),m=b.getMonth()-a.getMonth(),d=b.getDate()-a.getDate();
+    if(d<0){m--;d+=new Date(b.getFullYear(),b.getMonth(),0).getDate();}if(m<0){y--;m+=12;}return {y,m,d};}
+  function businessDays(a,b){let s=midnight(a),e=midnight(b);if(s>e)[s,e]=[e,s];
+    const days=Math.round((e-s)/DAY)+1,full=Math.floor(days/7),extra=days%7;let biz=full*5,sd=s.getDay();
+    for(let i=0;i<extra;i++){const dow=(sd+i)%7;if(dow!==0&&dow!==6)biz++;}return {biz,total:days};}
+  function isoWeek(d){const dt=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=dt.getUTCDay()||7;dt.setUTCDate(dt.getUTCDate()+4-day);const ys=new Date(Date.UTC(dt.getUTCFullYear(),0,1));return {week:Math.ceil(((dt-ys)/DAY+1)/7),year:dt.getUTCFullYear()};}
+  const leap=y=>(y%4===0&&y%100!==0)||y%400===0;
+  function addMonths(date,n){const d=new Date(date),day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+n);const max=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();d.setDate(Math.min(day,max));return d;}
+  function render(main,sub,rows){results.innerHTML='<div class="rmain">'+main+'</div><div class="rsub">'+sub+'</div>'+rows.map(r=>'<div class="rrow"><span class="k">'+r[0]+'</span><span class="v">'+r[1]+'</span></div>').join('');}
+  const note=msg=>results.innerHTML='<div class="rsub" style="color:var(--yel)">'+msg+'</div>';
+
+  function compute(){
+    if(mode==='age'){
+      const b=parse('a_birth');if(!b)return note('Pick a date of birth.');
+      const now=new Date();if(b>now)return note('That date is in the future.');
+      const {y,m,d}=ymd(b,now);const totalDays=Math.floor((midnight(now)-midnight(b))/DAY);
+      let nb=new Date(now.getFullYear(),b.getMonth(),b.getDate());if(nb<midnight(now))nb=new Date(now.getFullYear()+1,b.getMonth(),b.getDate());
+      const toNb=Math.ceil((nb-midnight(now))/DAY);
+      render(y+' yr '+m+' mo '+d+' d','born '+fmt(b),[
+        ['Total days',cm(totalDays)],['Total weeks',cm(Math.floor(totalDays/7))],['Total months',cm(y*12+m)],
+        ['Total hours',cm(totalDays*24)],['Day you were born',b.toLocaleDateString('en-US',{weekday:'long'})],
+        ['Next birthday',toNb===0?'today! 🎂':'in '+cm(toNb)+' days']]);
+    }else if(mode==='dur'){
+      let a=parse('d_from'),b=parse('d_to');if(!a||!b)return note('Pick both dates.');
+      let sign='';if(a>b){[a,b]=[b,a];sign='(reversed) ';}
+      const {y,m,d}=ymd(a,b);const bd=businessDays(a,b);
+      render(y+' yr '+m+' mo '+d+' d',sign+fmt(a)+' → '+fmt(b),[
+        ['Total days',cm(bd.total-1)],['Including both ends',cm(bd.total)],['Weeks',cm(Math.floor((bd.total-1)/7))+' w '+((bd.total-1)%7)+' d'],
+        ['Business days',cm(bd.biz)],['Weekend days',cm(bd.total-bd.biz)]]);
+    }else if(mode==='add'){
+      const s=parse('s_date');if(!s)return note('Pick a start date.');
+      const dir=+$('#s_dir').value,amt=Math.round(+$('#s_amt').value||0)*dir,unit=$('#s_unit').value;
+      let out;if(unit==='days')out=new Date(s.getTime()+amt*DAY);
+      else if(unit==='weeks')out=new Date(s.getTime()+amt*7*DAY);
+      else if(unit==='months')out=addMonths(s,amt);else out=addMonths(s,amt*12);
+      const diffDays=Math.round((midnight(out)-midnight(s))/DAY);
+      render(out.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),(dir>0?'+':'−')+Math.abs(amt/dir)+' '+unit+' from '+fmt(s),[
+        ['Result',fmt(out)],['Weekday',out.toLocaleDateString('en-US',{weekday:'long'})],['Net shift',(diffDays>=0?'+':'')+cm(diffDays)+' days'],
+        ['ISO date',out.toISOString().slice(0,10)]]);
+    }else if(mode==='day'){
+      const d=parse('w_date');if(!d)return note('Pick a date.');
+      const doy=Math.round((midnight(d)-new Date(d.getFullYear(),0,0))/DAY);
+      const iso=isoWeek(d);const q=Math.floor(d.getMonth()/3)+1;const dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+      render(d.toLocaleDateString('en-US',{weekday:'long'}),fmt(d),[
+        ['Day of year',doy+' of '+(leap(d.getFullYear())?366:365)],['ISO week','W'+iso.week+' · '+iso.year],
+        ['Quarter','Q'+q],['Days in month',dim],['Leap year?',leap(d.getFullYear())?'yes':'no'],
+        ['Unix (midnight)',cm(Math.floor(midnight(d).getTime()/1000))]]);
+    }
+  }
+  $('#wrap').addEventListener('input',compute);
+  $('#modes').addEventListener('click',e=>{const b=e.target.closest('.mtab');if(!b)return;mode=b.dataset.m;
+    $$('.mtab').forEach(x=>x.classList.toggle('on',x===b));$$('.fm').forEach(f=>f.hidden=f.dataset.fm!==mode);
+    pdesc.textContent=({age:'how old is someone?',dur:'time between two dates',add:'shift a date forward or back',day:'facts about a single date'})[mode];
+    T('MODE :: '+mode.toUpperCase(),'info');compute();});
+
+  /* seed with sensible defaults */
+  const todayISO=new Date().toISOString().slice(0,10);
+  $('#a_birth').value='2000-01-01';$('#d_from').value='2020-01-01';$('#d_to').value=todayISO;$('#s_date').value=todayISO;$('#w_date').value=todayISO;
+  compute();
+  jsay('Date engine ready. Ages, durations, week numbers — the calendar holds no secrets, sir.');
+});
+</script>
+</body>
+</html>
