@@ -288,6 +288,79 @@ import * as THREE from 'three';
     ringMatW.color.copy(acc2Color()); ringMatW.opacity = fade * fade * 0.8;
   }
 
+  /* ======================= POST-PROCESSING (desktop) =======================
+     Compact custom composer: bright-pass → separable blur → composite with
+     bloom + radial chromatic aberration + scanline + vignette + grain.
+     Self-vendored (no examples/jsm tree). Disabled on mobile / under governor;
+     any pass failure trips postBroken and we render straight to screen. */
+  let postOn = !coarse, postBroken = false;
+  const rtType = (() => { try { return renderer.capabilities.isWebGL2 ? THREE.HalfFloatType : THREE.UnsignedByteType; } catch (e) { return THREE.UnsignedByteType; } })();
+  const mkRT = (w, h, depth) => new THREE.WebGLRenderTarget(Math.max(2, w | 0), Math.max(2, h | 0),
+    { type: rtType, magFilter: THREE.LinearFilter, minFilter: THREE.LinearFilter, depthBuffer: !!depth, stencilBuffer: false });
+  let bw = Math.floor(W * DPR), bh = Math.floor(H * DPR);
+  let rtScene = mkRT(bw, bh, true), rtA = mkRT(bw / 2, bh / 2, false), rtB = mkRT(bw / 2, bh / 2, false);
+
+  const fsCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const fsScene = new THREE.Scene();
+  const fsQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), null);
+  fsQuad.frustumCulled = false; fsScene.add(fsQuad);
+  const VS = `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0);}`;
+  const brightMat = new THREE.ShaderMaterial({ uniforms: { tDiffuse: { value: null }, uThresh: { value: .58 }, uKnee: { value: .38 } }, vertexShader: VS,
+    fragmentShader: `varying vec2 vUv; uniform sampler2D tDiffuse; uniform float uThresh,uKnee;
+      void main(){ vec3 c=texture2D(tDiffuse,vUv).rgb; float l=dot(c,vec3(0.2126,0.7152,0.0722));
+        gl_FragColor=vec4(c*smoothstep(uThresh,uThresh+uKnee,l),1.0);} ` });
+  const blurMat = new THREE.ShaderMaterial({ uniforms: { tDiffuse: { value: null }, uDir: { value: new THREE.Vector2() }, uTexel: { value: new THREE.Vector2() } }, vertexShader: VS,
+    fragmentShader: `varying vec2 vUv; uniform sampler2D tDiffuse; uniform vec2 uDir,uTexel;
+      void main(){ float w0=0.227,w1=0.194,w2=0.121,w3=0.054,w4=0.016; vec3 s=texture2D(tDiffuse,vUv).rgb*w0;
+        vec2 o1=uDir*uTexel,o2=o1*2.0,o3=o1*3.0,o4=o1*4.0;
+        s+=(texture2D(tDiffuse,vUv+o1).rgb+texture2D(tDiffuse,vUv-o1).rgb)*w1;
+        s+=(texture2D(tDiffuse,vUv+o2).rgb+texture2D(tDiffuse,vUv-o2).rgb)*w2;
+        s+=(texture2D(tDiffuse,vUv+o3).rgb+texture2D(tDiffuse,vUv-o3).rgb)*w3;
+        s+=(texture2D(tDiffuse,vUv+o4).rgb+texture2D(tDiffuse,vUv-o4).rgb)*w4;
+        gl_FragColor=vec4(s,1.0);} ` });
+  const compMat = new THREE.ShaderMaterial({ uniforms: {
+      tScene: { value: null }, tBloom: { value: null }, uRes: { value: new THREE.Vector2(bw, bh) }, uTime: { value: 0 },
+      uCA: { value: .006 }, uBloom: { value: .85 }, uScan: { value: .028 }, uVig: { value: .34 }, uGrain: { value: .025 } }, vertexShader: VS,
+    fragmentShader: `varying vec2 vUv; uniform sampler2D tScene,tBloom; uniform vec2 uRes;
+      uniform float uTime,uCA,uBloom,uScan,uVig,uGrain;
+      float hash(vec2 p){return fract(sin(dot(p,vec2(41.3,289.1)))*43758.5453);}
+      void main(){ vec2 uv=vUv; vec2 dir=uv-0.5; float d=length(dir);
+        float ca=uCA*d;
+        float r=texture2D(tScene,uv-dir*ca).r;
+        float g=texture2D(tScene,uv).g;
+        float b=texture2D(tScene,uv+dir*ca).b;
+        vec3 col=vec3(r,g,b);
+        col+=texture2D(tBloom,uv).rgb*uBloom;
+        col+=vec3(0.015,0.05,0.08)*smoothstep(0.85,0.0,length(uv-vec2(0.5,0.10)));
+        col*=1.0-uScan*(0.5+0.5*sin((uv.y*uRes.y)*1.6));
+        col*=1.0-uVig*d*d;
+        col+=(hash(uv*uRes+uTime)-0.5)*uGrain;
+        gl_FragColor=vec4(col,1.0);} ` });
+
+  function blit(mat, target) { fsQuad.material = mat; renderer.setRenderTarget(target || null); renderer.render(fsScene, fsCam); }
+  function present(now) {
+    const usePost = postOn && !postBroken && !(window.__NN && window.__NN.low);
+    if (!usePost) { renderer.setClearColor(0x000000, 0); renderer.setRenderTarget(null); renderer.render(scene, camera); return; }
+    try {
+      renderer.setClearColor(0x02050a, 1);
+      renderer.setRenderTarget(rtScene); renderer.clear(); renderer.render(scene, camera);
+      brightMat.uniforms.tDiffuse.value = rtScene.texture; blit(brightMat, rtA);
+      blurMat.uniforms.uTexel.value.set(1 / (bw / 2), 1 / (bh / 2));
+      blurMat.uniforms.tDiffuse.value = rtA.texture; blurMat.uniforms.uDir.value.set(1, 0); blit(blurMat, rtB);
+      blurMat.uniforms.tDiffuse.value = rtB.texture; blurMat.uniforms.uDir.value.set(0, 1); blit(blurMat, rtA);
+      blurMat.uniforms.tDiffuse.value = rtA.texture; blurMat.uniforms.uDir.value.set(1.6, 0); blit(blurMat, rtB);
+      blurMat.uniforms.tDiffuse.value = rtB.texture; blurMat.uniforms.uDir.value.set(0, 1.6); blit(blurMat, rtA);
+      compMat.uniforms.tScene.value = rtScene.texture; compMat.uniforms.tBloom.value = rtA.texture;
+      compMat.uniforms.uTime.value = now / 1000; compMat.uniforms.uRes.value.set(bw, bh);
+      compMat.uniforms.uCA.value = document.documentElement.dataset.galaxy === 'gen' ? .009 : .006;
+      blit(compMat, null);
+    } catch (e) {
+      postBroken = true; renderer.setRenderTarget(null);
+      log('NEXUS-GL :: POST-FX DISABLED (' + (e && e.message || 'error') + ')', 'warn');
+      renderer.setClearColor(0x000000, 0); renderer.render(scene, camera);
+    }
+  }
+
   /* ripples (kinetic shockwaves), fed from the page via API.ripple() */
   const ripples = [];
 
@@ -321,6 +394,9 @@ import * as THREE from 'three';
     camera.aspect = W / H; camera.position.z = camZ(); camera.updateProjectionMatrix();
     gridUniforms.uRes.value.set(W, H);
     gridMesh.geometry.dispose(); gridMesh.geometry = new THREE.PlaneGeometry(W, H);
+    bw = Math.floor(W * DPR); bh = Math.floor(H * DPR);
+    rtScene.setSize(bw, bh); rtA.setSize(Math.floor(bw / 2), Math.floor(bh / 2)); rtB.setSize(Math.floor(bw / 2), Math.floor(bh / 2));
+    compMat.uniforms.uRes.value.set(bw, bh);
     measureCore();
   }
   addEventListener('resize', resize, { passive: true });
@@ -404,7 +480,7 @@ import * as THREE from 'three';
 
     updateReactor(now, dt, NN);
     updateWarp(now);
-    renderer.render(scene, camera);
+    present(now);
   }
   raf = requestAnimationFrame(frame);
 
