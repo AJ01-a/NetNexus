@@ -16,19 +16,20 @@
 /* ============ STARK-CORE VISUAL ENGINE v2.1 ============ */
 :root{
   --red:#ff4757; --grn:#2eff9e; --yel:#ffd166; --or:#ff9d33;
-  --bg0:#02050a; --bg1:#07131d; --ink:#d9f4ff; --mut:#6b93ab;
+  --mag:#f24bff; --mag2:#ff8bff; --mag-glow:rgba(242,75,255,.34);
+  --bg0:#02050a; --bg1:#07131d; --ink:#e2f7ff; --mut:#6b93ab;
   --panel:rgba(7,17,27,.82);
   --mono:'Share Tech Mono',Consolas,'Courier New',monospace;
   --disp:'Orbitron','Segoe UI',Arial,sans-serif;
   --ui:'Rajdhani','Segoe UI',Arial,sans-serif;
 }
 html[data-galaxy="it"]{
-  --acc:#00e5ff; --acc2:#7df9ff; --accd:rgba(0,229,255,.14);
-  --line:rgba(0,229,255,.28); --acc-core:rgba(0,229,255,.5); --acc-glow:rgba(0,229,255,.32);
+  --acc:#19f0ff; --acc2:#a6fbff; --accd:rgba(25,240,255,.15);
+  --line:rgba(25,240,255,.30); --acc-core:rgba(25,240,255,.52); --acc-glow:rgba(25,240,255,.36);
 }
 html[data-galaxy="gen"]{
-  --acc:#ff9d33; --acc2:#ffc46b; --accd:rgba(255,157,51,.14);
-  --line:rgba(255,157,51,.30); --acc-core:rgba(255,157,51,.5); --acc-glow:rgba(255,157,51,.32);
+  --acc:#ff9d33; --acc2:#ffc46b; --accd:rgba(255,157,51,.15);
+  --line:rgba(255,157,51,.32); --acc-core:rgba(255,157,51,.52); --acc-glow:rgba(255,157,51,.34);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
@@ -322,43 +323,75 @@ body.mobile #ticker{display:none}
   box-shadow:0 24px 66px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08)}
 #term{backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3)}
 .hud{text-shadow:0 0 12px rgba(2,5,10,.7);will-change:transform}
-/* ============ INTERACTIVE VIDEO FOUNDATION ============ */
-/* Sits between the body's radial-gradient (backdrop) and #gl (z-index:0).
-   Every layer above is transparent, so the reactor + starfield float over it. */
-#bgvid{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;object-position:center;
-  z-index:-2;pointer-events:none;opacity:0;
-  transition:opacity 1s ease,filter .8s ease;will-change:filter,opacity;
-  filter:saturate(1.05) brightness(.9) contrast(1.02)}
-#bgvid.ready{opacity:1}
-/* galaxy-tinted vignette + gradient — keeps neon UI legible over any frame,
-   recolors cyan<->orange with the existing --acc / --bg0 tokens */
-#bgvid-veil{position:fixed;inset:0;z-index:-1;pointer-events:none;transition:background .8s ease,opacity .8s ease;
-  background:
-    radial-gradient(120% 90% at 50% 42%, transparent 0%, rgba(2,5,10,.30) 55%, rgba(2,5,10,.72) 100%),
-    linear-gradient(180deg, rgba(2,5,10,.55) 0%, rgba(2,5,10,.20) 30%, rgba(2,5,10,.42) 100%),
-    radial-gradient(140% 100% at 50% 40%, var(--accd) 0%, transparent 42%)}
-/* IDLE — video is the hero: lighter veil, fuller video */
-body.ui-idle #bgvid{filter:saturate(1.08) brightness(.94) contrast(1.02)}
-body.ui-idle #bgvid-veil{opacity:.85}
-/* ACTIVE — user is working the hub: dim + soften video so glass/tools pop */
-body.ui-active #bgvid{filter:saturate(.78) brightness(.5) contrast(1) blur(2px)}
-body.ui-active #bgvid-veil{opacity:1;
-  background:
-    radial-gradient(120% 90% at 50% 42%, rgba(2,5,10,.30) 0%, rgba(2,5,10,.58) 55%, rgba(2,5,10,.88) 100%),
-    linear-gradient(180deg, rgba(2,5,10,.72) 0%, rgba(2,5,10,.42) 34%, rgba(2,5,10,.66) 100%),
-    radial-gradient(140% 100% at 50% 40%, var(--accd) 0%, transparent 40%)}
-@media (prefers-reduced-motion: reduce){
-  #bgvid{transition:opacity .3s ease;filter:saturate(1) brightness(.85)!important}
-  body.ui-active #bgvid{filter:saturate(1) brightness(.55)!important}
-  #bgvid-veil{transition:none}
+/* ============ DIAMOND REACTOR — gateway + isolated core ============ */
+/* ONE <video> that starts as the gateway centerpiece and scales down into the
+   #corewrap slot on unlock. Transform/opacity only -> GPU compositor. */
+#reactorStage{position:fixed;left:50%;top:50%;height:78vmin;aspect-ratio:16/9;
+  transform:translate(-50%,-50%);transform-origin:50% 50%;z-index:113;pointer-events:none;
+  transition:transform 1.15s cubic-bezier(.16,.84,.28,1),filter 1.15s ease;will-change:transform;
+  filter:drop-shadow(0 0 54px var(--mag-glow)) drop-shadow(0 0 120px var(--acc-glow))}
+#reactor{width:100%;height:100%;object-fit:contain;display:block}
+/* Safari / no-VP9-alpha path: mask the raw MP4 into an ellipse + screen it out */
+#reactorStage.fallback #reactor{mix-blend-mode:screen;
+  -webkit-mask-image:radial-gradient(ellipse 31% 47% at 50% 47%,#000 58%,transparent 100%);
+          mask-image:radial-gradient(ellipse 31% 47% at 50% 47%,#000 58%,transparent 100%)}
+body.online #reactorStage{transform:translate(-50%,-46%) scale(.585);
+  filter:drop-shadow(0 0 22px var(--acc-glow)) drop-shadow(0 0 54px var(--mag-glow))}
+body.mobile.online #reactorStage{opacity:0;pointer-events:none;transition:opacity .8s ease}
+/* gateway veil — hides the hub (everything sits below z100) until unlock */
+#gwveil{position:fixed;inset:0;z-index:100;transition:opacity 1.1s ease;will-change:opacity;
+  background:radial-gradient(120% 92% at 50% 46%,rgba(3,7,14,.42) 0%,rgba(1,3,7,.93) 60%,#010306 100%);
+  -webkit-backdrop-filter:blur(3px) saturate(1.15);backdrop-filter:blur(3px) saturate(1.15)}
+body.online #gwveil{opacity:0;pointer-events:none}
+/* gateway title + prompt + hold-ring (above the reactor) */
+#gwtitle{position:fixed;top:8vh;left:50%;transform:translateX(-50%);z-index:121;text-align:center;
+  font-family:var(--disp);font-weight:700;letter-spacing:.5em;font-size:19px;color:var(--acc);
+  text-shadow:0 0 24px var(--acc-glow);text-transform:uppercase;white-space:nowrap;transition:opacity .55s}
+#gwtitle b{color:var(--ink)}
+#gwtitle span{display:block;font-size:9px;letter-spacing:.34em;color:var(--mut);margin-top:9px;font-weight:400}
+body.online #gwtitle{opacity:0;pointer-events:none}
+#gwui{position:fixed;inset:0;z-index:121;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-end;padding-bottom:11vh;gap:20px;cursor:pointer;transition:opacity .55s;
+  -webkit-tap-highlight-color:transparent;outline:none}
+body.online #gwui{opacity:0;pointer-events:none}
+#gwRing{width:62px;height:62px;transform:rotate(-90deg);filter:drop-shadow(0 0 10px var(--mag-glow))}
+#gwRing circle{fill:none;stroke-width:3}
+#gwRing .trk{stroke:rgba(166,251,255,.16)}
+#gwRing .prg{stroke:var(--acc);stroke-linecap:round;stroke-dasharray:180;stroke-dashoffset:180;
+  filter:drop-shadow(0 0 6px var(--acc));transition:stroke-dashoffset .07s linear}
+#gwPrompt{font-family:var(--disp);font-size:12.5px;letter-spacing:.4em;color:var(--acc2);text-transform:uppercase;
+  text-shadow:0 0 16px var(--acc-glow);animation:gwpulse 2.4s ease-in-out infinite}
+#gwPrompt b{color:var(--ink);font-weight:700}
+#gwSub{font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--mut);margin-top:-8px}
+#gwui:focus-visible #gwPrompt,#gwui.holding #gwPrompt{animation:none;color:var(--acc);opacity:1}
+@keyframes gwpulse{50%{opacity:.5}}
+/* while locked: freeze hub scroll/interaction under the veil */
+body.locked{overflow:hidden}
+body.locked #space,body.locked #cmdbar,body.locked #holo,body.locked #ticker,body.locked #term{pointer-events:none}
+/* the diamond becomes the eye: soften the old lens once online, keep rings + glow */
+body.online #lens{opacity:0;transition:opacity .8s ease}
+body.online .rwrap{opacity:.6;transition:opacity .8s ease}
+@media (prefers-reduced-motion:reduce){
+  #reactorStage,#gwveil,#gwui,#gwtitle{transition:opacity .3s ease}
+  body.online #reactorStage{transition:none}
 }
 </style>
 </head>
-<body>
-<video id="bgvid" autoplay muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true" tabindex="-1">
-  <source src="./gemini_generated_video_531262bd.mp4" type="video/mp4">
-</video>
-<div id="bgvid-veil"></div>
+<body class="locked">
+<!-- ===== DIAMOND REACTOR GATEWAY ===== -->
+<div id="gwveil"></div>
+<div id="reactorStage">
+  <video id="reactor" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true" tabindex="-1" poster="./reactor-poster.jpg">
+    <source src="./reactor.webm" type="video/webm">
+    <source src="./reactor.mp4" type="video/mp4">
+  </video>
+</div>
+<div id="gwtitle"><b>NET</b>NEXUS<span>STARK-CORE DIAMOND REACTOR // AWAITING OPERATOR</span></div>
+<div id="gwui" role="button" tabindex="0" aria-label="Hold to initialize NetNexus">
+  <svg id="gwRing" viewBox="0 0 64 64" aria-hidden="true"><circle class="trk" cx="32" cy="32" r="28.6"></circle><circle class="prg" id="gwPrg" cx="32" cy="32" r="28.6"></circle></svg>
+  <div id="gwPrompt">HOLD TO <b>INITIALIZE</b></div>
+  <div id="gwSub">PRESS &amp; HOLD THE REACTOR</div>
+</div>
 <canvas id="gl"></canvas>
 <canvas id="L1" class="layer"></canvas>
 <canvas id="L2" class="layer"></canvas>
@@ -1376,66 +1409,97 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <script>
-/* ============ INTERACTIVE VIDEO FOUNDATION — controller ============
-   Self-contained. Does not touch the main engine above. Handles:
-   autoplay-policy fallback, Idle<->Active mode, tab-hidden pause, decode fallback. */
+/* ============ DIAMOND REACTOR GATEWAY — controller ============
+   Self-contained. Manages: alpha-video isolation fallback, idle loop-points,
+   hold-to-unlock, shatter->bloom transition, hub reveal, cross-page session
+   state, autoplay policy, tab-hidden pause, and a dead-video failsafe. */
 (function(){
-  var vid = document.getElementById('bgvid');
-  if (!vid) return;
-  var body = document.body;
+  var body   = document.body,
+      stage  = document.getElementById('reactorStage'),
+      vid    = document.getElementById('reactor'),
+      gwui   = document.getElementById('gwui'),
+      prg    = document.getElementById('gwPrg');
 
-  /* ---- decode / source failure -> reveal the existing gradient, no breakage ---- */
-  function failGracefully(){ vid.classList.remove('ready'); vid.style.display = 'none'; }
-  vid.addEventListener('error', failGracefully);
-  var src = vid.querySelector('source');
-  if (src) src.addEventListener('error', failGracefully);
+  /* loop window for the diamond "idle"; shatter->bloom lives beyond IDLE_OUT */
+  var IDLE_IN = 0.15, IDLE_OUT = 4.9, END = 9.3;
+  var reduce  = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var unlocked = false, transitioning = false;
 
-  /* ---- fade the video in only once it can actually paint ---- */
-  function reveal(){ if (vid.readyState >= 2) vid.classList.add('ready'); }
-  vid.addEventListener('loadeddata', reveal);
-  vid.addEventListener('canplay', reveal);
+  /* hard-fail safe: if the gateway DOM is missing, never trap the user */
+  if (!stage || !vid || !gwui){ body.classList.remove('locked'); body.classList.add('online'); return; }
 
-  /* ---- autoplay-policy guard: try now, then retry on first user gesture ---- */
-  function tryPlay(){
-    var p = vid.play();
-    if (p && typeof p.catch === 'function') p.catch(function(){ /* blocked; wait for gesture */ });
+  /* hide the hub from AT / tab-order while the gateway is up */
+  function hubInert(on){
+    ['space','cmdbar','holo','ticker','term','voicehud'].forEach(function(id){
+      var el = document.getElementById(id); if (!el) return;
+      if (on) el.setAttribute('inert',''); else el.removeAttribute('inert');
+    });
   }
-  function gestureStart(){
-    tryPlay();
-    window.removeEventListener('pointerdown', gestureStart);
-    window.removeEventListener('keydown', gestureStart);
-    window.removeEventListener('touchstart', gestureStart);
-  }
-  window.addEventListener('pointerdown', gestureStart, { passive: true });
-  window.addEventListener('keydown', gestureStart);
-  window.addEventListener('touchstart', gestureStart, { passive: true });
+
+  /* Safari / no-VP9-alpha -> use the CSS-masked MP4 path */
+  if (!vid.canPlayType('video/webm; codecs="vp9"')) stage.classList.add('fallback');
+
+  /* ---- playback + autoplay guard ---- */
+  function tryPlay(){ var p = vid.play(); if (p && p.catch) p.catch(function(){}); }
+  vid.addEventListener('loadeddata', function(){ if (!unlocked && vid.currentTime < IDLE_IN) { try { vid.currentTime = IDLE_IN; } catch(e){} } tryPlay(); });
   tryPlay();
 
-  /* ---- battery / memory guard: pause when tab hidden, resume when visible ---- */
-  document.addEventListener('visibilitychange', function(){
-    if (document.hidden) { try { vid.pause(); } catch(e){} }
-    else if (vid.style.display !== 'none') { tryPlay(); }
+  /* ---- loop-point clamp: idle loops the diamond; transition plays once to END ---- */
+  vid.addEventListener('timeupdate', function(){
+    if (transitioning){ if (vid.currentTime >= END){ transitioning = false; try { vid.currentTime = IDLE_IN; } catch(e){} } return; }
+    if (vid.currentTime >= IDLE_OUT || vid.currentTime < IDLE_IN - 0.05){ try { vid.currentTime = IDLE_IN; } catch(e){} }
   });
 
-  /* ---- Idle <-> Active mode ---- */
-  var IDLE_MS = 6000, idleTimer = null;
-  body.classList.add('ui-idle');
-  function goIdle(){ body.classList.remove('ui-active'); body.classList.add('ui-idle'); }
-  function goActive(){
-    if (body.classList.contains('ui-active')) { armIdle(); return; }
-    body.classList.remove('ui-idle'); body.classList.add('ui-active'); armIdle();
+  /* ---- the reveal ---- */
+  function goOnline(instant){
+    if (unlocked) return; unlocked = true;
+    try { sessionStorage.setItem('nn-gw','1'); } catch(e){}
+    hubInert(false);
+    body.classList.remove('locked');
+    if (instant || reduce){ body.classList.add('online'); return; }
+    /* play the shatter -> cyan-bloom once, then settle back to the idle loop */
+    transitioning = true; try { vid.currentTime = IDLE_OUT; } catch(e){} tryPlay();
+    setTimeout(function(){ body.classList.add('online'); }, 700);   /* reveal hub as the shatter blooms */
   }
-  function armIdle(){ clearTimeout(idleTimer); idleTimer = setTimeout(goIdle, IDLE_MS); }
 
-  /* interaction signals -> Active (passive, debounced via the idle timer) */
-  ['pointerdown','keydown','wheel','touchstart'].forEach(function(ev){
-    window.addEventListener(ev, goActive, { passive: true });
-  });
-  var q = document.getElementById('q');
-  if (q) { q.addEventListener('focus', goActive); q.addEventListener('input', goActive); }
-  /* hovering a tool planet or opening a panel also counts as "working the hub" */
-  var space = document.getElementById('space');
-  if (space) space.addEventListener('pointermove', goActive, { passive: true });
+  /* ---- cross-page: skip the gateway if already unlocked this session ---- */
+  var already = false; try { already = sessionStorage.getItem('nn-gw') === '1'; } catch(e){}
+  if (already){ goOnline(true); } else { hubInert(true); }
+
+  /* ---- hold-to-unlock (press & hold ~0.9s) with a radial progress ring ---- */
+  var HOLD = 900, raf = null, t0 = 0;
+  function tick(){
+    var p = Math.min((performance.now() - t0) / HOLD, 1);
+    if (prg) prg.style.strokeDashoffset = String(180 * (1 - p));
+    if (p >= 1){ endHold(); goOnline(false); return; }
+    raf = requestAnimationFrame(tick);
+  }
+  function startHold(e){
+    if (unlocked) return;
+    if (e && e.type === 'keydown'){ if (e.key !== 'Enter' && e.key !== ' ') return; e.preventDefault(); }
+    tryPlay();                                   /* the hold IS the autoplay gesture */
+    t0 = performance.now(); gwui.classList.add('holding');
+    cancelAnimationFrame(raf); raf = requestAnimationFrame(tick);
+  }
+  function endHold(){
+    cancelAnimationFrame(raf); gwui.classList.remove('holding');
+    if (!unlocked && prg) prg.style.strokeDashoffset = '180';
+  }
+  gwui.addEventListener('pointerdown', startHold);
+  gwui.addEventListener('pointerup', endHold);
+  gwui.addEventListener('pointerleave', endHold);
+  gwui.addEventListener('pointercancel', endHold);
+  gwui.addEventListener('keydown', startHold);
+  gwui.addEventListener('keyup', endHold);
+
+  /* ---- dead-video failsafe: broken source must never block entry ---- */
+  function failOpen(){ if (!unlocked){ stage.style.display = 'none'; goOnline(true); } }
+  vid.addEventListener('error', failOpen);
+  var last = vid.querySelectorAll('source'); if (last.length) last[last.length - 1].addEventListener('error', failOpen);
+
+  /* ---- battery / memory guard ---- */
+  document.addEventListener('visibilitychange', function(){ if (document.hidden){ try { vid.pause(); } catch(e){} } else tryPlay(); });
+  window.addEventListener('pagehide', function(){ try { vid.pause(); } catch(e){} });
 })();
 </script>
 <script type="module" src="./gl/nexus-gl.js"></script>

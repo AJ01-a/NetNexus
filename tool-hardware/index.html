@@ -11,8 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
 <style>
-:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--bg0:#02050a;--ink:#d9f4ff;--mut:#6b93ab;--panel:rgba(7,17,27,.82);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
-html[data-galaxy="it"]{--acc:#00e5ff;--acc2:#7df9ff;--accd:rgba(0,229,255,.14);--line:rgba(0,229,255,.28);--acc-glow:rgba(0,229,255,.32)}
+:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--mag:#f24bff;--mag2:#ff8bff;--mag-glow:rgba(242,75,255,.34);--bg0:#02050a;--ink:#e2f7ff;--mut:#6b93ab;--panel:rgba(7,17,27,.82);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
+html[data-galaxy="it"]{--acc:#19f0ff;--acc2:#a6fbff;--accd:rgba(25,240,255,.14);--line:rgba(25,240,255,.28);--acc-glow:rgba(25,240,255,.32)}
 html[data-galaxy="gen"]{--acc:#ff9d33;--acc2:#ffc46b;--accd:rgba(255,157,51,.14);--line:rgba(255,157,51,.30);--acc-glow:rgba(255,157,51,.32)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:radial-gradient(1200px 700px at 50% -12%,#0a1e30 0%,var(--bg0) 58%) fixed,var(--bg0);color:var(--ink);font-family:var(--ui);min-height:100vh;overflow-x:hidden}
@@ -125,23 +125,23 @@ td.act{color:var(--mut);font-size:11.5px}
           <radialGradient id="boardG" cx="40%" cy="30%"><stop offset="0%" stop-color="#0b2436"/><stop offset="100%" stop-color="#061523"/></radialGradient>
         </defs>
         <!-- board -->
-        <rect x="10" y="10" width="740" height="450" rx="14" fill="url(#boardG)" stroke="rgba(0,229,255,.35)"/>
+        <rect x="10" y="10" width="740" height="450" rx="14" fill="url(#boardG)" stroke="rgba(25,240,255,.35)"/>
         <!-- faint traces -->
-        <g stroke="rgba(0,229,255,.10)" fill="none" stroke-width="1.2">
+        <g stroke="rgba(25,240,255,.10)" fill="none" stroke-width="1.2">
           <path d="M120 120 H 300 V 210 H 420"/><path d="M130 130 H 290 V 220 H 420"/>
           <path d="M480 130 V 90 H 640"/><path d="M470 260 H 600 V 330"/>
           <path d="M200 330 V 400 H 380"/><path d="M660 200 V 300"/>
         </g>
         <!-- CPU BGA -->
         <g class="hot" data-n="CPU PACKAGE (BGA)" data-t="SOLDERED PROCESSOR" data-d="Ball-grid-array CPU soldered directly to the board. The silver rectangle is the silicon die; the surrounding green substrate is normal. Not socketed — not field-replaceable.">
-          <rect class="comp" x="330" y="140" width="120" height="120" rx="6" fill="#0e3140" stroke="rgba(0,229,255,.5)"/>
+          <rect class="comp" x="330" y="140" width="120" height="120" rx="6" fill="#0e3140" stroke="rgba(25,240,255,.5)"/>
           <rect x="355" y="165" width="70" height="70" rx="2" fill="#1b4b60" stroke="rgba(125,249,255,.5)"/>
-          <text x="390" y="205" text-anchor="middle" font-family="Share Tech Mono" font-size="11" fill="#7df9ff">CPU</text>
+          <text x="390" y="205" text-anchor="middle" font-family="Share Tech Mono" font-size="11" fill="#a6fbff">CPU</text>
         </g>
         <!-- heatpipe -->
         <g class="hot" data-n="HEATPIPE + FAN ASSEMBLY" data-t="THERMAL MODULE" data-d="Copper heatpipe carrying CPU/GPU heat to the fan fin stack. Discoloration of the copper is normal oxidation, not burn damage.">
           <path class="comp" d="M330 190 C 240 190 200 120 120 110 L 120 145 C 200 155 250 225 330 225 Z" fill="#3a2b17" stroke="rgba(255,157,51,.55)"/>
-          <circle class="comp" cx="95" cy="120" r="46" fill="#0c2534" stroke="rgba(0,229,255,.4)"/>
+          <circle class="comp" cx="95" cy="120" r="46" fill="#0c2534" stroke="rgba(25,240,255,.4)"/>
           <g stroke="rgba(125,249,255,.35)" stroke-width="2">
             <line x1="95" y1="84" x2="95" y2="156"/><line x1="63" y1="102" x2="127" y2="138"/><line x1="63" y1="138" x2="127" y2="102"/>
           </g>
@@ -149,7 +149,7 @@ td.act{color:var(--mut);font-size:11.5px}
         </g>
         <!-- SODIMM populated -->
         <g class="hot" data-n="SODIMM SLOT A — POPULATED" data-t="REMOVABLE MEMORY" data-d="Standard SODIMM module seated in its latch slot. This one IS serviceable — release the side latches to swap or reseat.">
-          <rect class="comp" x="480" y="150" width="230" height="52" rx="4" fill="#0e3140" stroke="rgba(0,229,255,.5)"/>
+          <rect class="comp" x="480" y="150" width="230" height="52" rx="4" fill="#0e3140" stroke="rgba(25,240,255,.5)"/>
           <rect x="492" y="160" width="206" height="32" rx="2" fill="#123c4e"/>
           <g fill="#1b5a72"><rect x="500" y="166" width="26" height="20"/><rect x="534" y="166" width="26" height="20"/><rect x="568" y="166" width="26" height="20"/><rect x="602" y="166" width="26" height="20"/><rect x="636" y="166" width="26" height="20"/><rect x="668" y="166" width="22" height="20"/></g>
           <text x="595" y="146" text-anchor="middle" font-family="Share Tech Mono" font-size="9" fill="#6b93ab">SODIMM A — INSTALLED</text>
@@ -189,16 +189,16 @@ td.act{color:var(--mut);font-size:11.5px}
         </g>
         <!-- M.2 -->
         <g class="hot" data-n="M.2 2280 SLOT — NVMe SSD" data-t="STORAGE" data-d="M-keyed M.2 slot with a 2280 SSD installed, retained by a single screw at the standoff. Swap requires only that one screw — the standoff itself stays put.">
-          <rect class="comp" x="120" y="300" width="200" height="34" rx="4" fill="#0e3140" stroke="rgba(0,229,255,.5)"/>
+          <rect class="comp" x="120" y="300" width="200" height="34" rx="4" fill="#0e3140" stroke="rgba(25,240,255,.5)"/>
           <rect x="128" y="307" width="150" height="20" rx="2" fill="#123c4e"/>
           <circle cx="304" cy="317" r="5" fill="none" stroke="rgba(255,209,102,.7)" stroke-width="2"/>
           <text x="220" y="296" text-anchor="middle" font-family="Share Tech Mono" font-size="9" fill="#6b93ab">M.2 NVMe</text>
         </g>
         <!-- WLAN -->
         <g class="hot" data-n="WLAN CARD (M.2 2230)" data-t="RADIO" data-d="Wi-Fi/BT combo card with two micro-coax antenna leads (MAIN/AUX). The tiny snap connectors are fragile — pry straight up, never sideways.">
-          <rect class="comp" x="120" y="360" width="86" height="46" rx="4" fill="#0e3140" stroke="rgba(0,229,255,.5)"/>
-          <circle cx="136" cy="370" r="4" fill="none" stroke="#7df9ff" stroke-width="1.5"/>
-          <circle cx="152" cy="370" r="4" fill="none" stroke="#7df9ff" stroke-width="1.5"/>
+          <rect class="comp" x="120" y="360" width="86" height="46" rx="4" fill="#0e3140" stroke="rgba(25,240,255,.5)"/>
+          <circle cx="136" cy="370" r="4" fill="none" stroke="#a6fbff" stroke-width="1.5"/>
+          <circle cx="152" cy="370" r="4" fill="none" stroke="#a6fbff" stroke-width="1.5"/>
           <text x="163" y="392" text-anchor="middle" font-family="Share Tech Mono" font-size="8.5" fill="#6b93ab">WLAN</text>
         </g>
         <!-- CMOS battery -->
@@ -214,17 +214,17 @@ td.act{color:var(--mut);font-size:11.5px}
         </g>
         <!-- fan header -->
         <g class="hot" data-n="FAN HEADER (4-PIN PWM)" data-t="CONNECTOR" data-d="Keyed 4-pin fan header: ground, +5/12 V, tach, PWM. A fan reported as 'not detected' is often just this connector half-seated.">
-          <rect class="comp" x="160" y="86" width="44" height="16" rx="2" fill="#132c3b" stroke="rgba(0,229,255,.5)"/>
-          <g fill="#7df9ff"><rect x="166" y="90" width="4" height="8"/><rect x="176" y="90" width="4" height="8"/><rect x="186" y="90" width="4" height="8"/><rect x="196" y="90" width="4" height="8"/></g>
+          <rect class="comp" x="160" y="86" width="44" height="16" rx="2" fill="#132c3b" stroke="rgba(25,240,255,.5)"/>
+          <g fill="#a6fbff"><rect x="166" y="90" width="4" height="8"/><rect x="176" y="90" width="4" height="8"/><rect x="186" y="90" width="4" height="8"/><rect x="196" y="90" width="4" height="8"/></g>
         </g>
         <!-- EC chip -->
         <g class="hot" data-n="EMBEDDED CONTROLLER (EC)" data-t="SYSTEM MGMT" data-d="Runs keyboard, thermals, LEDs and charging logic — even 'off'. Many ghost issues (keyboard dead, no charge light) clear with an EC reset: power drain, hold power 30 s.">
-          <rect class="comp" x="620" y="330" width="60" height="60" rx="4" fill="#0e3140" stroke="rgba(0,229,255,.5)"/>
-          <text x="650" y="364" text-anchor="middle" font-family="Share Tech Mono" font-size="10" fill="#7df9ff">EC</text>
+          <rect class="comp" x="620" y="330" width="60" height="60" rx="4" fill="#0e3140" stroke="rgba(25,240,255,.5)"/>
+          <text x="650" y="364" text-anchor="middle" font-family="Share Tech Mono" font-size="10" fill="#a6fbff">EC</text>
         </g>
         <!-- IO edge -->
         <g class="hot" data-n="I/O EDGE — USB / HDMI / DC-IN" data-t="PORT CLUSTER" data-d="Port cluster soldered at the board edge. Loose-feeling DC jacks and 'dead' USB ports are frequently cracked solder joints here — flex the port gently while testing.">
-          <rect class="comp" x="726" y="120" width="18" height="200" rx="3" fill="#132c3b" stroke="rgba(0,229,255,.5)"/>
+          <rect class="comp" x="726" y="120" width="18" height="200" rx="3" fill="#132c3b" stroke="rgba(25,240,255,.5)"/>
           <g fill="#0a2130" stroke="rgba(125,249,255,.5)"><rect x="729" y="132" width="12" height="26"/><rect x="729" y="170" width="12" height="26"/><rect x="729" y="208" width="12" height="40"/><rect x="729" y="260" width="12" height="26"/></g>
         </g>
       </svg>
@@ -380,14 +380,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   const ROLE=['TX+ (A) / TX+ (B)','TX− (A) / TX−','RX+ (A) / RX+','UNUSED (PoE MODE B +)','UNUSED (PoE MODE B +)','RX− (A) / RX−','UNUSED (PoE MODE B −)','UNUSED (PoE MODE B −)'];
   function jack(gid,set,label){
     const g=document.getElementById(gid);
-    let s='<rect x="20" y="18" width="230" height="120" rx="10" fill="#0c2534" stroke="rgba(0,229,255,.4)"/>'+
-      '<rect x="95" y="138" width="80" height="26" fill="#0c2534" stroke="rgba(0,229,255,.4)"/>';
+    let s='<rect x="20" y="18" width="230" height="120" rx="10" fill="#0c2534" stroke="rgba(25,240,255,.4)"/>'+
+      '<rect x="95" y="138" width="80" height="26" fill="#0c2534" stroke="rgba(25,240,255,.4)"/>';
     set.forEach((w,i)=>{
       const fill=w[0].startsWith('#')?w[0]:'url(#'+w[0]+')';
       s+='<rect x="'+(38+i*25)+'" y="30" width="14" height="62" rx="2" fill="'+fill+'" stroke="rgba(0,0,0,.45)"/>';
       s+='<text x="'+(45+i*25)+'" y="106" text-anchor="middle" font-family="Share Tech Mono" font-size="8" fill="#6b93ab">'+(i+1)+'</text>';
     });
-    s+='<text x="135" y="128" text-anchor="middle" font-family="Orbitron" font-size="11" letter-spacing="4" fill="#7df9ff">'+label+'</text>'+
+    s+='<text x="135" y="128" text-anchor="middle" font-family="Orbitron" font-size="11" letter-spacing="4" fill="#a6fbff">'+label+'</text>'+
        '<text x="135" y="180" text-anchor="middle" font-family="Share Tech Mono" font-size="8" fill="#6b93ab">CLIP SIDE DOWN — PIN 1 LEFT</text>';
     g.innerHTML=s;
   }
