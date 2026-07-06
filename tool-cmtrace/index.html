@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
 <style>
-:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--mag:#f24bff;--mag2:#ff8bff;--mag-glow:rgba(242,75,255,.34);--bg0:#02050a;--ink:#e2f7ff;--mut:#6b93ab;--panel:rgba(7,17,27,.82);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
+:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--mag:#f24bff;--mag2:#ff8bff;--mag-glow:rgba(242,75,255,.34);--bg0:#02050a;--ink:#e2f7ff;--mut:#6b93ab;--panel:rgba(9,16,28,.5);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
 html[data-galaxy="it"]{--acc:#19f0ff;--acc2:#a6fbff;--accd:rgba(25,240,255,.14);--line:rgba(25,240,255,.28);--acc-glow:rgba(25,240,255,.32)}
 html[data-galaxy="gen"]{--acc:#ff9d33;--acc2:#ffc46b;--accd:rgba(255,157,51,.14);--line:rgba(255,157,51,.30);--acc-glow:rgba(255,157,51,.32)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -32,7 +32,7 @@ body{background:radial-gradient(1200px 700px at 50% -12%,#0a1e30 0%,var(--bg0) 5
 #jstrip{position:relative;z-index:5;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--acc2);padding:8px 20px;border-bottom:1px solid rgba(107,147,171,.14);background:rgba(3,10,16,.6)}
 #jstrip .jj{color:var(--mut);letter-spacing:.2em}
 #wrap{position:relative;z-index:5;max-width:1360px;margin:20px auto 108px;padding:0 20px;display:grid;gap:14px}
-.panel{position:relative;background:var(--panel);border:1px solid var(--line);padding:16px;backdrop-filter:blur(10px)}
+.panel{position:relative;background:var(--panel);border:1px solid var(--line);padding:16px;backdrop-filter:blur(13px) saturate(1.25);-webkit-backdrop-filter:blur(13px) saturate(1.25);box-shadow:0 8px 30px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.05),0 0 0 1px rgba(242,75,255,.06)}
 .panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(var(--acc),var(--acc)) left 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/2px 14px;background-repeat:no-repeat;opacity:.85}
 .ptitle{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.3em;color:var(--acc);text-shadow:0 0 10px var(--acc-glow)}
 .psub{font-size:12px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;margin:4px 0 12px;font-family:var(--mono)}
