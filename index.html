@@ -324,28 +324,22 @@ body.mobile #ticker{display:none}
   box-shadow:0 24px 66px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08)}
 #term{backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3)}
 .hud{text-shadow:0 0 12px rgba(2,5,10,.7);will-change:transform}
-/* ============ DIAMOND REACTOR — gateway core + paused-open backdrop ============ */
-/* CORE: the diamond. Gateway centerpiece -> shrinks into #corewrap on unlock;
-   JS loops the seamless ping-pong idle [0,2.8s] forever (per-frame precise). */
-#reactorStage{position:fixed;left:50%;top:50%;height:78vmin;aspect-ratio:16/9;
+/* ============ DIAMOND REACTOR — gateway + opened core ============ */
+/* ONE video: gateway shows the closed diamond (idle loop); on unlock it plays the
+   morph ONCE and holds the OPENED reactor as the hub's core (replaces the old core). */
+#reactorStage{position:fixed;left:50%;top:50%;height:62vmin;aspect-ratio:16/9;
   transform:translate(-50%,-50%);transform-origin:50% 50%;z-index:113;pointer-events:none;
   transition:transform 1.2s cubic-bezier(.16,.84,.28,1),filter 1.2s ease;will-change:transform;
-  filter:drop-shadow(0 0 54px var(--mag-glow)) drop-shadow(0 0 120px var(--acc-glow))}
+  filter:drop-shadow(0 0 46px var(--mag-glow)) drop-shadow(0 0 100px var(--acc-glow))}
 #reactor{width:100%;height:100%;object-fit:contain;display:block}
-body.online #reactorStage{transform:translate(-50%,-46%) scale(.5);
-  filter:drop-shadow(0 0 20px var(--acc-glow)) drop-shadow(0 0 46px var(--mag-glow))}
-body.mobile.online #reactorStage{opacity:0;pointer-events:none;transition:opacity .8s ease}
-/* BACKDROP: plays the morph once on unlock, PAUSES on the open sphere frame,
-   dim + behind everything (z-1) so glassy panels reveal it through blur. */
-#reactorBg{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:-1;
-  pointer-events:none;opacity:0;transition:opacity 1.4s ease;will-change:opacity;filter:saturate(1.1) brightness(.92)}
-body.online #reactorBg{opacity:.34}
-/* Safari / no-VP9-alpha: mask both video els into an ellipse + screen out the dark */
-#reactorStage.fallback #reactor,#reactorBg.fallback{mix-blend-mode:screen}
-#reactorStage.fallback #reactor{-webkit-mask-image:radial-gradient(ellipse 31% 47% at 50% 47%,#000 58%,transparent 100%);
-          mask-image:radial-gradient(ellipse 31% 47% at 50% 47%,#000 58%,transparent 100%)}
-#reactorBg.fallback{-webkit-mask-image:radial-gradient(ellipse 46% 62% at 50% 50%,#000 54%,transparent 100%);
-          mask-image:radial-gradient(ellipse 46% 62% at 50% 50%,#000 54%,transparent 100%)}
+/* ONLINE: the opened reactor stays as the prominent core (near-full size, centered) */
+body.online #reactorStage{top:53%;transform:translate(-50%,-50%) scale(.82);
+  filter:drop-shadow(0 0 30px var(--acc-glow)) drop-shadow(0 0 70px var(--mag-glow))}
+body.mobile.online #reactorStage{top:230px;transform:translate(-50%,-50%) scale(.6)}
+/* Safari / no-VP9-alpha: mask the raw MP4 into an ellipse + screen out the dark */
+#reactorStage.fallback #reactor{mix-blend-mode:screen;
+  -webkit-mask-image:radial-gradient(ellipse 33% 62% at 50% 50%,#000 60%,transparent 100%);
+          mask-image:radial-gradient(ellipse 33% 62% at 50% 50%,#000 60%,transparent 100%)}
 /* gateway veil — hides the hub (everything sits below z100) until unlock */
 #gwveil{position:fixed;inset:0;z-index:100;transition:opacity 1.2s ease;will-change:opacity;
   background:radial-gradient(120% 92% at 50% 46%,rgba(3,7,14,.42) 0%,rgba(1,3,7,.93) 60%,#010306 100%);
@@ -379,13 +373,12 @@ body.online #gwui{opacity:0;pointer-events:none}
 /* while locked: freeze hub scroll/interaction under the veil */
 body.locked{overflow:hidden}
 body.locked #space,body.locked #cmdbar,body.locked #holo,body.locked #ticker,body.locked #term{pointer-events:none}
-/* online: soften old lens, keep rings; hub projects out of the opened core */
-body.online #lens{opacity:0;transition:opacity .8s ease}
-body.online .rwrap{opacity:.6;transition:opacity .8s ease}
+/* online: the opened reactor REPLACES the old core — hide the SVG rings/lens/glow */
+body.online #lens,body.online .rwrap,body.online #coreGlow{opacity:0;transition:opacity .9s ease}
 body.online #space{animation:hubproject 1.1s cubic-bezier(.16,.84,.28,1) both}
 @keyframes hubproject{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){
-  #reactorStage,#reactorBg,#gwveil,#gwui,#gwtitle{transition:opacity .3s ease}
+  #reactorStage,#gwveil,#gwui,#gwtitle{transition:opacity .3s ease}
   body.online #reactorStage{transition:none}
   body.online #space{animation:none}
 }
@@ -393,11 +386,6 @@ body.online #space{animation:hubproject 1.1s cubic-bezier(.16,.84,.28,1) both}
 </head>
 <body class="locked">
 <!-- ===== DIAMOND REACTOR GATEWAY ===== -->
-<!-- paused-open backdrop (plays the morph once on unlock, then holds the open sphere) -->
-<video id="reactorBg" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true" tabindex="-1">
-  <source src="./reactor.webm" type="video/webm">
-  <source src="./reactor.mp4" type="video/mp4">
-</video>
 <div id="gwveil"></div>
 <div id="reactorStage">
   <video id="reactor" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true" tabindex="-1" poster="./reactor-poster.jpg">
@@ -1429,29 +1417,23 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <script>
 /* ============ DIAMOND REACTOR GATEWAY — state machine ============
-   State 1 (Idle):  CORE video loops the seamless ping-pong head [0, IDLE_END]
-                    using requestVideoFrameCallback (per-frame; NOT timeupdate,
-                    which fires ~4x/s and overshoots the loop point -> snap).
+   State 1 (Idle):  ONE reactor video loops the seamless ping-pong head [0,IDLE_END]
+                    (setInterval backstop + rVFC; NOT timeupdate).
    State 2 (Hold):  click-and-hold fills the SVG ring encircling the reactor.
-   State 3 (Open):  BACKDROP video plays the morph [IDLE_END, MORPH_END] ONCE,
-                    then video.pause() holds the open sphere permanently; the hub
-                    fades/scales in projecting out of the opened core.
-   Plus: cross-page session state, autoplay guard, dead-video failsafe, hide-pause. */
+   State 3 (Open):  the SAME video plays the morph [MORPH_START, MORPH_END] ONCE and
+                    video.pause()s on the OPENED frame -> it stays as the hub's core
+                    (the old SVG/lens core is hidden). Hub fades/scales in from it. */
 (function(){
   var body  = document.body,
       stage = document.getElementById('reactorStage'),
       core  = document.getElementById('reactor'),
-      bg    = document.getElementById('reactorBg'),
       gwui  = document.getElementById('gwui'),
       prg   = document.getElementById('gwPrg');
 
-  /* re-baked file: ping-pong idle head [0,2.8], then the morph->open tail.
-     IDLE_END sits 0.1s inside the ping-pong so any small overshoot still lands
-     on a seamless frame; MORPH_START is the true start of the morph. */
-  var IDLE_END = 2.7, MORPH_START = 2.8, MORPH_END = 6.0, RING = 295.3;   /* pause 0.33s before the 6.33s end so the frame watcher can't miss it into a reset */
+  var IDLE_END = 2.7, MORPH_START = 2.8, MORPH_END = 6.0, RING = 295.3;
   var reduce   = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var hasVFC   = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
-  var unlocked = false;
+  var unlocked = false, idleIv = null;
 
   if (!stage || !core || !gwui){ body.classList.remove('locked'); body.classList.add('online'); return; }
 
@@ -1463,54 +1445,44 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function play(v){ if (!v) return; var p = v.play(); if (p && p.catch) p.catch(function(){}); }
 
-  /* Safari / no-VP9-alpha -> CSS-masked MP4 path on BOTH video elements */
-  if (!core.canPlayType('video/webm; codecs="vp9"')){ stage.classList.add('fallback'); if (bg) bg.classList.add('fallback'); }
+  if (!core.canPlayType('video/webm; codecs="vp9"')) stage.classList.add('fallback');
 
-  /* ---- STATE 1: seamless idle loop on the CORE (runs forever, gateway + online) ----
-     Two clamps: requestVideoFrameCallback for per-frame precision when the tab is
-     compositing, AND a setInterval backstop that survives rAF/rVFC starvation
-     during WebGL init or when backgrounded — so the loop can never overshoot into
-     the morph and snap. */
-  function clampIdle(){ if (core.currentTime >= IDLE_END || core.currentTime < 0){ try { core.currentTime = 0; } catch(e){} } }
-  core.addEventListener('loadeddata', function(){ try { core.currentTime = 0; } catch(e){} play(core); });
+  /* ---- STATE 1: seamless idle loop while LOCKED (setInterval backstop + rVFC).
+     Both clamps bail once unlocked so the morph can play out to the open frame. ---- */
+  function clampIdle(){ if (unlocked) return; if (core.currentTime >= IDLE_END || core.currentTime < 0){ try { core.currentTime = 0; } catch(e){} } }
+  core.addEventListener('loadeddata', function(){ if (!unlocked){ try { core.currentTime = 0; } catch(e){} play(core); } });
   play(core);
-  if (hasVFC){ var vloop = function(){ clampIdle(); core.requestVideoFrameCallback(vloop); }; core.requestVideoFrameCallback(vloop); }
-  setInterval(clampIdle, 45);
+  if (hasVFC){ var vloop = function(){ if (unlocked) return; clampIdle(); core.requestVideoFrameCallback(vloop); }; core.requestVideoFrameCallback(vloop); }
+  idleIv = setInterval(clampIdle, 45);
 
-  /* ---- STATE 3: unlock -> BACKDROP plays the morph once, pauses on the open frame ---- */
-  function pinBgOpen(){ try { bg.currentTime = MORPH_END - 0.05; } catch(e){} bg.pause(); }
+  /* ---- STATE 3: unlock -> the SAME reactor plays the morph once and HOLDS the opened frame ---- */
+  function pinOpen(){ try { core.pause(); } catch(e){} }
   function goOnline(instant){
     if (unlocked) return; unlocked = true;
     try { sessionStorage.setItem('nn-gw','1'); } catch(e){}
+    if (idleIv){ clearInterval(idleIv); idleIv = null; }
     hubInert(false);
     body.classList.remove('locked');
 
     if (instant || reduce){
+      /* return visit: jump straight to the opened frame (forward seek, then hold) */
+      var showOpen = function(){ try { core.currentTime = MORPH_END - 0.02; } catch(e){} core.pause(); };
+      if (core.readyState >= 1) showOpen(); else core.addEventListener('loadedmetadata', showOpen, { once:true });
       body.classList.add('online');
-      if (bg){ if (bg.readyState >= 1) pinBgOpen(); else bg.addEventListener('loadedmetadata', pinBgOpen, { once:true }); }
       return;
     }
-    if (bg){
-      bg.loop = false;
-      var pinned = false;
-      /* pause exactly where playback is (>= MORPH_END, already a fully-open sphere frame).
-         Do NOT seek afterwards: a backward seek near the end resets currentTime to 0 in
-         some decoders. MORPH_END keeps a 0.33s margin before the 6.33s end so the 30ms
-         watcher always catches it before a natural 'ended' (which would reset to 0). */
-      var pinOpen = function(){ if (pinned) return; pinned = true; try { bg.pause(); } catch(e){} };
-      var bgWatch = setInterval(function(){ if (pinned){ clearInterval(bgWatch); return; } if (bg.currentTime >= MORPH_END){ pinOpen(); clearInterval(bgWatch); } }, 30);
-      bg.addEventListener('ended', pinOpen, { once:true });   /* backstop only */
-      /* try to start right at the morph; if the seek lands play from there, else play through from the idle head */
-      var began = false, begin = function(){ if (began) return; began = true; play(bg); };
-      bg.addEventListener('seeked', begin, { once:true });
-      try { bg.currentTime = MORPH_START; } catch(e){}
-      setTimeout(begin, 250);
-    }
-    /* reveal the hub promptly; the backdrop keeps blooming to the open frame behind it */
-    setTimeout(function(){ body.classList.add('online'); }, 550);
+    /* play the morph once, pause ON the opened frame. No backward seek (resets to 0 in
+       some decoders); MORPH_END keeps 0.33s margin before the 6.33s end so the 30ms
+       watcher catches it before a natural 'ended'. */
+    try { core.currentTime = MORPH_START; } catch(e){}
+    play(core);
+    var pinned = false;
+    var iv = setInterval(function(){ if (pinned){ clearInterval(iv); return; } if (core.currentTime >= MORPH_END){ pinned = true; pinOpen(); clearInterval(iv); } }, 30);
+    core.addEventListener('ended', function(){ pinOpen(); }, { once:true });   /* backstop */
+    setTimeout(function(){ body.classList.add('online'); }, 650);              /* reveal the hub as it opens */
   }
 
-  /* ---- cross-page: already unlocked this session -> straight to the open state ---- */
+  /* ---- cross-page: already unlocked this session -> straight to the opened core ---- */
   var already = false; try { already = sessionStorage.getItem('nn-gw') === '1'; } catch(e){}
   if (already){ goOnline(true); } else { hubInert(true); }
 
@@ -1545,12 +1517,9 @@ document.addEventListener('DOMContentLoaded', () => {
   core.addEventListener('error', failOpen);
   var srcs = core.querySelectorAll('source'); if (srcs.length) srcs[srcs.length - 1].addEventListener('error', failOpen);
 
-  /* ---- battery / memory guard (don't resume the paused-open backdrop) ---- */
-  document.addEventListener('visibilitychange', function(){
-    if (document.hidden){ try { core.pause(); if (bg) bg.pause(); } catch(e){} }
-    else { play(core); }
-  });
-  window.addEventListener('pagehide', function(){ try { core.pause(); if (bg) bg.pause(); } catch(e){} });
+  /* ---- battery guard: only resume playback while LOCKED (online = intentionally paused open) ---- */
+  document.addEventListener('visibilitychange', function(){ if (document.hidden){ try { core.pause(); } catch(e){} } else if (!unlocked){ play(core); } });
+  window.addEventListener('pagehide', function(){ try { core.pause(); } catch(e){} });
 })();
 </script>
 <script type="module" src="./gl/nexus-gl.js"></script>
