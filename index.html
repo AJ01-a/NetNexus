@@ -322,9 +322,43 @@ body.mobile #ticker{display:none}
   box-shadow:0 24px 66px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08)}
 #term{backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3)}
 .hud{text-shadow:0 0 12px rgba(2,5,10,.7);will-change:transform}
+/* ============ INTERACTIVE VIDEO FOUNDATION ============ */
+/* Sits between the body's radial-gradient (backdrop) and #gl (z-index:0).
+   Every layer above is transparent, so the reactor + starfield float over it. */
+#bgvid{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;object-position:center;
+  z-index:-2;pointer-events:none;opacity:0;
+  transition:opacity 1s ease,filter .8s ease;will-change:filter,opacity;
+  filter:saturate(1.05) brightness(.9) contrast(1.02)}
+#bgvid.ready{opacity:1}
+/* galaxy-tinted vignette + gradient — keeps neon UI legible over any frame,
+   recolors cyan<->orange with the existing --acc / --bg0 tokens */
+#bgvid-veil{position:fixed;inset:0;z-index:-1;pointer-events:none;transition:background .8s ease,opacity .8s ease;
+  background:
+    radial-gradient(120% 90% at 50% 42%, transparent 0%, rgba(2,5,10,.30) 55%, rgba(2,5,10,.72) 100%),
+    linear-gradient(180deg, rgba(2,5,10,.55) 0%, rgba(2,5,10,.20) 30%, rgba(2,5,10,.42) 100%),
+    radial-gradient(140% 100% at 50% 40%, var(--accd) 0%, transparent 42%)}
+/* IDLE — video is the hero: lighter veil, fuller video */
+body.ui-idle #bgvid{filter:saturate(1.08) brightness(.94) contrast(1.02)}
+body.ui-idle #bgvid-veil{opacity:.85}
+/* ACTIVE — user is working the hub: dim + soften video so glass/tools pop */
+body.ui-active #bgvid{filter:saturate(.78) brightness(.5) contrast(1) blur(2px)}
+body.ui-active #bgvid-veil{opacity:1;
+  background:
+    radial-gradient(120% 90% at 50% 42%, rgba(2,5,10,.30) 0%, rgba(2,5,10,.58) 55%, rgba(2,5,10,.88) 100%),
+    linear-gradient(180deg, rgba(2,5,10,.72) 0%, rgba(2,5,10,.42) 34%, rgba(2,5,10,.66) 100%),
+    radial-gradient(140% 100% at 50% 40%, var(--accd) 0%, transparent 40%)}
+@media (prefers-reduced-motion: reduce){
+  #bgvid{transition:opacity .3s ease;filter:saturate(1) brightness(.85)!important}
+  body.ui-active #bgvid{filter:saturate(1) brightness(.55)!important}
+  #bgvid-veil{transition:none}
+}
 </style>
 </head>
 <body>
+<video id="bgvid" autoplay muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true" tabindex="-1">
+  <source src="./gemini_generated_video_531262bd.mp4" type="video/mp4">
+</video>
+<div id="bgvid-veil"></div>
 <canvas id="gl"></canvas>
 <canvas id="L1" class="layer"></canvas>
 <canvas id="L2" class="layer"></canvas>
@@ -1340,6 +1374,69 @@ document.addEventListener('DOMContentLoaded', () => {
   T('ORBITAL FIELD POPULATED :: IT GALAXY — 12 BODIES', 'ok');
   T((SR ? 'VOICE COMMAND ENGINE ARMED — CLICK “LISTEN”. ' : '') + 'AWAITING COMMAND, SIR.', 'sys');
 });
+</script>
+<script>
+/* ============ INTERACTIVE VIDEO FOUNDATION — controller ============
+   Self-contained. Does not touch the main engine above. Handles:
+   autoplay-policy fallback, Idle<->Active mode, tab-hidden pause, decode fallback. */
+(function(){
+  var vid = document.getElementById('bgvid');
+  if (!vid) return;
+  var body = document.body;
+
+  /* ---- decode / source failure -> reveal the existing gradient, no breakage ---- */
+  function failGracefully(){ vid.classList.remove('ready'); vid.style.display = 'none'; }
+  vid.addEventListener('error', failGracefully);
+  var src = vid.querySelector('source');
+  if (src) src.addEventListener('error', failGracefully);
+
+  /* ---- fade the video in only once it can actually paint ---- */
+  function reveal(){ if (vid.readyState >= 2) vid.classList.add('ready'); }
+  vid.addEventListener('loadeddata', reveal);
+  vid.addEventListener('canplay', reveal);
+
+  /* ---- autoplay-policy guard: try now, then retry on first user gesture ---- */
+  function tryPlay(){
+    var p = vid.play();
+    if (p && typeof p.catch === 'function') p.catch(function(){ /* blocked; wait for gesture */ });
+  }
+  function gestureStart(){
+    tryPlay();
+    window.removeEventListener('pointerdown', gestureStart);
+    window.removeEventListener('keydown', gestureStart);
+    window.removeEventListener('touchstart', gestureStart);
+  }
+  window.addEventListener('pointerdown', gestureStart, { passive: true });
+  window.addEventListener('keydown', gestureStart);
+  window.addEventListener('touchstart', gestureStart, { passive: true });
+  tryPlay();
+
+  /* ---- battery / memory guard: pause when tab hidden, resume when visible ---- */
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) { try { vid.pause(); } catch(e){} }
+    else if (vid.style.display !== 'none') { tryPlay(); }
+  });
+
+  /* ---- Idle <-> Active mode ---- */
+  var IDLE_MS = 6000, idleTimer = null;
+  body.classList.add('ui-idle');
+  function goIdle(){ body.classList.remove('ui-active'); body.classList.add('ui-idle'); }
+  function goActive(){
+    if (body.classList.contains('ui-active')) { armIdle(); return; }
+    body.classList.remove('ui-idle'); body.classList.add('ui-active'); armIdle();
+  }
+  function armIdle(){ clearTimeout(idleTimer); idleTimer = setTimeout(goIdle, IDLE_MS); }
+
+  /* interaction signals -> Active (passive, debounced via the idle timer) */
+  ['pointerdown','keydown','wheel','touchstart'].forEach(function(ev){
+    window.addEventListener(ev, goActive, { passive: true });
+  });
+  var q = document.getElementById('q');
+  if (q) { q.addEventListener('focus', goActive); q.addEventListener('input', goActive); }
+  /* hovering a tool planet or opening a panel also counts as "working the hub" */
+  var space = document.getElementById('space');
+  if (space) space.addEventListener('pointermove', goActive, { passive: true });
+})();
 </script>
 <script type="module" src="./gl/nexus-gl.js"></script>
 </body>
