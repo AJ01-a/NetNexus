@@ -16,20 +16,19 @@
 /* ============ STARK-CORE VISUAL ENGINE v2.1 ============ */
 :root{
   --red:#ff4757; --grn:#2eff9e; --yel:#ffd166; --or:#ff9d33;
-  --mag:#f24bff; --mag2:#ff8bff; --mag-glow:rgba(242,75,255,.34);
-  --bg0:#02050a; --bg1:#07131d; --ink:#e2f7ff; --mut:#6b93ab;
-  --panel:rgba(9,16,28,.5);
+  --bg0:#02050a; --bg1:#07131d; --ink:#d9f4ff; --mut:#6b93ab;
+  --panel:rgba(7,17,27,.82);
   --mono:'Share Tech Mono',Consolas,'Courier New',monospace;
   --disp:'Orbitron','Segoe UI',Arial,sans-serif;
   --ui:'Rajdhani','Segoe UI',Arial,sans-serif;
 }
 html[data-galaxy="it"]{
-  --acc:#19f0ff; --acc2:#a6fbff; --accd:rgba(25,240,255,.15);
-  --line:rgba(25,240,255,.30); --acc-core:rgba(25,240,255,.52); --acc-glow:rgba(25,240,255,.36);
+  --acc:#00e5ff; --acc2:#7df9ff; --accd:rgba(0,229,255,.14);
+  --line:rgba(0,229,255,.28); --acc-core:rgba(0,229,255,.5); --acc-glow:rgba(0,229,255,.32);
 }
 html[data-galaxy="gen"]{
-  --acc:#ff9d33; --acc2:#ffc46b; --accd:rgba(255,157,51,.15);
-  --line:rgba(255,157,51,.32); --acc-core:rgba(255,157,51,.52); --acc-glow:rgba(255,157,51,.34);
+  --acc:#ff9d33; --acc2:#ffc46b; --accd:rgba(255,157,51,.14);
+  --line:rgba(255,157,51,.30); --acc-core:rgba(255,157,51,.5); --acc-glow:rgba(255,157,51,.32);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
@@ -142,8 +141,7 @@ body.mobile #voxSel{display:none}
 /* ---------- planets ---------- */
 #field{position:absolute;inset:0;transform-style:preserve-3d}
 .planet{position:absolute;left:0;top:0;width:164px;padding:10px 12px 9px;cursor:pointer;
-  background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(13px) saturate(1.25);-webkit-backdrop-filter:blur(13px) saturate(1.25);
-  box-shadow:0 8px 30px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.05),0 0 0 1px rgba(242,75,255,.05);
+  background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(6px);
   will-change:transform,opacity,filter;transition:border-color .3s,box-shadow .3s,background .3s}
 .planet::after{content:"";position:absolute;inset:0;pointer-events:none;background:
   linear-gradient(var(--acc),var(--acc)) left 0 top 0/12px 1.5px,
@@ -315,6 +313,58 @@ body.mobile #ticker{display:none}
 @media (prefers-reduced-motion: reduce){
   .planet.match,.cbtn.mic.live .micdot,#micbtn.live,#voicehud .vh-ring span{animation-duration:2.4s}
 }
+/* ============ NEXUS CORE GATEWAY ============ */
+/* Locked: hide the hub UI so ONLY the reactor core floats in the starfield */
+body.locked{overflow:hidden}
+body.locked #cmdbar,body.locked #field,body.locked #holo,body.locked #ticker,
+body.locked .hud,body.locked #term,body.locked #voicehud,body.locked #micbtn,
+body.locked #jcap{
+  opacity:0!important;pointer-events:none!important;transition:opacity .7s ease}
+/* focus vignette (starfield edges dimmed; core sits above it) */
+#gwveil{position:fixed;inset:0;z-index:108;pointer-events:none;opacity:1;transition:opacity 1s ease;
+  background:radial-gradient(58vmin 58vmin at 50% 52%,transparent 0%,rgba(2,6,12,.5) 62%,rgba(1,3,7,.92) 100%)}
+body:not(.locked) #gwveil{opacity:0}
+body.locked #corewrap{z-index:120}
+/* interaction surface + Stark ring encircling the core */
+#gwui{position:fixed;inset:0;z-index:130;cursor:pointer;transition:opacity .6s ease;
+  -webkit-tap-highlight-color:transparent;outline:none}
+body:not(.locked) #gwui,body.online #gwui{opacity:0;pointer-events:none}
+#gwtitle{position:fixed;top:8vh;left:50%;transform:translateX(-50%);z-index:131;text-align:center;
+  font-family:var(--disp);font-weight:700;letter-spacing:.5em;font-size:19px;color:var(--acc);
+  text-shadow:0 0 22px var(--acc-glow);text-transform:uppercase;white-space:nowrap;transition:opacity .55s}
+#gwtitle b{color:var(--ink)}
+#gwtitle span{display:block;font-size:9px;letter-spacing:.34em;color:var(--mut);margin-top:9px;font-weight:400}
+body:not(.locked) #gwtitle{opacity:0;pointer-events:none}
+#gwRing{position:absolute;left:50%;top:52%;width:56vmin;height:56vmin;
+  transform:translate(-50%,-50%) rotate(-90deg);pointer-events:none;
+  filter:drop-shadow(0 0 10px var(--acc-glow));opacity:.5;transition:opacity .3s}
+#gwui.holding #gwRing,#gwui:focus-visible #gwRing{opacity:1}
+#gwRing circle{fill:none;stroke-width:1.2}
+#gwRing .trk{stroke:rgba(0,229,255,.14)}
+#gwRing .prg{stroke:var(--acc);stroke-linecap:round;stroke-dasharray:295.3;stroke-dashoffset:295.3;
+  filter:drop-shadow(0 0 6px var(--acc));transition:stroke-dashoffset .06s linear}
+#gwPrompt{position:absolute;left:50%;bottom:13vh;transform:translateX(-50%);white-space:nowrap;
+  font-family:var(--disp);font-size:12.5px;letter-spacing:.4em;color:var(--acc2);text-transform:uppercase;
+  text-shadow:0 0 16px var(--acc-glow);animation:gwpulse 2.4s ease-in-out infinite}
+#gwPrompt b{color:var(--ink);font-weight:700}
+#gwSub{position:absolute;left:50%;bottom:calc(13vh - 22px);transform:translateX(-50%);white-space:nowrap;
+  font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--mut)}
+#gwui.holding #gwPrompt,#gwui:focus-visible #gwPrompt{animation:none;color:var(--acc)}
+@keyframes gwpulse{50%{opacity:.5}}
+/* Unlock: core scale-pulse + hub fades/scales in with precise easing */
+body.online:not(.mobile) #corewrap{animation:gwCorePulse 1s cubic-bezier(.2,.8,.3,1)}
+@keyframes gwCorePulse{0%{transform:translate(-50%,-50%) scale(1)}38%{transform:translate(-50%,-50%) scale(1.14)}100%{transform:translate(-50%,-50%) scale(1)}}
+body.online #cmdbar,body.online #field,body.online #holo,body.online #ticker,body.online .hud,body.online #micbtn{
+  animation:gwFadeIn .9s ease .1s both}
+@keyframes gwFadeIn{from{opacity:0}to{opacity:1}}
+body.online:not(.mobile) #space{animation:gwProject 1.05s cubic-bezier(.16,.84,.28,1) both}
+@keyframes gwProject{from{transform:scale(.955)}to{transform:none}}
+/* mobile: center the core during the gateway */
+body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate(-50%,-50%)!important;margin:0}
+@media (prefers-reduced-motion:reduce){
+  #gwui,#gwtitle,#gwveil,body.locked #cmdbar,body.locked #field,body.locked .hud,body.locked #holo,body.locked #ticker{transition:none}
+  body.online #corewrap,body.online #space,body.online #cmdbar,body.online #field,body.online .hud,body.online #holo,body.online #ticker,body.online #micbtn{animation:none}
+}
 .hidden{display:none!important}
 /* ---------- glassmorphism / depth polish (safe: no transform props) ---------- */
 #cmdbar{backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);
@@ -324,80 +374,16 @@ body.mobile #ticker{display:none}
   box-shadow:0 24px 66px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08)}
 #term{backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3)}
 .hud{text-shadow:0 0 12px rgba(2,5,10,.7);will-change:transform}
-/* ============ DIAMOND REACTOR — gateway + opened core ============ */
-/* ONE video: gateway shows the closed diamond (idle loop); on unlock it plays the
-   morph ONCE and holds the OPENED reactor as the hub's core (replaces the old core). */
-#reactorStage{position:fixed;left:50%;top:50%;height:62vmin;aspect-ratio:16/9;
-  transform:translate(-50%,-50%);transform-origin:50% 50%;z-index:113;pointer-events:none;
-  transition:transform 1.2s cubic-bezier(.16,.84,.28,1),filter 1.2s ease;will-change:transform;
-  filter:drop-shadow(0 0 46px var(--mag-glow)) drop-shadow(0 0 100px var(--acc-glow))}
-#reactor{width:100%;height:100%;object-fit:contain;display:block}
-/* ONLINE: the opened reactor stays as the prominent core (near-full size, centered) */
-body.online #reactorStage{top:53%;transform:translate(-50%,-50%) scale(.82);
-  filter:drop-shadow(0 0 30px var(--acc-glow)) drop-shadow(0 0 70px var(--mag-glow))}
-body.mobile.online #reactorStage{top:230px;transform:translate(-50%,-50%) scale(.6)}
-/* Safari / no-VP9-alpha: mask the raw MP4 into an ellipse + screen out the dark */
-#reactorStage.fallback #reactor{mix-blend-mode:screen;
-  -webkit-mask-image:radial-gradient(ellipse 33% 62% at 50% 50%,#000 60%,transparent 100%);
-          mask-image:radial-gradient(ellipse 33% 62% at 50% 50%,#000 60%,transparent 100%)}
-/* gateway veil — hides the hub (everything sits below z100) until unlock */
-#gwveil{position:fixed;inset:0;z-index:100;transition:opacity 1.2s ease;will-change:opacity;
-  background:radial-gradient(120% 92% at 50% 46%,rgba(3,7,14,.42) 0%,rgba(1,3,7,.93) 60%,#010306 100%);
-  -webkit-backdrop-filter:blur(3px) saturate(1.15);backdrop-filter:blur(3px) saturate(1.15)}
-body.online #gwveil{opacity:0;pointer-events:none}
-/* title */
-#gwtitle{position:fixed;top:8vh;left:50%;transform:translateX(-50%);z-index:121;text-align:center;
-  font-family:var(--disp);font-weight:700;letter-spacing:.5em;font-size:19px;color:var(--acc);
-  text-shadow:0 0 24px var(--acc-glow);text-transform:uppercase;white-space:nowrap;transition:opacity .55s}
-#gwtitle b{color:var(--ink)}
-#gwtitle span{display:block;font-size:9px;letter-spacing:.34em;color:var(--mut);margin-top:9px;font-weight:400}
-body.online #gwtitle{opacity:0;pointer-events:none}
-/* interaction surface + hold ring ENCIRCLING the reactor */
-#gwui{position:fixed;inset:0;z-index:121;cursor:pointer;transition:opacity .55s;-webkit-tap-highlight-color:transparent;outline:none}
-body.online #gwui{opacity:0;pointer-events:none}
-#gwRing{position:absolute;left:50%;top:50%;width:52vmin;height:52vmin;
-  transform:translate(-50%,-50%) rotate(-90deg);filter:drop-shadow(0 0 12px var(--mag-glow));opacity:.32;transition:opacity .3s}
-#gwui.holding #gwRing,#gwui:focus-visible #gwRing{opacity:1}
-#gwRing circle{fill:none;stroke-width:1.4}
-#gwRing .trk{stroke:rgba(166,251,255,.14)}
-#gwRing .prg{stroke:var(--acc);stroke-linecap:round;stroke-dasharray:295.3;stroke-dashoffset:295.3;
-  filter:drop-shadow(0 0 6px var(--acc)) drop-shadow(0 0 12px var(--mag-glow));transition:stroke-dashoffset .06s linear}
-#gwPrompt{position:absolute;left:50%;bottom:13vh;transform:translateX(-50%);white-space:nowrap;
-  font-family:var(--disp);font-size:12.5px;letter-spacing:.4em;color:var(--acc2);text-transform:uppercase;
-  text-shadow:0 0 16px var(--acc-glow);animation:gwpulse 2.4s ease-in-out infinite}
-#gwPrompt b{color:var(--ink);font-weight:700}
-#gwSub{position:absolute;left:50%;bottom:calc(13vh - 22px);transform:translateX(-50%);white-space:nowrap;
-  font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--mut)}
-#gwui.holding #gwPrompt,#gwui:focus-visible #gwPrompt{animation:none;color:var(--acc)}
-@keyframes gwpulse{50%{opacity:.5}}
-/* while locked: freeze hub scroll/interaction under the veil */
-body.locked{overflow:hidden}
-body.locked #space,body.locked #cmdbar,body.locked #holo,body.locked #ticker,body.locked #term{pointer-events:none}
-/* online: the opened reactor REPLACES the old core — hide the SVG rings/lens/glow */
-body.online #lens,body.online .rwrap,body.online #coreGlow{opacity:0;transition:opacity .9s ease}
-body.online #space{animation:hubproject 1.1s cubic-bezier(.16,.84,.28,1) both}
-@keyframes hubproject{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){
-  #reactorStage,#gwveil,#gwui,#gwtitle{transition:opacity .3s ease}
-  body.online #reactorStage{transition:none}
-  body.online #space{animation:none}
-}
 </style>
 </head>
 <body class="locked">
-<!-- ===== DIAMOND REACTOR GATEWAY ===== -->
+<!-- ===== NEXUS CORE GATEWAY (original reactor core is the centerpiece) ===== -->
 <div id="gwveil"></div>
-<div id="reactorStage">
-  <video id="reactor" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true" tabindex="-1" poster="./reactor-poster.jpg">
-    <source src="./reactor.webm" type="video/webm">
-    <source src="./reactor.mp4" type="video/mp4">
-  </video>
-</div>
-<div id="gwtitle"><b>NET</b>NEXUS<span>STARK-CORE DIAMOND REACTOR // AWAITING OPERATOR</span></div>
+<div id="gwtitle"><b>NET</b>NEXUS<span>NEXUS CORE // AWAITING OPERATOR</span></div>
 <div id="gwui" role="button" tabindex="0" aria-label="Hold to initialize NetNexus">
   <svg id="gwRing" viewBox="0 0 100 100" aria-hidden="true"><circle class="trk" cx="50" cy="50" r="47"></circle><circle class="prg" id="gwPrg" cx="50" cy="50" r="47"></circle></svg>
   <div id="gwPrompt">HOLD TO <b>INITIALIZE</b></div>
-  <div id="gwSub">PRESS &amp; HOLD THE REACTOR</div>
+  <div id="gwSub">PRESS &amp; HOLD THE CORE</div>
 </div>
 <canvas id="gl"></canvas>
 <canvas id="L1" class="layer"></canvas>
@@ -1416,78 +1402,49 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <script>
-/* ============ DIAMOND REACTOR GATEWAY — state machine ============
-   State 1 (Idle):  ONE reactor video loops the seamless ping-pong head [0,IDLE_END]
-                    (setInterval backstop + rVFC; NOT timeupdate).
-   State 2 (Hold):  click-and-hold fills the SVG ring encircling the reactor.
-   State 3 (Open):  the SAME video plays the morph [MORPH_START, MORPH_END] ONCE and
-                    video.pause()s on the OPENED frame -> it stays as the hub's core
-                    (the old SVG/lens core is hidden). Hub fades/scales in from it. */
+/* ============ NEXUS CORE GATEWAY — controller ============
+   State 1 (Locked): hub UI hidden (CSS body.locked); ONLY the original
+                     reactor core (SVG rings + WebGL) floats center-screen.
+   State 2 (Hold):   click-and-hold ~0.9s fills the Stark ring around the core
+                     (rAF-driven; release cancels). Enter/Space for keyboard.
+   State 3 (Online): core scale-pulses, veil/ring fade, hub fades + scales in
+                     (GPU transforms/opacity only -> no CLS).
+   Cross-page: sessionStorage skips the gateway on same-session returns. */
 (function(){
-  var body  = document.body,
-      stage = document.getElementById('reactorStage'),
-      core  = document.getElementById('reactor'),
-      gwui  = document.getElementById('gwui'),
-      prg   = document.getElementById('gwPrg');
+  var body = document.body,
+      gwui = document.getElementById('gwui'),
+      prg  = document.getElementById('gwPrg');
+  var RING = 295.3, HOLD = 900;
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var unlocked = false;
 
-  var IDLE_END = 2.7, MORPH_START = 2.8, MORPH_END = 6.0, RING = 295.3;
-  var reduce   = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var hasVFC   = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
-  var unlocked = false, idleIv = null;
+  /* failsafe: if gateway DOM is missing, never trap the user */
+  if (!gwui){ body.classList.remove('locked'); return; }
 
-  if (!stage || !core || !gwui){ body.classList.remove('locked'); body.classList.add('online'); return; }
-
+  /* keep hidden hub out of AT / tab order while locked */
   function hubInert(on){
-    ['space','cmdbar','holo','ticker','term','voicehud'].forEach(function(id){
+    ['cmdbar','holo','ticker','term','voicehud'].forEach(function(id){
       var el = document.getElementById(id); if (!el) return;
       if (on) el.setAttribute('inert',''); else el.removeAttribute('inert');
     });
   }
-  function play(v){ if (!v) return; var p = v.play(); if (p && p.catch) p.catch(function(){}); }
 
-  if (!core.canPlayType('video/webm; codecs="vp9"')) stage.classList.add('fallback');
-
-  /* ---- STATE 1: seamless idle loop while LOCKED (setInterval backstop + rVFC).
-     Both clamps bail once unlocked so the morph can play out to the open frame. ---- */
-  function clampIdle(){ if (unlocked) return; if (core.currentTime >= IDLE_END || core.currentTime < 0){ try { core.currentTime = 0; } catch(e){} } }
-  core.addEventListener('loadeddata', function(){ if (!unlocked){ try { core.currentTime = 0; } catch(e){} play(core); } });
-  play(core);
-  if (hasVFC){ var vloop = function(){ if (unlocked) return; clampIdle(); core.requestVideoFrameCallback(vloop); }; core.requestVideoFrameCallback(vloop); }
-  idleIv = setInterval(clampIdle, 45);
-
-  /* ---- STATE 3: unlock -> the SAME reactor plays the morph once and HOLDS the opened frame ---- */
-  function pinOpen(){ try { core.pause(); } catch(e){} }
   function goOnline(instant){
     if (unlocked) return; unlocked = true;
     try { sessionStorage.setItem('nn-gw','1'); } catch(e){}
-    if (idleIv){ clearInterval(idleIv); idleIv = null; }
     hubInert(false);
     body.classList.remove('locked');
-
-    if (instant || reduce){
-      /* return visit: jump straight to the opened frame (forward seek, then hold) */
-      var showOpen = function(){ try { core.currentTime = MORPH_END - 0.02; } catch(e){} core.pause(); };
-      if (core.readyState >= 1) showOpen(); else core.addEventListener('loadedmetadata', showOpen, { once:true });
-      body.classList.add('online');
-      return;
-    }
-    /* play the morph once, pause ON the opened frame. No backward seek (resets to 0 in
-       some decoders); MORPH_END keeps 0.33s margin before the 6.33s end so the 30ms
-       watcher catches it before a natural 'ended'. */
-    try { core.currentTime = MORPH_START; } catch(e){}
-    play(core);
-    var pinned = false;
-    var iv = setInterval(function(){ if (pinned){ clearInterval(iv); return; } if (core.currentTime >= MORPH_END){ pinned = true; pinOpen(); clearInterval(iv); } }, 30);
-    core.addEventListener('ended', function(){ pinOpen(); }, { once:true });   /* backstop */
-    setTimeout(function(){ body.classList.add('online'); }, 650);              /* reveal the hub as it opens */
+    if (!instant && !reduce) body.classList.add('online');   /* pulse + staggered reveal */
+    /* WebGL burst punctuates the unlock, matching the core's own click effect */
+    if (!instant && window.NEXUSGL && window.NEXUSGL.active && window.NEXUSGL.burst){ try { window.NEXUSGL.burst(700); } catch(e){} }
   }
 
-  /* ---- cross-page: already unlocked this session -> straight to the opened core ---- */
+  /* cross-page: already unlocked this session -> straight to the hub */
   var already = false; try { already = sessionStorage.getItem('nn-gw') === '1'; } catch(e){}
   if (already){ goOnline(true); } else { hubInert(true); }
 
-  /* ---- STATE 2: click-and-hold (~0.9s); ring encircles the reactor ---- */
-  var HOLD = 900, raf = null, t0 = 0;
+  /* click-and-hold with rAF progress ring */
+  var raf = null, t0 = 0;
   function tick(){
     var p = Math.min((performance.now() - t0) / HOLD, 1);
     if (prg) prg.style.strokeDashoffset = String(RING * (1 - p));
@@ -1497,7 +1454,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function startHold(e){
     if (unlocked) return;
     if (e && e.type === 'keydown'){ if (e.key !== 'Enter' && e.key !== ' ') return; e.preventDefault(); }
-    play(core);                                  /* the hold IS the autoplay gesture */
     t0 = performance.now(); gwui.classList.add('holding');
     cancelAnimationFrame(raf); raf = requestAnimationFrame(tick);
   }
@@ -1511,15 +1467,6 @@ document.addEventListener('DOMContentLoaded', () => {
   gwui.addEventListener('pointercancel', endHold);
   gwui.addEventListener('keydown', startHold);
   gwui.addEventListener('keyup', endHold);
-
-  /* ---- dead-video failsafe: broken source must never block entry ---- */
-  function failOpen(){ if (!unlocked){ stage.style.display = 'none'; goOnline(true); } }
-  core.addEventListener('error', failOpen);
-  var srcs = core.querySelectorAll('source'); if (srcs.length) srcs[srcs.length - 1].addEventListener('error', failOpen);
-
-  /* ---- battery guard: only resume playback while LOCKED (online = intentionally paused open) ---- */
-  document.addEventListener('visibilitychange', function(){ if (document.hidden){ try { core.pause(); } catch(e){} } else if (!unlocked){ play(core); } });
-  window.addEventListener('pagehide', function(){ try { core.pause(); } catch(e){} });
 })();
 </script>
 <script type="module" src="./gl/nexus-gl.js"></script>

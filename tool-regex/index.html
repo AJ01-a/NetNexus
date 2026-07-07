@@ -11,8 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
 <style>
-:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--mag:#f24bff;--mag2:#ff8bff;--mag-glow:rgba(242,75,255,.34);--bg0:#02050a;--ink:#e2f7ff;--mut:#6b93ab;--panel:rgba(9,16,28,.5);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
-html[data-galaxy="it"]{--acc:#19f0ff;--acc2:#a6fbff;--accd:rgba(25,240,255,.14);--line:rgba(25,240,255,.28);--acc-glow:rgba(25,240,255,.32)}
+:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--bg0:#02050a;--ink:#d9f4ff;--mut:#6b93ab;--panel:rgba(7,17,27,.82);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
+html[data-galaxy="it"]{--acc:#00e5ff;--acc2:#7df9ff;--accd:rgba(0,229,255,.14);--line:rgba(0,229,255,.28);--acc-glow:rgba(0,229,255,.32)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:radial-gradient(1200px 700px at 50% -12%,#0a1e30 0%,var(--bg0) 58%) fixed,var(--bg0);color:var(--ink);font-family:var(--ui);min-height:100vh;overflow-x:hidden}
 ::selection{background:var(--accd);color:var(--acc2)}
@@ -33,7 +33,7 @@ body{background:radial-gradient(1200px 700px at 50% -12%,#0a1e30 0%,var(--bg0) 5
 #wrap{position:relative;z-index:5;max-width:1240px;margin:22px auto 96px;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
 .span2{grid-column:1/-1}
 @media(max-width:940px){#wrap{grid-template-columns:1fr}}
-.panel{position:relative;background:var(--panel);border:1px solid var(--line);padding:18px;backdrop-filter:blur(13px) saturate(1.25);-webkit-backdrop-filter:blur(13px) saturate(1.25);box-shadow:0 8px 30px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.05),0 0 0 1px rgba(242,75,255,.06)}
+.panel{position:relative;background:var(--panel);border:1px solid var(--line);padding:18px;backdrop-filter:blur(10px)}
 .panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(var(--acc),var(--acc)) left 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/2px 14px;background-repeat:no-repeat;opacity:.85}
 .ptitle{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.3em;color:var(--acc);text-shadow:0 0 10px var(--acc-glow)}
 .psub{font-size:12px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;margin:4px 0 14px;font-family:var(--mono)}
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     ['IPv4','\\b(?:(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)\\b','g','Gateway 192.168.1.1, DNS 8.8.8.8, bad 999.1.1.1'],
     ['MAC address','\\b(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}\\b','g','NIC 3C:52:82:1A:BB:07 and DE-AD-BE-EF-00-01'],
     ['UUID','\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b','g','id 550e8400-e29b-41d4-a716-446655440000'],
-    ['Hex color','#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\\b','g','Accent #19f0ff, panel #071 wait #071322, short #fff'],
+    ['Hex color','#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\\b','g','Accent #00e5ff, panel #071 wait #071322, short #fff'],
     ['ISO date','\\b\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])\\b','g','Log 2026-07-04 then 2025-12-31, invalid 2026-13-40'],
     ['24h time','\\b(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d)?\\b','g','Boot 08:15 · crash 23:59:07 · bad 25:99'],
     ['US phone','\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}','g','Call (415) 555-0142 or 212.555.0199 or 8005551234'],
