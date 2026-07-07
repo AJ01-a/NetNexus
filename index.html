@@ -104,7 +104,6 @@ html[data-galaxy="gen"] #gknob{left:27px}
 select.cbtn{appearance:none;-webkit-appearance:none;max-width:150px;text-overflow:ellipsis;
   background:rgba(2,8,14,.85) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6'%3E%3Cpath d='M0 0h8L4 6z' fill='%236b93ab'/%3E%3C/svg%3E") no-repeat right 8px center;padding-right:22px}
 select.cbtn option{background:#04121c;color:var(--ink)}
-body.mobile #voxSel{display:none}
 #clk{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.12em;text-align:right;line-height:1.5;white-space:nowrap}
 #clk b{color:var(--acc2);font-weight:400}
 /* ---------- space / core ---------- */
@@ -238,30 +237,7 @@ body.mobile #voxSel{display:none}
 #bootBar{height:3px;background:rgba(0,229,255,.15);margin-top:18px;overflow:hidden}
 #bootBar i{display:block;height:100%;width:0;background:var(--acc,#00e5ff);box-shadow:0 0 12px var(--acc,#00e5ff);transition:width .3s}
 /* ---------- voice command button + listening HUD ---------- */
-.cbtn.mic{display:flex;align-items:center;gap:7px}
-.cbtn.mic .micdot{width:8px;height:8px;border-radius:50%;background:var(--mut);box-shadow:none;transition:.25s}
-.cbtn.mic.live{border-color:var(--acc);color:var(--acc);background:var(--accd);box-shadow:0 0 16px var(--accd)}
-.cbtn.mic.live .micdot{background:var(--red);box-shadow:0 0 10px var(--red);animation:micpulse 1s ease-in-out infinite}
-@keyframes micpulse{50%{transform:scale(1.5);opacity:.5}}
-.cbtn.mic.off{opacity:.5}
-#voicehud{position:fixed;left:50%;bottom:44px;transform:translate(-50%,20px);z-index:66;display:none;align-items:center;gap:14px;
-  padding:12px 16px;min-width:min(420px,92vw);max-width:92vw;
-  background:linear-gradient(160deg,rgba(8,22,36,.94),rgba(4,12,20,.9));border:1px solid var(--acc);
-  backdrop-filter:blur(14px);box-shadow:0 0 40px var(--acc-glow),inset 0 0 24px rgba(0,0,0,.4);
-  opacity:0;transition:opacity .28s,transform .3s cubic-bezier(.2,.9,.3,1.2)}
-#voicehud.on{display:flex;opacity:1;transform:translate(-50%,0)}
-#voicehud .vh-ring{position:relative;width:34px;height:34px;flex-shrink:0}
-#voicehud .vh-ring span{position:absolute;inset:0;border:1.5px solid var(--acc);border-radius:50%;opacity:0;animation:vhwave 1.8s ease-out infinite}
-#voicehud .vh-ring span:nth-child(2){animation-delay:.6s}
-#voicehud .vh-ring span:nth-child(3){animation-delay:1.2s}
-#voicehud .vh-ring::after{content:"⏺";position:absolute;inset:0;display:grid;place-items:center;color:var(--acc);font-size:15px;text-shadow:0 0 10px var(--acc-glow)}
-@keyframes vhwave{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.25);opacity:0}}
-#voicehud .vh-body{flex:1;min-width:0}
-#voicehud #vhHint{font-family:var(--disp);font-size:9px;letter-spacing:.28em;color:var(--acc);text-shadow:0 0 8px var(--acc-glow)}
-#voicehud #vhText{font-family:var(--mono);font-size:12.5px;color:var(--ink);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.92}
-#voicehud #vhStop{flex-shrink:0;background:none;border:1px solid var(--line);color:var(--mut);font-family:var(--mono);font-size:13px;
-  width:28px;height:28px;cursor:pointer;transition:.2s}
-#voicehud #vhStop:hover{border-color:var(--red);color:var(--red)}
+/* VOICE FEATURE REMOVED: mic button, VOX selector and voice HUD styles stripped */
 
 /* ============ MOBILE / TOUCH GUI — animations preserved ============ */
 @keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.94)}to{opacity:1;transform:none}}
@@ -276,7 +252,6 @@ body.mobile #q{font-size:12px;letter-spacing:.04em;padding:10px 34px 10px 32px}
 body.mobile #gswitch{font-size:8px;gap:6px;margin-left:auto}
 body.mobile #gtrack{width:38px;height:16px}
 body.mobile html[data-galaxy="gen"] #gknob,body.mobile #gknob{top:2px}
-body.mobile #vbtn{display:none}
 body.mobile .cbtn:not(.mic){font-size:9px;padding:6px 8px}
 /* background canvases keep animating (unchanged, they are fixed) */
 /* orbit space becomes a scrollable animated dashboard */
@@ -298,26 +273,35 @@ body.mobile .planet .ptags{font-size:8px}
 body.mobile .planet.match{animation:matchpulse 1.1s ease-in-out infinite}
 body.mobile .planet:active{border-color:var(--acc);background:rgba(9,24,38,.96);box-shadow:0 0 24px var(--acc-glow)}
 /* voice command becomes a floating action button */
-body.mobile #micbtn{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:67;
-  width:58px;height:58px;border-radius:50%;justify-content:center;gap:0;padding:0;font-size:0;
-  border-color:var(--acc);color:var(--acc);background:linear-gradient(160deg,rgba(8,22,36,.95),rgba(4,12,20,.92));
-  box-shadow:0 6px 26px rgba(0,0,0,.5),0 0 18px var(--acc-glow)}
-body.mobile #micbtn::before{content:"⏺";font-size:22px}
-body.mobile #micbtn .micdot{position:absolute;top:9px;right:9px;width:9px;height:9px}
-body.mobile #micbtn.live{animation:fabpulse 1.4s ease-in-out infinite}
-@keyframes fabpulse{50%{box-shadow:0 6px 26px rgba(0,0,0,.5),0 0 30px var(--acc-glow)}}
-body.mobile #voicehud{bottom:calc(86px + env(safe-area-inset-bottom));min-width:auto;width:min(440px,92vw)}
 body.mobile #ticker{display:none}
 @media (max-width:400px){ body.mobile #field{grid-template-columns:1fr} }
 /* reduced motion: keep it usable, calm the pulses */
 @media (prefers-reduced-motion: reduce){
-  .planet.match,.cbtn.mic.live .micdot,#micbtn.live,#voicehud .vh-ring span{animation-duration:2.4s}
+  .planet.match{animation-duration:2.4s}
 }
+/* ============ MANUAL ORBIT NAV (drag/swipe + ‹ › arrows) ============ */
+/* grab-cursor affordance; touch-action:none lets horizontal swipes rotate the
+   orbit on touch screens instead of being eaten by browser pan gestures */
+body:not(.mobile):not(.locked) #space{cursor:grab;touch-action:none}
+body:not(.mobile) #space.dragging{cursor:grabbing}
+body:not(.mobile) #space.dragging .planet{pointer-events:none}   /* no accidental hover mid-drag */
+.orbarrow{position:fixed;top:74%;z-index:48;width:46px;height:46px;display:grid;place-items:center;
+  background:rgba(4,12,20,.55);border:1px solid var(--line);color:var(--acc);
+  font-size:24px;line-height:1;padding-bottom:4px;cursor:pointer;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:border-color .25s,box-shadow .25s,color .25s,background .25s;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.orbarrow:hover,.orbarrow:focus-visible{border-color:var(--acc);background:var(--accd);
+  color:var(--acc2);box-shadow:0 0 18px var(--accd);outline:none}
+.orbarrow:active{transform:scale(.92)}
+#orbL{left:18px}#orbR{right:18px}
+body.mobile .orbarrow,body.locked .orbarrow{display:none}   /* mobile grid scrolls natively */
+
 /* ============ NEXUS CORE GATEWAY ============ */
 /* Locked: hide the hub UI so ONLY the reactor core floats in the starfield */
 body.locked{overflow:hidden}
 body.locked #cmdbar,body.locked #field,body.locked #holo,body.locked #ticker,
-body.locked .hud,body.locked #term,body.locked #voicehud,body.locked #micbtn,
+body.locked .hud,body.locked #term,
 body.locked #jcap{
   opacity:0!important;pointer-events:none!important;transition:opacity .7s ease}
 /* focus vignette (starfield edges dimmed; core sits above it) */
@@ -326,8 +310,15 @@ body.locked #jcap{
 body:not(.locked) #gwveil{opacity:0}
 body.locked #corewrap{z-index:120}
 /* interaction surface + Stark ring encircling the core */
+/* TOUCH-HIJACK FIX: user-select + touch-callout kill the OS text-selection /
+   clipboard popup on long-press; touch-action:none stops scroll/zoom gestures
+   from stealing the pointer mid-hold. Applied to the whole locked screen. */
 #gwui{position:fixed;inset:0;z-index:130;cursor:pointer;transition:opacity .6s ease;
-  -webkit-tap-highlight-color:transparent;outline:none}
+  -webkit-tap-highlight-color:transparent;outline:none;
+  user-select:none;-webkit-user-select:none;-moz-user-select:none;
+  -webkit-touch-callout:none;touch-action:none}
+#gwtitle,#gwPrompt,#gwSub{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+body.locked{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 body:not(.locked) #gwui,body.online #gwui{opacity:0;pointer-events:none}
 #gwtitle{position:fixed;top:8vh;left:50%;transform:translateX(-50%);z-index:131;text-align:center;
   font-family:var(--disp);font-weight:700;letter-spacing:.5em;font-size:19px;color:var(--acc);
@@ -354,7 +345,7 @@ body:not(.locked) #gwtitle{opacity:0;pointer-events:none}
 /* Unlock: core scale-pulse + hub fades/scales in with precise easing */
 body.online:not(.mobile) #corewrap{animation:gwCorePulse 1s cubic-bezier(.2,.8,.3,1)}
 @keyframes gwCorePulse{0%{transform:translate(-50%,-50%) scale(1)}38%{transform:translate(-50%,-50%) scale(1.14)}100%{transform:translate(-50%,-50%) scale(1)}}
-body.online #cmdbar,body.online #field,body.online #holo,body.online #ticker,body.online .hud,body.online #micbtn{
+body.online #cmdbar,body.online #field,body.online #holo,body.online #ticker,body.online .hud{
   animation:gwFadeIn .9s ease .1s both}
 @keyframes gwFadeIn{from{opacity:0}to{opacity:1}}
 body.online:not(.mobile) #space{animation:gwProject 1.05s cubic-bezier(.16,.84,.28,1) both}
@@ -363,7 +354,7 @@ body.online:not(.mobile) #space{animation:gwProject 1.05s cubic-bezier(.16,.84,.
 body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate(-50%,-50%)!important;margin:0}
 @media (prefers-reduced-motion:reduce){
   #gwui,#gwtitle,#gwveil,body.locked #cmdbar,body.locked #field,body.locked .hud,body.locked #holo,body.locked #ticker{transition:none}
-  body.online #corewrap,body.online #space,body.online #cmdbar,body.online #field,body.online .hud,body.online #holo,body.online #ticker,body.online #micbtn{animation:none}
+  body.online #corewrap,body.online #space,body.online #cmdbar,body.online #field,body.online .hud,body.online #holo,body.online #ticker{animation:none}
 }
 .hidden{display:none!important}
 /* ---------- glassmorphism / depth polish (safe: no transform props) ---------- */
@@ -416,22 +407,12 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
     <div id="gtrack"><div id="gknob"></div></div>
     <span class="gl gg">GENERAL</span>
   </div>
-  <button class="cbtn mic" id="micbtn" type="button" title="Voice commands — click, then speak"><span class="micdot"></span> LISTEN</button>
-  <select class="cbtn" id="voxSel" title="Choose the voice NEXUS speaks with"><option value="">VOX: AUTO</option></select>
-  <button class="cbtn" id="vbtn" type="button">◈ VOICE: ON</button>
+  <!-- VOICE FEATURE REMOVED: LISTEN mic, VOX selector and VOICE toggle stripped -->
   <button class="cbtn" id="tbtn" type="button">⌬ TERMINAL</button>
   <div id="clk"><b id="clkL">--:--:--</b> LOCAL<br><span id="clkU">--:--:--</span> UTC</div>
 </header>
 
-<!-- ============ VOICE COMMAND HUD ============ -->
-<div id="voicehud">
-  <div class="vh-ring"><span></span><span></span><span></span></div>
-  <div class="vh-body">
-    <div id="vhHint">LISTENING…</div>
-    <div id="vhText">try “open the subnet toolkit” or “switch to the general galaxy”</div>
-  </div>
-  <button id="vhStop" type="button" title="Stop listening">✕</button>
-</div>
+<!-- VOICE FEATURE REMOVED: voice-command HUD stripped -->
 
 <!-- ============ ORBITAL SPACE ============ -->
 <main id="space">
@@ -453,6 +434,9 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
   <div class="hud" id="hudBL"></div>
   <div class="hud" id="hudBR"></div>
 </main>
+<!-- MANUAL ROTATION: clickable orbit-nav chevrons (drag/swipe also works anywhere in space) -->
+<button id="orbL" class="orbarrow" type="button" title="Rotate carousel left (←)" aria-label="Rotate tool carousel left">‹</button>
+<button id="orbR" class="orbarrow" type="button" title="Rotate carousel right (→)" aria-label="Rotate tool carousel right">›</button>
 
 <!-- ============ HOLO PREVIEW ============ -->
 <aside id="holo">
@@ -605,82 +589,21 @@ document.addEventListener('DOMContentLoaded', () => {
   window.toolRegistry = toolRegistry;
   T('MODULE REGISTRY :: ' + toolRegistry.length + ' MODULES INDEXED', 'ok');
 
-  /* ================= NEXUS VOICE CORE ================= */
-  const corewrap = $('#corewrap'), jcap = $('#jcap'), fbars = $$('#fbars i');
-  let voiceOn = (localStorage.getItem('nn-voice') ?? 'on') === 'on';
-  let voice = null, barTimer = null, capTimer = null, nexusSpeaking = false;
-  /* NEXUS vocal profile — deep, measured, faintly menacing. Pitch dropped for the dark timbre;
-     actual voice depends on what the OS provides (Edge's "Guy"/"Davis"/"Christopher" get closest). */
-  const VOX = { name: localStorage.getItem('nn-voxname') || '', pitch: 0.62, rate: 0.94 };
-  function pickVoice(){
-    try {
-      const vs = speechSynthesis.getVoices(); if (!vs.length) return null;
-      if (VOX.name){ const m = vs.find(v => v.name === VOX.name); if (m) return m; }
-      const en = vs.filter(v => /^en/i.test(v.lang));
-      return en.find(v => /davis|\bguy\b|christopher|eric|andrew|brian|roger|ryan multilingual/i.test(v.name))
-          || en.find(v => /david|mark|james|fred|\balex\b|daniel|george/i.test(v.name))
-          || en.find(v => /male/i.test(v.name)) || en[0] || vs[0];
-    } catch(e){ return null; }
-  }
-  const voxSel = $('#voxSel');
-  function fillVox(){
-    try {
-      const en = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
-      if (!en.length) return;
-      const cur = (voice && voice.name) || VOX.name;
-      voxSel.innerHTML = '<option value="">VOX: AUTO (DEEP)</option>' +
-        en.map(v => '<option value="' + v.name.replace(/"/g, '&quot;') + '"' + (v.name === cur && VOX.name ? ' selected' : '') + '>' +
-          v.name.replace(/^Microsoft |^Google | - .*| Online.*|\(Natural\)/g, '').slice(0, 22) + '</option>').join('');
-    } catch(e){}
-  }
-  if ('speechSynthesis' in window){
-    voice = pickVoice(); fillVox();
-    speechSynthesis.onvoiceschanged = () => { voice = pickVoice(); fillVox(); };
-    voxSel.addEventListener('change', () => {
-      VOX.name = voxSel.value; localStorage.setItem('nn-voxname', VOX.name);
-      voice = pickVoice();
-      say('Voice calibration accepted. This is how I sound now, sir.');
-      T('VOX PROFILE :: ' + (VOX.name || 'AUTO'), 'info');
-    });
-  } else T('WEB SPEECH API UNAVAILABLE — TEXT-ONLY MODE', 'warn');
+  /* ================= NEXUS STATUS CORE (VOICE FEATURE REMOVED) =================
+     say() is now 100% SILENT: it types the caption under the core and logs to the
+     terminal. No SpeechSynthesis, no audio, on any device. The (text, onDone)
+     signature is preserved so every existing call site keeps working. */
+  const corewrap = $('#corewrap'), jcap = $('#jcap');   /* corewrap still used by the warp visuals */
+  let capTimer = null;
   function typeCap(text){
     clearInterval(capTimer); let i = 0; jcap.textContent = '';
     capTimer = setInterval(() => { jcap.textContent = text.slice(0, ++i) + (i < text.length ? '▊' : ''); if (i >= text.length) clearInterval(capTimer); }, 16);
   }
-  function barsOn(){
-    corewrap.classList.add('speaking'); clearInterval(barTimer);
-    barTimer = setInterval(() => fbars.forEach(b => b.style.height = (3 + Math.random() * 27) + 'px'), 70);
-  }
-  function barsOff(){
-    corewrap.classList.remove('speaking'); clearInterval(barTimer);
-    fbars.forEach(b => b.style.height = '3px');
-  }
   function say(text, onDone){
-    T('NEXUS :: ' + text, 'sys'); typeCap(text);
-    let doneFired = false;
-    const done = () => { if (doneFired) return; doneFired = true; if (onDone) onDone(); };
-    if (!voiceOn || !('speechSynthesis' in window)){ setTimeout(done, 150); return; }
-    try {
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      if (voice) u.voice = voice;
-      u.rate = VOX.rate; u.pitch = VOX.pitch; u.volume = 1;
-      u.onstart = () => { nexusSpeaking = true; barsOn(); };
-      u.onend = () => { nexusSpeaking = false; barsOff(); done(); };
-      u.onerror = () => { nexusSpeaking = false; barsOff(); done(); };
-      speechSynthesis.speak(u);
-      /* some engines never fire onend — never leave a caller hanging */
-      setTimeout(done, 1200 + text.length * 90);
-    } catch(e){ barsOff(); T('SPEECH SYNTH FAULT :: ' + e.message, 'warn'); done(); }
+    T('NEXUS :: ' + text, 'sys'); typeCap(text);            /* visual only — silent */
+    if (onDone) setTimeout(onDone, 150);
   }
   window.NN_say = say;
-  const vbtn = $('#vbtn');
-  function paintVoiceBtn(){ vbtn.textContent = '◈ VOICE: ' + (voiceOn ? 'ON' : 'OFF'); vbtn.classList.toggle('off', !voiceOn); }
-  paintVoiceBtn();
-  vbtn.addEventListener('click', () => {
-    voiceOn = !voiceOn; localStorage.setItem('nn-voice', voiceOn ? 'on' : 'off'); paintVoiceBtn();
-    if (voiceOn) say('Vocal interface restored, sir.'); else { try{ speechSynthesis.cancel(); }catch(e){} barsOff(); typeCap('Vocal interface muted.'); T('VOICE :: MUTED', 'warn'); }
-  });
   const quips = [
     'Mainframe fully operational, sir. Do try not to overload the power grids today.',
     'All nineteen modules idling beautifully. A rare moment of calm.',
@@ -954,17 +877,61 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     if (NN.small) planets.forEach(p => { p.el.style.transform = ''; p.el.style.opacity = ''; p.el.style.filter = ''; });
   }
+  /* ============ MANUAL CAROUSEL ROTATION (auto-spin REMOVED) ============
+     The orbit no longer advances on its own. Rotation now comes from:
+       1) drag/swipe on empty space (mouse click-drag or touch swipe),
+          with physics-based inertia that decays after release, and
+       2) ‹ › arrow buttons / keyboard arrows, stepping exactly one tool
+          slot with an exponential ease-out tween.
+     Galaxy-warp spin (p.boost) is preserved. */
+  let rotVel = 0;                    /* drag inertia, radians/frame (decays) */
+  let spinRem = 0;                   /* remaining eased rotation from arrows */
+  let dragging = false, dragLastX = 0;
+  function rotateBy(a){ if (!a) return; NN.t += a; for (const p of planets) p.a += a; }
   function orbitStep(dt){
     if (NN.mode !== 'run' || NN.small) return;
-    NN.speed = lerp(NN.speed, NN.tspeed, .07);
-    NN.t += dt * NN.speed * BASE_W;
+    /* arrow-step tween — exponential ease-out (consumes 13%/frame) */
+    if (Math.abs(spinRem) > 1e-4){ const d = spinRem * .13; spinRem -= d; rotateBy(d); }
+    /* drag momentum — keeps spinning after release, decaying like friction */
+    if (!dragging && Math.abs(rotVel) > 1e-4){ rotateBy(rotVel); rotVel *= .93; }
     for (const p of planets){
-      p.boost = lerp(p.boost, p.tboost, .08);
+      p.boost = lerp(p.boost, p.tboost, .08);          /* warp spin preserved */
       p.fs = lerp(p.fs, focusedP === p ? 1.24 : 1, .14);
-      p.a += dt * BASE_W * (NN.speed + p.boost);
+      p.a += dt * BASE_W * p.boost;
       applyPose(p, computePose(p));
     }
   }
+  /* ---- drag/swipe: grab any empty space and pull the orbit around ----
+     Planets / holo / core keep their own click handlers — a drag can only
+     start OUTSIDE them, so tool clicks are never hijacked. */
+  space.addEventListener('pointerdown', e => {
+    if (NN.small || document.body.classList.contains('locked')) return;
+    if (e.target.closest('.planet,#holo,#corewrap,.orbarrow')) return;
+    dragging = true; dragLastX = e.clientX; rotVel = 0; spinRem = 0;
+    space.classList.add('dragging');
+    try { space.setPointerCapture(e.pointerId); } catch(_){}
+  });
+  space.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const dx = e.clientX - dragLastX; dragLastX = e.clientX;
+    const dA = -dx * (Math.PI * 1.25 / Math.max(W, 640));   /* px → radians */
+    rotateBy(dA);
+    rotVel = rotVel * .5 + dA * .5;                         /* smoothed for release momentum */
+  });
+  const endOrbitDrag = () => { dragging = false; space.classList.remove('dragging'); };
+  space.addEventListener('pointerup', endOrbitDrag);
+  space.addEventListener('pointercancel', endOrbitDrag);
+  /* ---- ‹ › arrows + keyboard: step exactly one tool slot, eased ---- */
+  const orbSlot = () => planets.length ? (Math.PI * 2) / planets.length : Math.PI / 6;
+  $('#orbL').addEventListener('click', () => { spinRem += orbSlot(); });
+  $('#orbR').addEventListener('click', () => { spinRem -= orbSlot(); });
+  window.addEventListener('keydown', e => {
+    if (NN.small || document.body.classList.contains('locked')) return;
+    const tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (/INPUT|SELECT|TEXTAREA/.test(tag)) return;
+    if (e.key === 'ArrowLeft')  spinRem += orbSlot();
+    if (e.key === 'ArrowRight') spinRem -= orbSlot();
+  });
   /* holo preview */
   const hMetrics = $('#hMetrics');
   let metricTimer = null;
@@ -1104,194 +1071,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.addEventListener('click', e => { if (!sform.contains(e.target)) sugg.classList.remove('on'); });
 
-  /* ================= VOICE COMMAND ENGINE (on-device intent parser) ================= */
-  const micbtn = $('#micbtn'), voicehud = $('#voicehud'), vhText = $('#vhText'), vhHint = $('#vhHint');
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recog = null, wantListen = false, restartTimer = null;
-  /* extra spoken phrasings beyond each tool's tags/title */
-  const VOICE_ALIAS = {
-    'tool-subnet':['subnet','subnetting','cidr','ip calculator','netmask'],
-    'tool-network':['network discovery','my ip','my i p','public ip','whats my ip','vpn check','who am i'],
-    'tool-hardware':['hardware','motherboard','beep codes','wiring','pinout'],
-    'tool-crypto':['password','passwords','generate password','password generator','ssh key','token generator'],
-    'tool-deskside':['deskside','active directory','unlock account','powershell','sccm'],
-    'tool-cisco':['cisco','router config','ospf','a a a','vpn config','tunnel'],
-    'tool-syslog':['syslog','log analyzer','logs','event log'],
-    'tool-mac-lookup':['mac','mac address','mac lookup','vendor lookup','o u i'],
-    'tool-asset-router':['asset','warranty','service tag','serial number','warranty check'],
-    'tool-poe-calc':['poe','power over ethernet','power budget','switch power','wattage'],
-    'tool-cmtrace':['cmtrace','sccm log','trace log','mecm'],
-    'tool-converter':['converter','unit converter','time zone','timezone','byte converter','world clock'],
-    'tool-vibe-focus':['focus','pomodoro','timer','study','ambient','white noise','music'],
-    'tool-resume-editor':['resume','resume editor','cv','curriculum vitae'],
-    'tool-image-compressor':['image compressor','compress image','compress photo','webp','shrink image'],
-    'tool-mp3-converter':['audio','audio bay','mp3','convert audio','wav'],
-    'tool-market-tracker':['market','stocks','crypto prices','bitcoin','investments','ticker'],
-    'tool-game-tactical':['game','games','gaming','mods','fps','benchmark','loadout'],
-    'tool-finance-flow':['finance','budget','subscriptions','expenses','cash flow','ledger'],
-    'tool-regex':['regex','regexp','regular expression','pattern','pattern match','grep'],
-    'tool-json':['json','data forge','format json','minify','csv','jwt','json to csv','pretty print'],
-    'tool-encoder':['encoder','encode','decode','base64','base 64','url encode','hash','sha','sha256','uuid','epoch','timestamp'],
-    'tool-color':['color','colour','color studio','hex','rgb','palette','contrast','gradient','color picker'],
-    'tool-text':['text','text toolkit','word count','character count','case converter','lorem','lorem ipsum','uppercase','lowercase','slug'],
-    'tool-calc':['calculator','calculate','tip','tip calculator','split the bill','loan','mortgage','percentage','percent','b m i','body mass'],
-    'tool-qr':['qr','qr code','q r code','barcode','bar code','generate qr','wifi code','scan code'],
-    'tool-datecalc':['date','date calculator','age','age calculator','how old','days between','countdown','birthday','week number'],
-    'tool-random':['random','randomizer','dice','roll','roll dice','coin','coin flip','flip a coin','pick','picker','shuffle','decision','decide','teams','raffle']
-  };
-  const vnorm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
-  /* common speech-to-text mishearings → canonical vocabulary */
-  const MISHEAR = [
-    [/\bsub ?nets?(ting)?\b/g,'subnet'], [/\bsabnet|subnit|sudden it\b/g,'subnet'], [/\bc ?i ?d ?r\b/g,'cidr'],
-    [/\b(sys|cyst|sis) ?log\b/g,'syslog'], [/\bmac address(es)?\b/g,'mac'], [/\bo ?u ?i\b/g,'oui'],
-    [/\bp ?o ?e\b/g,'poe'], [/\bpower over (ethernet|internet)\b/g,'poe'], [/\b(cm|see em|c m) ?trace\b/g,'cmtrace'],
-    [/\bpass ?words?\b/g,'password'], [/\bcript[oa]\b/g,'crypto'], [/\bsisco|sysco|cisco's\b/g,'cisco'],
-    [/\bdesk ?side\b/g,'deskside'], [/\bwar+anty|warrantee\b/g,'warranty'], [/\bpomodoro|promodoro|pomadoro\b/g,'pomodoro'],
-    [/\bresume|resumay\b/g,'resume'], [/\bfinances?\b/g,'finance'], [/\bconvert or\b/g,'converter'],
-    [/\btool ?kits?\b/g,'toolkit'], [/\bcompress or\b/g,'compressor']
-  ];
-  const fixHearing = v => { MISHEAR.forEach(([re, to]) => v = v.replace(re, to)); return v; };
-  /* Levenshtein with early bail — powers fuzzy token matching */
-  function lev(a, b){
-    if (a === b) return 0;
-    if (Math.abs(a.length - b.length) > 2) return 9;
-    const m = a.length, n = b.length; let prev = Array.from({length: n + 1}, (_, j) => j);
-    for (let i = 1; i <= m; i++){
-      const cur = [i];
-      for (let j = 1; j <= n; j++)
-        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-      prev = cur;
-    }
-    return prev[n];
-  }
-  const fuzzTol = w => w.length <= 3 ? 0 : w.length <= 6 ? 1 : 2;
-  /* does the heard text contain `word`, tolerating transcription slop? */
-  function fuzzyHas(tokens, joined, word){
-    if (word.includes(' ')) return joined.includes(word);
-    const tol = fuzzTol(word);
-    if (tol === 0) return tokens.includes(word);
-    return tokens.some(tk => Math.abs(tk.length - word.length) <= tol && lev(tk, word) <= tol);
-  }
-  const STOP = new Set(['the','a','an','and','amp','to','for','me','my','up','open','launch','start','show','go','run','please','can','you','module','tool','toolkit']);
-  function resolveTool(raw){
-    const v = fixHearing(vnorm(raw)); if (!v) return { tool: null, score: 0 };
-    const tokens = v.split(' ');
-    let best = null, score = 0;
-    for (const t of toolRegistry){
-      let s = 0;
-      const title = vnorm(t.title);
-      if (v.includes(title)) s += 12;
-      title.split(' ').filter(w => w.length > 2 && !STOP.has(w)).forEach(w => { if (fuzzyHas(tokens, v, w)) s += 4; });
-      if (v.includes(vnorm(t.code))) s += 8;
-      t.id.replace('tool-', '').split('-').forEach(w => { if (w.length > 2 && fuzzyHas(tokens, v, w)) s += 4; });
-      t.tags.forEach(tag => { if (fuzzyHas(tokens, v, vnorm(tag))) s += 4; });
-      (VOICE_ALIAS[t.id] || []).forEach(a => { if (a.includes(' ') ? v.includes(a) : fuzzyHas(tokens, v, a)) s += 6; });
-      if (s > score){ score = s; best = t; }
-    }
-    return { tool: best, score };
-  }
-  function galaxyIntent(v, tokens){
-    if (fuzzyHas(tokens, v, 'general')) return 'gen';
-    if (/(?:\bit\b|\bi t\b|\btech\b|information technology)\s*(?:galaxy|galaxies|tab|mode|side|section)/.test(v)) return 'it';
-    if (/(?:galaxy|galaxies|tab|mode|side)\s*(?:for\s*)?(?:\bit\b|tech)/.test(v)) return 'it';
-    if (/\b(switch|toggle|other|next|flip|change|swap|second|go back)\b/.test(v) && /\b(galaxy|galaxies|tab|mode|side|section)\b/.test(v)) return 'toggle';
-    return null;
-  }
-  const MISS_LINES = [
-    'Say again, sir? A module name is all I need — “subnet”, “passwords”, “focus”…',
-    'That one escaped me, sir. Name a module, or say “switch galaxy”.',
-    'I caught only noise on that pass. One more time, slowly, sir.'
-  ];
-  let missStreak = 0;
-  function runCommand(raw){
-    let v = vnorm(raw); if (!v || v.length < 3) return;   /* ignore stray noise */
-    v = fixHearing(v);
-    const tokens = v.split(' ');
-    T('VOICE ▸ "' + raw.trim() + '"', 'info');
-    if (/\b(stop listening|stop voice|disable voice|stop the mic|mute (the )?mic|that.?s all|goodbye|shut up)\b/.test(v)){ missStreak = 0; stopListen(); say('Voice interface disengaged, sir.'); return; }
-    if (/\b(help|what can you (do|say|hear)|commands|capabilities|options|how do i)\b/.test(v)){
-      missStreak = 0;
-      say('Name any module — subnet, passwords, markets, focus. Or say: switch galaxy, search for a keyword, status report.'); return; }
-    if (/\b(status|report|diagnostic|sitrep|systems|how are you)\b/.test(v)){ missStreak = 0; say(quips[Math.floor(Math.random() * quips.length)]); return; }
-    const gal = galaxyIntent(v, tokens);
-    const resolved = resolveTool(raw);
-    if (gal && (!resolved.tool || resolved.score < 6)){
-      missStreak = 0;
-      const target = gal === 'toggle' ? (NN.galaxy === 'it' ? 'gen' : 'it') : gal;
-      if (target === NN.galaxy) say('We are already in the ' + (target === 'it' ? 'I-T' : 'General') + ' galaxy, sir.');
-      else switchGalaxy(target);
-      return;
-    }
-    const sm = v.match(/^(?:search|find|look up|look for|filter|query)\s+(?:for\s+)?(.+)$/);
-    if (sm){
-      missStreak = 0;
-      q.value = sm[1]; matches = searchMatch(q.value); hot = matches.length ? 0 : -1; paintSearch();
-      say(matches.length ? ('Filtering for ' + sm[1] + '. ' + matches.length + ' match' + (matches.length > 1 ? 'es' : '') + ' on screen, sir.') : ('Nothing matches ' + sm[1] + ' in the data banks, sir.'));
-      return;
-    }
-    if (/\b(clear|reset|deselect|go home|command deck)\b/.test(v) && resolved.score < 4){
-      missStreak = 0; q.value = ''; matches = []; paintSearch(); say('Command deck cleared, sir.'); return; }
-    /* deduction tiers: confident → warp; plausible → warp with acknowledgement; else assist */
-    if (resolved.tool && resolved.score >= 6){ missStreak = 0; warpTo(resolved.tool); return; }
-    if (resolved.tool && resolved.score >= 3){
-      missStreak = 0;
-      T('VOICE DEDUCTION :: best guess "' + resolved.tool.title + '" (score ' + resolved.score + ')', 'info');
-      warpTo(resolved.tool); return;   /* warpTo names the module aloud — self-confirming */
-    }
-    /* nothing plausible — surface nearest matches visually instead of nagging */
-    const near = searchMatch(v);
-    if (near.length){
-      missStreak = 0;
-      q.value = v; matches = near; hot = 0; paintSearch();
-      say('Not certain what you meant, sir — the closest matches are on screen. Say the one you want.');
-      return;
-    }
-    missStreak++;
-    say(missStreak >= 3
-      ? 'Perhaps the microphone dislikes me, sir. Try short names: “subnet”, “cisco”, “markets” — or type it in the search bar.'
-      : MISS_LINES[(missStreak - 1) % MISS_LINES.length]);
-  }
-  function showHud(on){ voicehud.classList.toggle('on', on); micbtn.classList.toggle('live', on); }
-  function initRecog(){
-    const r = new SR();
-    r.lang = 'en-US'; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
-    r.onstart = () => { showHud(true); vhHint.textContent = 'LISTENING…'; T('VOICE RECOGNITION :: ONLINE', 'ok'); };
-    r.onresult = ev => {
-      if (nexusSpeaking) return;   /* ignore NEXUS hearing itself */
-      let interim = '', finalTxt = '';
-      for (let i = ev.resultIndex; i < ev.results.length; i++){
-        const res = ev.results[i];
-        if (res.isFinal) finalTxt += res[0].transcript; else interim += res[0].transcript;
-      }
-      if (interim) vhText.textContent = interim;
-      if (finalTxt){ vhText.textContent = finalTxt; vhHint.textContent = 'PROCESSING…'; runCommand(finalTxt); setTimeout(() => { if (wantListen) vhHint.textContent = 'LISTENING…'; }, 900); }
-    };
-    r.onerror = e => {
-      T('VOICE ERR :: ' + e.error, 'warn');
-      if (e.error === 'not-allowed' || e.error === 'service-not-allowed'){
-        wantListen = false; showHud(false); say('I need microphone permission to hear you, sir. Do enable it in the address bar.');
-      } else if (e.error === 'no-speech'){ vhHint.textContent = 'DIDN’T HEAR ANYTHING…'; }
-    };
-    r.onend = () => { if (wantListen){ restartTimer = setTimeout(() => { try { r.start(); } catch(_){} }, 300); } else { showHud(false); } };
-    return r;
-  }
-  function startListen(){
-    if (!SR){ say('Voice recognition is not available in this browser, sir. Chrome or Edge will hear you.'); T('VOICE RECOGNITION :: UNSUPPORTED', 'warn'); return; }
-    if (!recog) recog = initRecog();
-    wantListen = true; showHud(true);
-    try { recog.start(); } catch(_){ /* already running */ }
-    say('Listening, sir. What shall I open?');
-  }
-  function stopListen(){
-    wantListen = false; clearTimeout(restartTimer);
-    if (recog){ try { recog.stop(); } catch(_){} }
-    showHud(false); T('VOICE RECOGNITION :: OFFLINE', 'info');
-  }
-  micbtn.addEventListener('click', () => { if (wantListen) stopListen(); else startListen(); });
-  $('#vhStop').addEventListener('click', stopListen);
-  if (!SR){ micbtn.classList.add('off'); micbtn.title = 'Voice input needs Chrome or Edge'; T('SPEECH RECOGNITION API UNAVAILABLE — MIC DISABLED', 'warn'); }
-  window.NN_voice = { start: startListen, stop: stopListen, run: runCommand };
+  /* ================= VOICE COMMAND ENGINE REMOVED =================
+     SpeechRecognition mic, intent parser, aliases and HUD all stripped —
+     the UI is fully silent; search + click/keyboard are the only inputs. */
 
   /* ================= HUD READOUTS ================= */
   const hudTL = $('#hudTL'), hudBL = $('#hudBL'), hudBR = $('#hudBR');
@@ -1398,7 +1180,7 @@ document.addEventListener('DOMContentLoaded', () => {
   applyLayout();
   buildPlanets('it', false);
   T('ORBITAL FIELD POPULATED :: IT GALAXY — 12 BODIES', 'ok');
-  T((SR ? 'VOICE COMMAND ENGINE ARMED — CLICK “LISTEN”. ' : '') + 'AWAITING COMMAND, SIR.', 'sys');
+  T('AWAITING COMMAND, SIR.', 'sys');   /* VOICE FEATURE REMOVED: no SR reference */
 });
 </script>
 <script>
@@ -1423,7 +1205,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* keep hidden hub out of AT / tab order while locked */
   function hubInert(on){
-    ['cmdbar','holo','ticker','term','voicehud'].forEach(function(id){
+    ['cmdbar','holo','ticker','term'].forEach(function(id){
       var el = document.getElementById(id); if (!el) return;
       if (on) el.setAttribute('inert',''); else el.removeAttribute('inert');
     });
@@ -1454,6 +1236,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function startHold(e){
     if (unlocked) return;
     if (e && e.type === 'keydown'){ if (e.key !== 'Enter' && e.key !== ' ') return; e.preventDefault(); }
+    /* TOUCH-HIJACK FIX: preventDefault stops the browser starting a selection /
+       long-press gesture; pointer capture keeps the hold alive even if the
+       finger drifts a few px (otherwise pointerleave would cancel it). */
+    if (e && e.type === 'pointerdown'){
+      e.preventDefault();
+      try { gwui.setPointerCapture(e.pointerId); } catch(_){}
+    }
     t0 = performance.now(); gwui.classList.add('holding');
     cancelAnimationFrame(raf); raf = requestAnimationFrame(tick);
   }
@@ -1467,6 +1256,12 @@ document.addEventListener('DOMContentLoaded', () => {
   gwui.addEventListener('pointercancel', endHold);
   gwui.addEventListener('keydown', startHold);
   gwui.addEventListener('keyup', endHold);
+  /* TOUCH-HIJACK FIX: kill the long-press context menu + raw touch selection
+     start on the gateway (non-passive so preventDefault actually works). */
+  gwui.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  gwui.addEventListener('touchstart', function(e){ e.preventDefault(); startHold(e); }, { passive:false });
+  gwui.addEventListener('touchend', endHold);
+  gwui.addEventListener('touchcancel', endHold);
 })();
 </script>
 <script type="module" src="./gl/nexus-gl.js"></script>
