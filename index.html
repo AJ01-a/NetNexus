@@ -282,13 +282,22 @@ body.mobile #ticker{display:none}
 /* ============ VOX PICKER PANEL (custom voice list — replaces native select) ============ */
 /* Native <option>s are OS-drawn: tiny, cramped, ignoring the dark theme.
    This panel is fully styled: readable 13px rows, hover glow, active marker. */
-#voxBtn.open{background:var(--accd);border-color:var(--acc);color:var(--acc)}
-#voxPanel{position:fixed;z-index:120;width:min(340px,92vw);max-height:min(420px,60vh);overflow:auto;
-  background:rgba(3,10,17,.97);border:1px solid var(--acc);
+#voxBtn.open{background:var(--accd);border-color:var(--acc);color:var(--acc);box-shadow:0 0 16px var(--accd)}
+/* z-index 170: above cmdbar(50), holo(45), sugg(60), term(70), planets(space ctx 10)
+   AND the inert gateway layers (130/131) — it must never sit behind anything. */
+#voxPanel{position:fixed;z-index:170;width:min(340px,92vw);
+  background:rgba(3,10,17,.985);border:1px solid var(--acc);
   backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);
-  box-shadow:0 18px 54px rgba(0,0,0,.6),0 0 30px var(--accd)}
-#voxPanel .vxh{position:sticky;top:0;font-family:var(--disp);font-size:9.5px;letter-spacing:.3em;color:var(--mut);
+  box-shadow:0 18px 54px rgba(0,0,0,.75),0 0 34px var(--acc-glow),inset 0 1px 0 rgba(255,255,255,.06);
+  animation:voxdrop .22s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes voxdrop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+/* caret notch pointing up at the VOX button — makes the dropdown obviously anchored */
+#voxPanel::before{content:"";position:absolute;top:-7px;left:var(--caretx,300px);width:12px;height:12px;
+  transform:rotate(45deg);background:rgba(3,10,17,.985);border-left:1px solid var(--acc);border-top:1px solid var(--acc)}
+#voxPanel .vxh{font-family:var(--disp);font-size:9.5px;letter-spacing:.3em;color:var(--mut);
   padding:10px 14px 8px;background:rgba(3,10,17,.97);border-bottom:1px solid var(--line)}
+/* rows scroll INSIDE this wrapper so the caret notch above the panel isn't clipped */
+#voxPanel .vxlist{max-height:min(380px,55vh);overflow:auto}
 #voxPanel .vx{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;
   font-family:var(--mono);font-size:13px;color:var(--ink);border-bottom:1px solid rgba(107,147,171,.1)}
 #voxPanel .vx:last-child{border-bottom:none}
@@ -689,16 +698,24 @@ document.addEventListener('DOMContentLoaded', () => {
     try { en = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang)); } catch(e){}
     voxPanel.innerHTML =
       '<div class="vxh">REACTOR CORE VOICE — ' + (en.length || 'NO') + ' AVAILABLE</div>' +
+      '<div class="vxlist">' +
       '<div class="vx' + (!voxName ? ' active' : '') + '" data-v="" role="option">AUTO — ' + VOXP.label + ' PROFILE<span class="lang">DEFAULT</span></div>' +
       en.map(v => '<div class="vx' + (v.name === voxName ? ' active' : '') + '" data-v="' + v.name.replace(/"/g, '&quot;') + '" role="option">' +
-        cleanName(v.name).slice(0, 30) + '<span class="lang">' + v.lang + (v.localService ? ' · LOCAL' : '') + '</span></div>').join('');
+        cleanName(v.name).slice(0, 30) + '<span class="lang">' + v.lang + (v.localService ? ' · LOCAL' : '') + '</span></div>').join('') +
+      '</div>';
   }
   function openVox(){
     buildVoxPanel();                                   /* voices load async — rebuild fresh each open */
     const r = voxBtn.getBoundingClientRect();
-    voxPanel.style.top = (r.bottom + 6) + 'px';
-    voxPanel.style.left = Math.max(8, Math.min(innerWidth - 348, r.right - 340)) + 'px';
+    /* drop below the WHOLE command bar (it wraps to two rows on mobile), never behind it */
+    const cb = document.getElementById('cmdbar');
+    const barBottom = cb ? cb.getBoundingClientRect().bottom : r.bottom;
+    voxPanel.style.top = (Math.max(r.bottom, barBottom) + 8) + 'px';
+    const left = Math.max(8, Math.min(innerWidth - voxPanel.offsetWidth - 8 || innerWidth - 348, r.right - 340));
+    voxPanel.style.left = left + 'px';
     voxPanel.hidden = false; voxBtn.classList.add('open'); voxBtn.setAttribute('aria-expanded', 'true');
+    /* aim the caret notch at the center of the VOX button */
+    voxPanel.style.setProperty('--caretx', Math.max(14, Math.min(316, r.left + r.width / 2 - left - 6)) + 'px');
     const act = voxPanel.querySelector('.vx.active'); if (act) act.scrollIntoView({ block: 'nearest' });
   }
   function closeVox(){ voxPanel.hidden = true; voxBtn.classList.remove('open'); voxBtn.setAttribute('aria-expanded', 'false'); }
