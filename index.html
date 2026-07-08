@@ -334,6 +334,15 @@ body:not(.locked) #gwtitle{opacity:0;pointer-events:none}
 #gwRing .trk{stroke:rgba(0,229,255,.14)}
 #gwRing .prg{stroke:var(--acc);stroke-linecap:round;stroke-dasharray:295.3;stroke-dashoffset:295.3;
   filter:drop-shadow(0 0 6px var(--acc));transition:stroke-dashoffset .06s linear}
+/* LIFELIKE STATE 2: cycling readout above the prompt; visible only mid-hold */
+#gwStatus{position:absolute;left:50%;bottom:calc(13vh + 62px);transform:translateX(-50%);white-space:nowrap;
+  font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--grn);
+  text-shadow:0 0 12px rgba(46,255,158,.5);opacity:0;transition:opacity .2s}
+#gwui.holding #gwStatus,#gwStatus.hold{opacity:1}
+/* LIFELIKE STATE 2: while holding, the reactor core itself pulses harder —
+   #gwui precedes #space in the DOM, so a sibling selector reaches the core */
+#gwui.holding~#space #coreGlow{animation:corepulse .45s ease-in-out infinite}
+#gwui.holding~#space #lens{box-shadow:0 0 54px var(--acc-glow),inset 0 0 26px rgba(0,0,0,.75)}
 #gwPrompt{position:absolute;left:50%;bottom:13vh;transform:translateX(-50%);white-space:nowrap;
   font-family:var(--disp);font-size:12.5px;letter-spacing:.4em;color:var(--acc2);text-transform:uppercase;
   text-shadow:0 0 16px var(--acc-glow);animation:gwpulse 2.4s ease-in-out infinite}
@@ -373,6 +382,8 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
 <div id="gwtitle"><b>NET</b>NEXUS<span>NEXUS CORE // AWAITING OPERATOR</span></div>
 <div id="gwui" role="button" tabindex="0" aria-label="Hold to initialize NetNexus">
   <svg id="gwRing" viewBox="0 0 100 100" aria-hidden="true"><circle class="trk" cx="50" cy="50" r="47"></circle><circle class="prg" id="gwPrg" cx="50" cy="50" r="47"></circle></svg>
+  <!-- LIFELIKE STATE 2: dynamic system readouts cycle here while the user holds -->
+  <div id="gwStatus" aria-live="polite"></div>
   <div id="gwPrompt">HOLD TO <b>INITIALIZE</b></div>
   <div id="gwSub">PRESS &amp; HOLD THE CORE</div>
 </div>
@@ -407,7 +418,8 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
     <div id="gtrack"><div id="gknob"></div></div>
     <span class="gl gg">GENERAL</span>
   </div>
-  <!-- VOICE FEATURE REMOVED: LISTEN mic, VOX selector and VOICE toggle stripped -->
+  <!-- VOICE v2: speech OUTPUT re-integrated (device-aware); no microphone -->
+  <button class="cbtn" id="vbtn" type="button" title="Toggle NEXUS voice feedback">◈ VOICE: ON</button>
   <button class="cbtn" id="tbtn" type="button">⌬ TERMINAL</button>
   <div id="clk"><b id="clkL">--:--:--</b> LOCAL<br><span id="clkU">--:--:--</span> UTC</div>
 </header>
@@ -589,21 +601,96 @@ document.addEventListener('DOMContentLoaded', () => {
   window.toolRegistry = toolRegistry;
   T('MODULE REGISTRY :: ' + toolRegistry.length + ' MODULES INDEXED', 'ok');
 
-  /* ================= NEXUS STATUS CORE (VOICE FEATURE REMOVED) =================
-     say() is now 100% SILENT: it types the caption under the core and logs to the
-     terminal. No SpeechSynthesis, no audio, on any device. The (text, onDone)
-     signature is preserved so every existing call site keeps working. */
-  const corewrap = $('#corewrap'), jcap = $('#jcap');   /* corewrap still used by the warp visuals */
-  let capTimer = null;
+  /* ================= NEXUS VOICE CORE v2 — DEVICE-AWARE (re-integrated) =================
+     Speech OUTPUT only (no microphone / SpeechRecognition). Branching profiles:
+       DESKTOP — deep, measured Stark timbre (pitch .62 / rate .94); prefers the
+                 robust Windows/Edge male voices; richer personality dialogue.
+       MOBILE  — optimized profile (pitch .85 / rate 1.02); prefers a LOCAL
+                 on-device voice (remote/network TTS stalls or silently fails
+                 on phones); dialogue kept short for small screens.
+     MOBILE AUDIO RESTRICTION: browsers block speechSynthesis until a user
+     gesture. NN_voiceWarm() is invoked from the gateway's pointerdown — a real
+     gesture — and speaks a zero-volume utterance + resume() to unlock the
+     audio pipeline so the first real line never silently fails. */
+  const corewrap = $('#corewrap'), jcap = $('#jcap'), fbars = $$('#fbars i');
+  const IS_MOBILE_VOX = (matchMedia('(pointer:coarse)').matches && innerWidth < 1100) || innerWidth < 860;
+  const VOXP = IS_MOBILE_VOX
+    ? { pitch: 0.85, rate: 1.02, label: 'MOBILE'  }
+    : { pitch: 0.62, rate: 0.94, label: 'DESKTOP' };
+  window.NN_VOX_PROFILE = VOXP.label;                    /* surfaced for diagnostics/tests */
+  let voice = null, voiceOn = (localStorage.getItem('nn-voice') ?? 'on') === 'on';
+  let capTimer = null, barTimer = null, voiceWarmed = false;
+  function pickVoice(){
+    try {
+      const vs = speechSynthesis.getVoices(); if (!vs.length) return null;
+      const en = vs.filter(v => /^en/i.test(v.lang));
+      if (IS_MOBILE_VOX){
+        /* MOBILE branch: local/on-device voices first — reliable + low-latency */
+        return en.find(v => v.localService && v.default) || en.find(v => v.localService) || en[0] || vs[0];
+      }
+      /* DESKTOP branch: hunt the deep male voices that fit the NEXUS timbre */
+      return en.find(v => /davis|\bguy\b|christopher|eric|andrew|brian|roger/i.test(v.name))
+          || en.find(v => /david|mark|james|\balex\b|daniel|george/i.test(v.name))
+          || en.find(v => v.localService) || en[0] || vs[0];
+    } catch(e){ return null; }
+  }
+  if ('speechSynthesis' in window){
+    voice = pickVoice();
+    speechSynthesis.onvoiceschanged = () => { voice = pickVoice(); };
+    T('VOICE CORE :: ' + VOXP.label + ' PROFILE ARMED', 'ok');
+  } else T('WEB SPEECH API UNAVAILABLE — TEXT-ONLY MODE', 'warn');
+  /* gesture-context warm-up — unlocks mobile audio; safe to call repeatedly */
+  function warmVoice(){
+    if (voiceWarmed || !('speechSynthesis' in window)) return;
+    voiceWarmed = true;
+    try {
+      const u = new SpeechSynthesisUtterance(' '); u.volume = 0;
+      speechSynthesis.speak(u); speechSynthesis.resume();
+      T('AUDIO CONTEXT :: UNLOCKED (' + VOXP.label + ')', 'ok');
+    } catch(e){}
+  }
+  window.NN_voiceWarm = warmVoice;
   function typeCap(text){
     clearInterval(capTimer); let i = 0; jcap.textContent = '';
     capTimer = setInterval(() => { jcap.textContent = text.slice(0, ++i) + (i < text.length ? '▊' : ''); if (i >= text.length) clearInterval(capTimer); }, 16);
   }
+  /* frequency bars + fast core pulse while NEXUS speaks (lifelike tell) */
+  function barsOn(){
+    corewrap.classList.add('speaking'); clearInterval(barTimer);
+    barTimer = setInterval(() => fbars.forEach(b => b.style.height = (3 + Math.random() * 27) + 'px'), 70);
+  }
+  function barsOff(){
+    corewrap.classList.remove('speaking'); clearInterval(barTimer);
+    fbars.forEach(b => b.style.height = '3px');
+  }
   function say(text, onDone){
-    T('NEXUS :: ' + text, 'sys'); typeCap(text);            /* visual only — silent */
-    if (onDone) setTimeout(onDone, 150);
+    T('NEXUS :: ' + text, 'sys'); typeCap(text);
+    window.__NN_lastSpoken = text;                       /* test/diagnostic hook */
+    let doneFired = false;
+    const done = () => { if (doneFired) return; doneFired = true; if (onDone) onDone(); };
+    if (!voiceOn || !('speechSynthesis' in window)){ setTimeout(done, 150); return; }
+    try {
+      speechSynthesis.cancel();                          /* no queue pile-up */
+      const u = new SpeechSynthesisUtterance(text);
+      if (voice) u.voice = voice;
+      u.pitch = VOXP.pitch; u.rate = VOXP.rate; u.volume = 1;   /* device-aware profile */
+      u.onstart = barsOn;
+      u.onend = () => { barsOff(); done(); };
+      u.onerror = () => { barsOff(); done(); };
+      speechSynthesis.speak(u);
+      setTimeout(done, 1200 + text.length * 90);         /* engines that never fire onend */
+    } catch(e){ barsOff(); T('SPEECH SYNTH FAULT :: ' + e.message, 'warn'); done(); }
   }
   window.NN_say = say;
+  /* VOICE ON/OFF toggle (persisted) */
+  const vbtn = $('#vbtn');
+  function paintVoiceBtn(){ vbtn.textContent = '◈ VOICE: ' + (voiceOn ? 'ON' : 'OFF'); vbtn.classList.toggle('off', !voiceOn); }
+  paintVoiceBtn();
+  vbtn.addEventListener('click', () => {
+    voiceOn = !voiceOn; localStorage.setItem('nn-voice', voiceOn ? 'on' : 'off'); paintVoiceBtn();
+    if (voiceOn) say('Vocal interface restored, sir.');
+    else { try { speechSynthesis.cancel(); } catch(e){} barsOff(); typeCap('Vocal interface muted.'); T('VOICE :: MUTED', 'warn'); }
+  });
   const quips = [
     'Mainframe fully operational, sir. Do try not to overload the power grids today.',
     'All nineteen modules idling beautifully. A rare moment of calm.',
@@ -1148,6 +1235,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   function tryGreet(){
     if (greeted || !bootDone) return;
+    if (window.__gwGreeted){ greeted = true; return; }               /* gateway already spoke the welcome */
+    if (document.body.classList.contains('locked')) return;         /* never greet under the gateway */
     if (gestured){ greeted = true; say(greet()); }
     else typeCap(greet());
   }
@@ -1196,12 +1285,46 @@ document.addEventListener('DOMContentLoaded', () => {
   var body = document.body,
       gwui = document.getElementById('gwui'),
       prg  = document.getElementById('gwPrg');
-  var RING = 295.3, HOLD = 900;
+  var RING = 295.3, HOLD = 1300;   /* long enough for the lifelike readouts to breathe */
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var unlocked = false;
 
   /* failsafe: if gateway DOM is missing, never trap the user */
   if (!gwui){ body.classList.remove('locked'); return; }
+
+  /* ============ LIFELIKE PERSONALITY (device-aware dialogue) ============
+     Desktop gets the richer NEXUS script; mobile gets short, punchy lines
+     (and its own voice profile inside the engine). All speech goes through
+     window.NN_say, which applies the DESKTOP/MOBILE pitch+rate branch. */
+  var gwStatus = document.getElementById('gwStatus');
+  var IS_MOB = (matchMedia('(pointer:coarse)').matches && innerWidth < 1100) || innerWidth < 860;
+  var READOUTS = IS_MOB
+    ? ['OPERATOR DETECTED','HANDSHAKE','REACTOR SPOOL-UP','LATTICE SYNC']
+    : ['OPERATOR SIGNATURE DETECTED','BIOMETRIC HANDSHAKE ACCEPTED','REACTOR SPOOL-UP INITIATED','NEURAL LATTICE SYNCHRONIZING','COMMAND DECK PRE-FLIGHT'];
+  var tod = (function(){ var h = new Date().getHours(); return h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening'; })();
+  var LINES = IS_MOB
+    ? { ack: 'Hold to initialize.',
+        unlock: 'Good ' + tod + '. NetNexus online.',
+        cancel: 'Initialization aborted.' }
+    : { ack: 'Operator detected. Hold steady, sir — spooling the reactor.',
+        unlock: 'Good ' + tod + ', sir. Core initialization complete — NetNexus is at your command. Nineteen modules standing by across two galaxies.',
+        cancel: 'Commitment issues, sir? The core requires a full hold.' };
+  var ackSpoken = false, cancelQuipped = false, statusTimer = null, lastProgress = 0;
+  function speak(t){ if (window.NN_say) window.NN_say(t); }
+  function statusOn(){
+    /* cycle the readouts + live % while the ring fills */
+    clearInterval(statusTimer); var i = 0;
+    var paint = function(){
+      gwStatus.textContent = '▸ ' + READOUTS[i % READOUTS.length] + ' — ' + Math.round(lastProgress * 100) + '%';
+      i++;
+    };
+    paint(); statusTimer = setInterval(paint, IS_MOB ? 300 : 340);
+  }
+  function statusOff(final){
+    clearInterval(statusTimer);
+    if (final){ gwStatus.textContent = '▸ ACCESS GRANTED — WELCOME, OPERATOR'; gwStatus.classList.add('hold'); }
+    else gwStatus.textContent = '';
+  }
 
   /* keep hidden hub out of AT / tab order while locked */
   function hubInert(on){
@@ -1219,6 +1342,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!instant && !reduce) body.classList.add('online');   /* pulse + staggered reveal */
     /* WebGL burst punctuates the unlock, matching the core's own click effect */
     if (!instant && window.NEXUSGL && window.NEXUSGL.active && window.NEXUSGL.burst){ try { window.NEXUSGL.burst(700); } catch(e){} }
+    if (!instant){
+      statusOff(true);                                       /* ACCESS GRANTED readout */
+      setTimeout(function(){ gwStatus.classList.remove('hold'); }, 1400);   /* hand off to the spoken welcome caption */
+      /* the gateway delivers the welcome (device-aware line); flag stops the
+         main engine's tryGreet() from greeting a second time */
+      window.__gwGreeted = true;
+      setTimeout(function(){ speak(LINES.unlock); }, 350);   /* let the core pulse lead */
+    }
   }
 
   /* cross-page: already unlocked this session -> straight to the hub */
@@ -1229,6 +1360,7 @@ document.addEventListener('DOMContentLoaded', () => {
   var raf = null, t0 = 0;
   function tick(){
     var p = Math.min((performance.now() - t0) / HOLD, 1);
+    lastProgress = p;                                        /* feeds the % readout */
     if (prg) prg.style.strokeDashoffset = String(RING * (1 - p));
     if (p >= 1){ endHold(); goOnline(false); return; }
     raf = requestAnimationFrame(tick);
@@ -1243,12 +1375,22 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       try { gwui.setPointerCapture(e.pointerId); } catch(_){}
     }
-    t0 = performance.now(); gwui.classList.add('holding');
+    /* MOBILE AUDIO UNLOCK: this handler runs inside a real user gesture, so the
+       zero-volume warm-up here is what lets phones speak at all. */
+    if (window.NN_voiceWarm) window.NN_voiceWarm();
+    if (!ackSpoken){ ackSpoken = true; speak(LINES.ack); }   /* acknowledge the operator once */
+    t0 = performance.now(); lastProgress = 0;
+    gwui.classList.add('holding'); statusOn();
     cancelAnimationFrame(raf); raf = requestAnimationFrame(tick);
   }
   function endHold(){
     cancelAnimationFrame(raf); gwui.classList.remove('holding');
-    if (!unlocked && prg) prg.style.strokeDashoffset = String(RING);
+    if (!unlocked){
+      if (prg) prg.style.strokeDashoffset = String(RING);
+      statusOff(false);
+      /* released early after real progress? NEXUS gets one dry remark */
+      if (!cancelQuipped && lastProgress > .35 && lastProgress < 1){ cancelQuipped = true; speak(LINES.cancel); }
+    }
   }
   gwui.addEventListener('pointerdown', startHold);
   gwui.addEventListener('pointerup', endHold);
