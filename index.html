@@ -419,6 +419,8 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
     <span class="gl gg">GENERAL</span>
   </div>
   <!-- VOICE v2: speech OUTPUT re-integrated (device-aware); no microphone -->
+  <!-- VOX SELECTOR: change the reactor core's voice; persisted in nn-voxname -->
+  <select class="cbtn" id="voxSel" title="Change the voice of the reactor core"><option value="">VOX: AUTO</option></select>
   <button class="cbtn" id="vbtn" type="button" title="Toggle NEXUS voice feedback">◈ VOICE: ON</button>
   <button class="cbtn" id="tbtn" type="button">⌬ TERMINAL</button>
   <div id="clk"><b id="clkL">--:--:--</b> LOCAL<br><span id="clkU">--:--:--</span> UTC</div>
@@ -596,7 +598,20 @@ document.addEventListener('DOMContentLoaded', () => {
       m:[['MODES','fn',4],['DAY CALC','%',100],['ISO WEEK','w',53]], line:'Date engine ready. The calendar holds no secrets, sir.' },
     { id:'tool-random', title:'Random & Decision Maker', tags:['random','dice','coin','flip','picker','shuffle','teams','decision','number','raffle'], path:'./tool-random/index.html',
       galaxy:'gen', code:'GEN-25', glyph:'⚄', desc:'Dice, coin flips, number ranges, list pickers, shuffles, and fair team splitters — seeded from crypto.getRandomValues.',
-      m:[['CSPRNG','bit',32],['MODES','fn',6],['BIAS','%',0]], line:'Randomizer primed. Let fate decide, sir.' }
+      m:[['CSPRNG','bit',32],['MODES','fn',6],['BIAS','%',0]], line:'Randomizer primed. Let fate decide, sir.' },
+    /* ===== NEW MODULES (2 IT + 2 GENERAL) ===== */
+    { id:'tool-ports', title:'Port & Protocol Intel', tags:['ports','tcp','udp','firewall','services','protocol','lookup','wellknown'], path:'./tool-ports/index.html',
+      galaxy:'it', code:'NET-16', glyph:'⛉', desc:'Searchable well-known port registry — TCP/UDP services with category and risk flags for firewall and triage work.',
+      m:[['PORT DB','ENT',77],['LOOKUP','ms',1],['RISK FLAGS','SET',34]], line:'Opening the port intelligence grid, sir.' },
+    { id:'tool-cron', title:'Cron Expression Forge', tags:['cron','crontab','schedule','automation','expression','linux','task','job'], path:'./tool-cron/index.html',
+      galaxy:'it', code:'OPS-17', glyph:'⏲', desc:'Five-field cron builder with plain-English translation, a preset library, and the next five computed run times.',
+      m:[['FIELDS','SYN',5],['NEXT RUNS','CAL',5],['PRESETS','LIB',10]], line:'Forging the schedule matrix, sir.' },
+    { id:'tool-kanban', title:'Mission Board', tags:['kanban','tasks','todo','board','project','cards','workflow','productivity','notes'], path:'./tool-kanban/index.html',
+      galaxy:'gen', code:'GEN-26', glyph:'▦', desc:'Three-lane mission board — queue, active, done. Drag cards or step them across lanes; persists locally, never uploaded.',
+      m:[['LANES','SET',3],['PERSIST','%',100],['DRAG OPS','RDY',2]], line:'Deploying the mission board, sir.' },
+    { id:'tool-stopwatch', title:'Chrono Deck', tags:['stopwatch','timer','countdown','laps','time','alarm','clock','pomodoro'], path:'./tool-stopwatch/index.html',
+      galaxy:'gen', code:'GEN-27', glyph:'⧗', desc:'Precision stopwatch with lap deltas plus a countdown timer with audible alarm — the space bar drives it.',
+      m:[['RESOLUTION','cs',1],['LAP BANK','CAP',99],['ALARM','CH',3]], line:'Chronometry deck engaged, sir.' }
   ];
   window.toolRegistry = toolRegistry;
   T('MODULE REGISTRY :: ' + toolRegistry.length + ' MODULES INDEXED', 'ok');
@@ -620,9 +635,13 @@ document.addEventListener('DOMContentLoaded', () => {
   window.NN_VOX_PROFILE = VOXP.label;                    /* surfaced for diagnostics/tests */
   let voice = null, voiceOn = (localStorage.getItem('nn-voice') ?? 'on') === 'on';
   let capTimer = null, barTimer = null, voiceWarmed = false;
+  /* VOX CHANGER: a user-chosen voice (persisted) overrides the profile's
+     auto-pick; the device-aware pitch/rate profile still applies on top. */
+  let voxName = localStorage.getItem('nn-voxname') || '';
   function pickVoice(){
     try {
       const vs = speechSynthesis.getVoices(); if (!vs.length) return null;
+      if (voxName){ const m = vs.find(v => v.name === voxName); if (m) return m; }
       const en = vs.filter(v => /^en/i.test(v.lang));
       if (IS_MOBILE_VOX){
         /* MOBILE branch: local/on-device voices first — reliable + low-latency */
@@ -634,11 +653,28 @@ document.addEventListener('DOMContentLoaded', () => {
           || en.find(v => v.localService) || en[0] || vs[0];
     } catch(e){ return null; }
   }
+  /* VOX CHANGER: populate the selector with every English voice on this device */
+  const voxSel = $('#voxSel');
+  function fillVox(){
+    try {
+      const en = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
+      if (!en.length) return;
+      voxSel.innerHTML = '<option value="">VOX: AUTO (' + VOXP.label + ')</option>' +
+        en.map(v => '<option value="' + v.name.replace(/"/g, '&quot;') + '"' + (v.name === voxName ? ' selected' : '') + '>' +
+          v.name.replace(/^Microsoft |^Google | - .*| Online.*|\(Natural\)/g, '').slice(0, 22) + '</option>').join('');
+    } catch(e){}
+  }
   if ('speechSynthesis' in window){
-    voice = pickVoice();
-    speechSynthesis.onvoiceschanged = () => { voice = pickVoice(); };
+    voice = pickVoice(); fillVox();
+    speechSynthesis.onvoiceschanged = () => { voice = pickVoice(); fillVox(); };
+    voxSel.addEventListener('change', () => {
+      voxName = voxSel.value; localStorage.setItem('nn-voxname', voxName);
+      voice = pickVoice();
+      say('Voice calibration accepted. This is how I sound now, sir.');
+      T('VOX PROFILE :: ' + (voxName || 'AUTO ' + VOXP.label), 'info');
+    });
     T('VOICE CORE :: ' + VOXP.label + ' PROFILE ARMED', 'ok');
-  } else T('WEB SPEECH API UNAVAILABLE — TEXT-ONLY MODE', 'warn');
+  } else { voxSel.style.display = 'none'; T('WEB SPEECH API UNAVAILABLE — TEXT-ONLY MODE', 'warn'); }
   /* gesture-context warm-up — unlocks mobile audio; safe to call repeatedly */
   function warmVoice(){
     if (voiceWarmed || !('speechSynthesis' in window)) return;
@@ -693,7 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   const quips = [
     'Mainframe fully operational, sir. Do try not to overload the power grids today.',
-    'All nineteen modules idling beautifully. A rare moment of calm.',
+    'All ' + toolRegistry.length + ' modules idling beautifully. A rare moment of calm.',
     'Reactor output nominal. Coffee levels, however, are your department, sir.',
     'I have taken the liberty of recalibrating the orbital dampeners. Again.',
     'Diagnostics complete. No anomalies detected — a personal disappointment, frankly.',
@@ -1094,16 +1130,19 @@ document.addEventListener('DOMContentLoaded', () => {
     corewrap.style.transition = 'filter .8s'; corewrap.style.filter = 'brightness(1.9) blur(2px)';
     let gone = false;
     const go = () => { if (gone) return; gone = true; window.location.href = tool.path; };
-    /* A deliberate CLICK/tap wants to GO — the module opens the moment the warp animation reads,
-       NEXUS keeps talking (his line resumes in the tool's own strip). A VOICE command still waits
-       for the spoken confirmation so it's never cut mid-sentence. */
+    /* CUTOFF FIX: the old fast path spoke tool.line fire-and-forget and navigated
+       at 560ms — killing the audio mid-word on every planet click. Now BOTH paths
+       navigate only when the utterance actually ENDS (say() fires onDone from the
+       utterance's onend). Clicks get a short "Engaging …" line so the wait stays
+       snappy; with voice off, onDone fires at 150ms and the warp minimum applies. */
+    const t0 = performance.now();
     if (opts.fast){
-      say(tool.line);              /* fire-and-forget — don't hold the redirect hostage */
-      setTimeout(go, 560);         /* enough for the warp to land; feels instant */
+      say('Engaging ' + tool.title + '.',
+          () => setTimeout(go, Math.max(0, 620 - (performance.now() - t0))));
+      setTimeout(go, 3200);        /* stuck speech engine never holds the warp hostage */
     } else {
-      const t0 = performance.now();
       say(tool.line, () => setTimeout(go, Math.max(0, 1050 - (performance.now() - t0))));
-      setTimeout(go, 5000);        /* hard cap — a stuck speech engine never holds the warp hostage */
+      setTimeout(go, 6000);        /* generous cap for the longer scripted lines */
     }
   }
   window.NN_warpTo = warpTo;
@@ -1224,14 +1263,14 @@ document.addEventListener('DOMContentLoaded', () => {
     ['PARALLAX LAB ENVIRONMENT............ <span class="ok">3 LAYERS</span>'],
     ['ORBITAL MECHANICS ENGINE............ <span class="ok">CALIBRATED</span>'],
     ['NEXUS NEURAL LATTICE......... <span class="ok">SYNCED</span>'],
-    ['MODULE REGISTRY..................... <span class="ok">19 INDEXED</span>'],
+    ['MODULE REGISTRY..................... <span class="ok">' + toolRegistry.length + ' INDEXED</span>'],
     ['ERROR STREAM INTERCEPTOR............ <span class="ok">ARMED</span>'],
     ['&gt; ENTERING COMMAND DECK', 'dim']
   ];
   let bootDone = false, gestured = false, greeted = false;
   const greet = () => {
     const h = new Date().getHours();
-    return 'Good ' + (h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening') + ', sir. NetNexus is fully operational. Nineteen modules standing by across two galaxies.';
+    return 'Good ' + (h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening') + ', sir. NetNexus is fully operational. ' + toolRegistry.length + ' modules standing by across two galaxies.';
   };
   function tryGreet(){
     if (greeted || !bootDone) return;
@@ -1307,7 +1346,7 @@ document.addEventListener('DOMContentLoaded', () => {
         unlock: 'Good ' + tod + '. NetNexus online.',
         cancel: 'Initialization aborted.' }
     : { ack: 'Operator detected. Hold steady, sir — spooling the reactor.',
-        unlock: 'Good ' + tod + ', sir. Core initialization complete — NetNexus is at your command. Nineteen modules standing by across two galaxies.',
+        unlock: 'Good ' + tod + ', sir. Core initialization complete — NetNexus is at your command.',
         cancel: 'Commitment issues, sir? The core requires a full hold.' };
   var ackSpoken = false, cancelQuipped = false, statusTimer = null, lastProgress = 0;
   function speak(t){ if (window.NN_say) window.NN_say(t); }

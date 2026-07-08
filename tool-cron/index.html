@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" data-galaxy="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#02050a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><polygon points='32,5 55,18.5 55,45.5 32,59 9,45.5 9,18.5' fill='%23041018' stroke='%2300e5ff' stroke-width='2.5'/><circle cx='32' cy='32' r='15' fill='none' stroke='%2300e5ff' stroke-width='1.5' opacity='.55'/><circle cx='32' cy='32' r='8' fill='%2300e5ff'/><circle cx='47' cy='32' r='2.6' fill='%237df9ff'/></svg>">
+<title>NETNEXUS // OPS-17 CRON EXPRESSION FORGE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
+<style>
+:root{--red:#ff4757;--grn:#2eff9e;--yel:#ffd166;--or:#ff9d33;--bg0:#02050a;--ink:#d9f4ff;--mut:#6b93ab;--panel:rgba(7,17,27,.82);--mono:'Share Tech Mono',Consolas,monospace;--disp:'Orbitron','Segoe UI',sans-serif;--ui:'Rajdhani','Segoe UI',sans-serif}
+html[data-galaxy="it"]{--acc:#00e5ff;--acc2:#7df9ff;--accd:rgba(0,229,255,.14);--line:rgba(0,229,255,.28);--acc-glow:rgba(0,229,255,.32)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:radial-gradient(1200px 700px at 50% -12%,#0a1e30 0%,var(--bg0) 58%) fixed,var(--bg0);color:var(--ink);font-family:var(--ui);min-height:100vh;overflow-x:hidden}
+::selection{background:var(--accd);color:var(--acc2)}
+#bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;width:100vw;height:100vh}
+.scan{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.15) 2px 3px);box-shadow:inset 0 0 200px rgba(0,0,0,.7)}
+#topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(4,12,20,.94),rgba(4,12,20,.7));backdrop-filter:blur(10px)}
+.brand{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.22em;color:var(--acc);text-shadow:0 0 14px var(--acc-glow);white-space:nowrap}
+.brand b{color:var(--ink);font-weight:500}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.18em;border:1px solid var(--line);color:var(--acc2);padding:3px 9px;background:var(--accd);white-space:nowrap}
+.chip.ghost{color:var(--mut);border-color:rgba(107,147,171,.3);background:none}
+.spacer{flex:1}
+#clk{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.12em;white-space:nowrap}
+#clk b{color:var(--acc2);font-weight:400}
+.rtn{font-family:var(--disp);font-size:9.5px;letter-spacing:.24em;color:var(--acc);border:1px solid var(--line);background:var(--accd);padding:7px 12px;text-decoration:none;transition:.25s;white-space:nowrap}
+.rtn:hover{background:var(--acc);color:#02131c;box-shadow:0 0 18px var(--acc-glow)}
+#jstrip{position:relative;z-index:5;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--acc2);padding:8px 20px;border-bottom:1px solid rgba(107,147,171,.14);background:rgba(3,10,16,.6)}
+#jstrip .jj{color:var(--mut);letter-spacing:.2em}
+#wrap{position:relative;z-index:5;max-width:1080px;margin:22px auto 96px;padding:0 20px}
+.mode-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.mtab{background:none;border:1px solid var(--line);color:var(--mut);font-family:var(--mono);font-size:11px;letter-spacing:.1em;padding:8px 15px;cursor:pointer;transition:.2s}
+.mtab.on{background:var(--accd);border-color:var(--acc);color:var(--acc);box-shadow:0 0 12px var(--accd)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:840px){.cols{grid-template-columns:1fr}}
+.panel{position:relative;background:var(--panel);border:1px solid var(--line);padding:18px;backdrop-filter:blur(10px)}
+.panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(var(--acc),var(--acc)) left 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 top 0/2px 14px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) left 0 bottom 0/2px 14px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/14px 2px,linear-gradient(var(--acc),var(--acc)) right 0 bottom 0/2px 14px;background-repeat:no-repeat;opacity:.85}
+.ptitle{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.3em;color:var(--acc);text-shadow:0 0 10px var(--acc-glow)}
+.psub{font-size:12px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;margin:4px 0 12px;font-family:var(--mono)}
+.f{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--mut);text-transform:uppercase;margin:12px 0 5px}
+input,select,textarea{width:100%;background:rgba(2,8,14,.85);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:14px;padding:9px 11px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--acc);box-shadow:0 0 0 1px var(--accd),0 0 18px var(--accd)}
+textarea{resize:vertical;line-height:1.5}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.inl{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--mut);margin-top:10px}
+.cb{width:auto;accent-color:var(--acc)}
+.fields{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:760px){.fields{grid-template-columns:repeat(2,1fr)!important}}
+.xp{font-family:var(--mono);font-size:13.5px;color:var(--acc2);line-height:1.7;border:1px solid var(--line);background:rgba(2,8,14,.5);padding:12px 14px;margin-top:12px;min-height:52px}
+.xp.err{color:var(--red);border-color:rgba(255,71,87,.5)}
+.runs{font-family:var(--mono);font-size:13px;line-height:2;margin-top:8px}
+.runs b{color:var(--acc);font-weight:400;margin-right:10px}
+.exprbig{font-family:var(--mono);font-size:20px;letter-spacing:.14em;color:var(--acc);text-shadow:0 0 12px var(--acc-glow)}
+
+.roll{width:100%;margin-top:16px;font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:.24em;color:#02131c;background:var(--acc);border:none;padding:13px;cursor:pointer;transition:.2s;box-shadow:0 0 18px var(--acc-glow)}
+.roll:hover{filter:brightness(1.1);box-shadow:0 0 28px var(--acc-glow)}
+.roll:active{transform:translateY(1px)}
+.rmain{font-family:var(--disp);font-size:44px;font-weight:900;color:var(--acc);text-shadow:0 0 22px var(--acc-glow);line-height:1.05;word-break:break-word}
+.rsub{font-family:var(--mono);font-size:11.5px;color:var(--mut);letter-spacing:.08em;margin:8px 0 14px}
+.dice{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.die{min-width:42px;height:42px;padding:0 8px;display:flex;align-items:center;justify-content:center;border:1px solid var(--acc);color:var(--acc2);font-family:var(--disp);font-size:18px;font-weight:700;background:var(--accd)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.pill{font-family:var(--mono);font-size:12px;color:var(--acc2);border:1px solid var(--line);padding:5px 10px;background:rgba(2,8,14,.5)}
+.pill b{color:var(--acc);font-weight:400}
+.list{font-family:var(--mono);font-size:13px;line-height:1.9;margin-top:6px}
+.list .i{color:var(--mut);margin-right:8px}
+.teamgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:8px}
+.team{border:1px solid var(--line);padding:10px}
+.team h4{font-family:var(--disp);font-size:11px;letter-spacing:.16em;color:var(--acc);margin-bottom:6px}
+.team div{font-family:var(--mono);font-size:12px;color:var(--acc2);padding:2px 0}
+.hist{font-family:var(--mono);font-size:10.5px;color:var(--mut);letter-spacing:.05em;margin-top:14px;line-height:1.7;max-height:110px;overflow:auto;border-top:1px solid rgba(107,147,171,.12);padding-top:8px}
+@keyframes blink{50%{opacity:.25}}
+#foot{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;gap:22px;align-items:center;font-family:var(--mono);font-size:10px;color:rgba(107,147,171,.7);letter-spacing:.2em;padding:6px 18px;border-top:1px solid rgba(107,147,171,.15);background:rgba(3,9,14,.8);backdrop-filter:blur(6px)}
+#foot .dot{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termBtn{position:fixed;right:14px;bottom:38px;z-index:60;background:rgba(2,10,16,.92);border:1px solid var(--line);color:var(--acc2);font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;padding:7px 11px;cursor:pointer;transition:.2s}
+#termBtn:hover{border-color:var(--acc);color:var(--acc);box-shadow:0 0 14px var(--accd)}
+#term{position:fixed;left:0;right:0;bottom:0;height:240px;transform:translateY(101%);z-index:70;background:rgba(2,7,12,.97);border-top:1px solid var(--acc);font-family:var(--mono);transition:transform .35s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;box-shadow:0 -12px 50px rgba(0,0,0,.6)}
+#term.open{transform:none}
+#termHead{display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:1px solid rgba(107,147,171,.2);font-size:10px;letter-spacing:.26em;color:var(--acc)}
+#termHead .tdot{width:7px;height:7px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
+#termHead .tx{margin-left:auto;cursor:pointer;color:var(--mut);font-size:13px;padding:0 4px}
+#termHead .tx:hover{color:var(--red)}
+#termBody{flex:1;overflow-y:auto;padding:10px 14px;font-size:11.5px;line-height:1.75}
+.tline{white-space:pre-wrap;word-break:break-word}
+.tline .tt{color:rgba(107,147,171,.6)}
+.t-info{color:#9fd8ea}.t-ok{color:var(--grn)}.t-warn{color:var(--yel)}.t-err{color:var(--red)}.t-sys{color:var(--acc2)}
+@media (max-width:640px){
+  html,body{overflow-x:hidden}
+  #topbar{flex-wrap:wrap;gap:8px 10px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px}
+  #topbar .spacer{display:none}#clk{display:none}
+  .brand{font-size:12px;letter-spacing:.14em}.rtn{margin-left:auto}
+  #jstrip{font-size:11px;padding:7px 12px}
+  #wrap{margin:16px auto 92px!important;padding:0 12px!important}
+  .rmain{font-size:34px}
+  #foot{font-size:9px;gap:10px;letter-spacing:.12em}#foot span:nth-child(3){display:none}
+  #term{height:52vh}
+}
+
+/* ============ MOBILE RESPONSIVE GUARD (fix: panels bleeding off-screen) ============
+   Grid/flex children default to min-width:auto, so wide content (pre blocks,
+   tables, long inputs) could force panels past the viewport edge, where the
+   body's overflow-x:hidden CLIPPED them unreadably. These rules make every
+   panel respect the viewport (box-sizing is already global) and let wide
+   content scroll INSIDE its own panel instead of bleeding off-screen. */
+@media (max-width:760px){
+  #wrap{grid-template-columns:1fr!important;max-width:100vw!important}
+  #wrap>*{min-width:0!important;max-width:100%!important}
+  .panel{min-width:0!important;max-width:100%!important}
+  .panel *{min-width:0}
+  .panel pre,.panel code{white-space:pre-wrap;word-break:break-word;max-width:100%}
+  .panel table{display:block;max-width:100%;overflow-x:auto}
+  .panel img,.panel svg,.panel canvas{max-width:100%;height:auto}
+  input,select,textarea,button{max-width:100%}
+}
+</style>
+</head>
+<body>
+<canvas id="bgfx"></canvas>
+<div class="scan"></div>
+<header id="topbar">
+  <div class="brand">◈ NETNEXUS <b>// CRON EXPRESSION FORGE</b></div>
+  <span class="chip">OPS-17</span>
+  <span class="chip ghost">IT GALAXY</span>
+  <div class="spacer"></div>
+  <div id="clk"></div>
+  <a class="rtn" href="../index.html">◂ RETURN TO NEXUS</a>
+</header>
+<div id="jstrip"><span class="jj">◤ NEXUS // </span><span id="jtext"></span></div>
+
+<main id="wrap">
+  <div class="cols">
+    <section class="panel">
+      <div class="ptitle">EXPRESSION FORGE</div>
+      <div class="psub">five fields — minute · hour · day · month · weekday</div>
+      <div class="fields">
+        <div><label class="f">MINUTE</label><input id="f0" value="*/15" spellcheck="false"></div>
+        <div><label class="f">HOUR</label><input id="f1" value="*" spellcheck="false"></div>
+        <div><label class="f">DAY (1-31)</label><input id="f2" value="*" spellcheck="false"></div>
+        <div><label class="f">MONTH</label><input id="f3" value="*" spellcheck="false"></div>
+        <div><label class="f">WEEKDAY</label><input id="f4" value="*" spellcheck="false"></div>
+      </div>
+      <label class="f">FULL EXPRESSION</label>
+      <input id="expr" value="*/15 * * * *" spellcheck="false" style="font-size:16px;letter-spacing:.1em">
+      <label class="f">PRESET LIBRARY</label>
+      <div class="chips" id="presets"></div>
+    </section>
+    <section class="panel">
+      <div class="ptitle">TRANSLATION &amp; NEXT RUNS</div>
+      <div class="psub">plain-english decode + computed schedule</div>
+      <div class="exprbig" id="ebig">*/15 * * * *</div>
+      <div class="xp" id="xp"></div>
+      <label class="f">NEXT 5 EXECUTIONS (LOCAL TIME)</label>
+      <div class="runs" id="runs"></div>
+    </section>
+  </div>
+</main>
+
+<footer id="foot"><span class="dot"></span><span>OPS-17 ACTIVE</span><span>FIVE-FIELD CRON BUILDER — PLAIN-ENGLISH DECODE · NEXT-RUN COMPUTATION</span><span style="margin-left:auto">NETNEXUS v2.1</span></footer>
+<button id="termBtn">⌬ SYS TERMINAL</button>
+<aside id="term"><div id="termHead"><span class="tdot"></span> STARK-CORE DIAGNOSTIC TERMINAL — OPS-17 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
+
+<script>
+'use strict';
+window.__nnlog=[];
+window.onerror=function(m,s,l){window.__nnlog.push(['ERR '+m+' @'+(s||'?').split('/').pop()+':'+l,'err']);return false;};
+window.addEventListener('unhandledrejection',e=>window.__nnlog.push(['PROMISE REJECTION :: '+(e.reason&&e.reason.message||e.reason),'err']));
+document.addEventListener('DOMContentLoaded',()=>{
+  const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+  const termBody=$('#termBody'),term=$('#term');
+  function T(msg,lv='info'){const d=document.createElement('div');d.className='tline t-'+lv;d.innerHTML='<span class="tt">['+new Date().toTimeString().slice(0,8)+']</span> '+String(msg).replace(/</g,'&lt;');termBody.appendChild(d);while(termBody.children.length>200)termBody.firstChild.remove();termBody.scrollTop=termBody.scrollHeight;}
+  window.__nnlog.forEach(a=>T(a[0],a[1]));window.__nnlog={push:a=>T(a[0],a[1])};
+  const _ce=console.error.bind(console),_cw=console.warn.bind(console);
+  console.error=(...a)=>{T(a.map(String).join(' '),'err');_ce(...a)};
+  console.warn=(...a)=>{T(a.map(String).join(' '),'warn');_cw(...a)};
+  $('#termBtn').addEventListener('click',()=>term.classList.toggle('open'));
+  $('#termX').addEventListener('click',()=>term.classList.remove('open'));
+  window.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='`'){e.preventDefault();term.classList.toggle('open');}});
+  if(window.__twFail)T('TAILWIND CDN UNREACHABLE — LOCAL STYLE CORE ENGAGED','warn');
+  let _jt=null;function jsay(t){T('NEXUS :: '+t,'sys');const el=$('#jtext');clearInterval(_jt);let i=0;_jt=setInterval(()=>{el.textContent=t.slice(0,++i)+(i<t.length?'▊':'');if(i>=t.length)clearInterval(_jt);},14);}
+  setInterval(()=>{const d=new Date();$('#clk').innerHTML='<b>'+d.toTimeString().slice(0,8)+'</b> L';},1000);
+  const cv=$('#bgfx'),cg=cv.getContext('2d');let W=innerWidth,H=innerHeight,tt=0;
+  const AR=document.documentElement.dataset.galaxy==='gen'?'255,157,51':'0,229,255';
+  function rs(){W=innerWidth;H=innerHeight;const D=Math.min(devicePixelRatio||1,1.5);cv.width=W*D;cv.height=H*D;cg.setTransform(D,0,0,D,0,0);}
+  rs();window.addEventListener('resize',rs);
+  const pts=Array.from({length:30},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14}));
+  let sweep=-200;
+  (function bg(){const dt=1/60;tt+=dt;cg.clearRect(0,0,W,H);cg.strokeStyle='rgba('+AR+',.045)';cg.lineWidth=1;const sp=92,off=(tt*5)%sp;cg.beginPath();for(let x=off;x<W;x+=sp){cg.moveTo(x,0);cg.lineTo(x,H)}for(let y=off*.6;y<H;y+=sp){cg.moveTo(0,y);cg.lineTo(W,y)}cg.stroke();cg.fillStyle='rgba('+AR+',.5)';for(const p of pts){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;cg.fillRect(p.x,p.y,1.6,1.6);}sweep+=2.2;if(sweep>H+200)sweep=-200;const gr=cg.createLinearGradient(0,sweep-60,0,sweep);gr.addColorStop(0,'rgba('+AR+',0)');gr.addColorStop(1,'rgba('+AR+',.05)');cg.fillStyle=gr;cg.fillRect(0,sweep-60,W,60);if(!document.hidden)requestAnimationFrame(bg);else setTimeout(bg,400);})();
+  T('MODULE KERNEL ONLINE :: OPS-17 CRON EXPRESSION FORGE','ok');
+
+  
+  /* ===== CRON CORE ===== */
+  const MON={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+  const DOW={sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};
+  const FMETA=[['minute',0,59,null],['hour',0,23,null],['day-of-month',1,31,null],['month',1,12,MON],['weekday',0,7,DOW]];
+  function parseField(str,min,max,names){
+    str=String(str).trim().toLowerCase(); if(!str) throw 'empty field';
+    const out=new Set();
+    for(const part of str.split(',')){
+      let m=part.match(/^\*(?:\/(\d+))?$/);
+      if(m){const st=m[1]?+m[1]:1;if(!st)throw 'bad step in "'+part+'"';for(let i=min;i<=max;i+=st)out.add(i%((max===7)?7:max+1)===i?i:i);continue;}
+      m=part.match(/^([a-z]{3,}|\d+)(?:-([a-z]{3,}|\d+))?(?:\/(\d+))?$/);
+      if(!m)throw 'cannot parse "'+part+'"';
+      const val=t=>{if(/^\d+$/.test(t))return +t;const k=t.slice(0,3);if(names&&k in names)return names[k];throw 'unknown name "'+t+'"';};
+      let a=val(m[1]),b=m[2]!=null?val(m[2]):a;const st=m[3]?+m[3]:1;
+      if(max===7){a=a===7?0:a;b=b===7?0:b;}     /* dow: 7 == sunday */
+      if(a<min&&!(max===7&&a===0))throw '"'+part+'" below '+min;
+      if(b>max)throw '"'+part+'" above '+max;
+      if(!st)throw 'bad step';
+      if(a>b){for(let i=a;i<=max;i+=st)out.add(i);for(let i=min;i<=b;i+=st)out.add(i);}  /* wrap range e.g. fri-mon */
+      else for(let i=a;i<=b;i+=st)out.add(i);
+    }
+    if(max===7){if(out.has(7)){out.delete(7);out.add(0);}}
+    return out;
+  }
+  function parseExpr(e){
+    const parts=String(e).trim().split(/\s+/);
+    if(parts.length!==5)throw 'need exactly 5 fields (got '+parts.length+')';
+    return parts.map((p,i)=>({set:parseField(p,FMETA[i][1],FMETA[i][2]==7?7:FMETA[i][2],FMETA[i][3]),raw:p}));
+  }
+  function fdesc(raw,set,unit,names){
+    if(raw==='*')return 'every '+unit;
+    const m=raw.match(/^\*\/(\d+)$/); if(m)return 'every '+m[1]+' '+unit+'s';
+    const inv=names?Object.fromEntries(Object.entries(names).map(([k,v])=>[v,k.toUpperCase()])):null;
+    const list=[...set].sort((a,b)=>a-b).map(v=>inv?inv[v]||v:v);
+    return unit+' '+(list.length>8?list.slice(0,8).join(', ')+'…':list.join(', '));
+  }
+  function explain(fs){
+    return 'Runs at '+fdesc(fs[0].raw,fs[0].set,'minute',null)
+      +', '+fdesc(fs[1].raw,fs[1].set,'hour',null)
+      +(fs[2].raw!=='*'?', on '+fdesc(fs[2].raw,fs[2].set,'day',null)+' of the month':'')
+      +(fs[3].raw!=='*'?', in '+fdesc(fs[3].raw,fs[3].set,'month',MON):'')
+      +(fs[4].raw!=='*'?', on '+fdesc(fs[4].raw,fs[4].set,'weekday',DOW):'')
+      +(fs[2].raw!=='*'&&fs[4].raw!=='*'?' (standard cron: day-of-month OR weekday matches)':'')+'.';
+  }
+  function nextRuns(fs,n){
+    const out=[];const domR=fs[2].raw!=='*',dowR=fs[4].raw!=='*';
+    const d=new Date();d.setSeconds(0,0);d.setMinutes(d.getMinutes()+1);
+    for(let i=0;i<530000&&out.length<n;i++){
+      const ok=fs[0].set.has(d.getMinutes())&&fs[1].set.has(d.getHours())&&fs[3].set.has(d.getMonth()+1)
+        &&(!domR&&!dowR?true:domR&&dowR?(fs[2].set.has(d.getDate())||fs[4].set.has(d.getDay()))
+          :domR?fs[2].set.has(d.getDate()):fs[4].set.has(d.getDay()));
+      if(ok)out.push(new Date(d));
+      d.setMinutes(d.getMinutes()+1);
+    }
+    return out;
+  }
+  const F=[0,1,2,3,4].map(i=>$('#f'+i)),expr=$('#expr'),xp=$('#xp'),runs=$('#runs'),ebig=$('#ebig');
+  const PRESETS=[['*/5 * * * *','every 5 min'],['0 * * * *','hourly'],['0 2 * * *','nightly 02:00'],['0 9 * * 1-5','weekdays 09:00'],
+    ['0 0 * * 0','sunday midnight'],['0 0 1 * *','monthly 1st'],['*/15 8-18 * * 1-5','biz hours /15m'],['0 6,18 * * *','06:00 + 18:00'],
+    ['30 3 * * 6','sat 03:30'],['0 0 1 1 *','new year']];
+  $('#presets').innerHTML=PRESETS.map(p=>'<button class="pill" type="button" data-e="'+p[0]+'" style="cursor:pointer"><b>'+p[0]+'</b> '+p[1]+'</button>').join('');
+  $('#presets').addEventListener('click',e=>{const b=e.target.closest('[data-e]');if(!b)return;expr.value=b.dataset.e;fromExpr();});
+  function paint(){
+    const e=F.map(f=>f.value.trim()||'*').join(' ');
+    expr.value=e;ebig.textContent=e;
+    try{
+      const fs=parseExpr(e);
+      xp.classList.remove('err');xp.textContent=explain(fs);
+      const rs=nextRuns(fs,5);
+      runs.innerHTML=rs.length?rs.map((r,i)=>'<div><b>'+(i+1)+'.</b>'+r.toLocaleString(undefined,{weekday:'short',year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'})+'</div>').join('')
+        :'<div style="color:var(--mut)">no matching time in the next year</div>';
+      T('CRON PARSED :: '+e,'ok');
+    }catch(err){xp.classList.add('err');xp.textContent='⚠ '+err;runs.innerHTML='';T('CRON FAULT :: '+err,'warn');}
+  }
+  function fromExpr(){
+    const p=expr.value.trim().split(/\s+/);
+    if(p.length===5)F.forEach((f,i)=>f.value=p[i]);
+    paint();
+  }
+  F.forEach(f=>f.addEventListener('input',paint));
+  expr.addEventListener('input',fromExpr);
+  paint();
+  jsay('Schedule forge online, sir. Give me five fields and I shall tell you exactly when it fires.');
+});
+</script>
+</body>
+</html>
