@@ -279,6 +279,26 @@ body.mobile #ticker{display:none}
 @media (prefers-reduced-motion: reduce){
   .planet.match{animation-duration:2.4s}
 }
+/* ============ VOX PICKER PANEL (custom voice list — replaces native select) ============ */
+/* Native <option>s are OS-drawn: tiny, cramped, ignoring the dark theme.
+   This panel is fully styled: readable 13px rows, hover glow, active marker. */
+#voxBtn.open{background:var(--accd);border-color:var(--acc);color:var(--acc)}
+#voxPanel{position:fixed;z-index:120;width:min(340px,92vw);max-height:min(420px,60vh);overflow:auto;
+  background:rgba(3,10,17,.97);border:1px solid var(--acc);
+  backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);
+  box-shadow:0 18px 54px rgba(0,0,0,.6),0 0 30px var(--accd)}
+#voxPanel .vxh{position:sticky;top:0;font-family:var(--disp);font-size:9.5px;letter-spacing:.3em;color:var(--mut);
+  padding:10px 14px 8px;background:rgba(3,10,17,.97);border-bottom:1px solid var(--line)}
+#voxPanel .vx{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;
+  font-family:var(--mono);font-size:13px;color:var(--ink);border-bottom:1px solid rgba(107,147,171,.1)}
+#voxPanel .vx:last-child{border-bottom:none}
+#voxPanel .vx:hover,#voxPanel .vx.hot{background:var(--accd);color:var(--acc2)}
+#voxPanel .vx .lang{margin-left:auto;font-size:9.5px;letter-spacing:.16em;color:var(--mut);
+  border:1px solid rgba(107,147,171,.35);padding:1px 6px;white-space:nowrap}
+#voxPanel .vx.active{color:var(--acc)}
+#voxPanel .vx.active::before{content:"● ";text-shadow:0 0 8px var(--acc-glow)}
+#voxPanel .vx.active .lang{border-color:var(--acc);color:var(--acc)}
+
 /* ============ MANUAL ORBIT NAV (drag/swipe + ‹ › arrows) ============ */
 /* grab-cursor affordance; touch-action:none lets horizontal swipes rotate the
    orbit on touch screens instead of being eaten by browser pan gestures */
@@ -420,13 +440,17 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
   </div>
   <!-- VOICE v2: speech OUTPUT re-integrated (device-aware); no microphone -->
   <!-- VOX SELECTOR: change the reactor core's voice; persisted in nn-voxname -->
-  <select class="cbtn" id="voxSel" title="Change the voice of the reactor core"><option value="">VOX: AUTO</option></select>
+  <!-- VOX PICKER: custom Stark-styled panel (native <select> options were
+       OS-drawn — cramped and near-invisible on the dark theme) -->
+  <button class="cbtn" id="voxBtn" type="button" title="Change the voice of the reactor core"
+          aria-haspopup="listbox" aria-expanded="false">VOX ▾</button>
   <button class="cbtn" id="vbtn" type="button" title="Toggle NEXUS voice feedback">◈ VOICE: ON</button>
   <button class="cbtn" id="tbtn" type="button">⌬ TERMINAL</button>
   <div id="clk"><b id="clkL">--:--:--</b> LOCAL<br><span id="clkU">--:--:--</span> UTC</div>
 </header>
 
-<!-- VOICE FEATURE REMOVED: voice-command HUD stripped -->
+<!-- VOX PICKER PANEL: readable, glass-styled voice list (replaces native dropdown) -->
+<div id="voxPanel" role="listbox" aria-label="Choose the reactor core's voice" hidden></div>
 
 <!-- ============ ORBITAL SPACE ============ -->
 <main id="space">
@@ -653,28 +677,46 @@ document.addEventListener('DOMContentLoaded', () => {
           || en.find(v => v.localService) || en[0] || vs[0];
     } catch(e){ return null; }
   }
-  /* VOX CHANGER: populate the selector with every English voice on this device */
-  const voxSel = $('#voxSel');
-  function fillVox(){
-    try {
-      const en = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
-      if (!en.length) return;
-      voxSel.innerHTML = '<option value="">VOX: AUTO (' + VOXP.label + ')</option>' +
-        en.map(v => '<option value="' + v.name.replace(/"/g, '&quot;') + '"' + (v.name === voxName ? ' selected' : '') + '>' +
-          v.name.replace(/^Microsoft |^Google | - .*| Online.*|\(Natural\)/g, '').slice(0, 22) + '</option>').join('');
-    } catch(e){}
+  /* ===== VOX PICKER: custom panel (native <option>s are OS-drawn — cramped
+     and near-invisible on the dark theme; this list is fully styled) ===== */
+  const voxBtn = $('#voxBtn'), voxPanel = $('#voxPanel');
+  const cleanName = n => n.replace(/^Microsoft |^Google | - .*| Online.*|\(Natural\)/g, '').trim();
+  function paintVoxBtn(){
+    voxBtn.textContent = 'VOX: ' + (voxName ? cleanName(voxName).slice(0, 12).toUpperCase() : 'AUTO') + ' ▾';
   }
+  function buildVoxPanel(){
+    let en = [];
+    try { en = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang)); } catch(e){}
+    voxPanel.innerHTML =
+      '<div class="vxh">REACTOR CORE VOICE — ' + (en.length || 'NO') + ' AVAILABLE</div>' +
+      '<div class="vx' + (!voxName ? ' active' : '') + '" data-v="" role="option">AUTO — ' + VOXP.label + ' PROFILE<span class="lang">DEFAULT</span></div>' +
+      en.map(v => '<div class="vx' + (v.name === voxName ? ' active' : '') + '" data-v="' + v.name.replace(/"/g, '&quot;') + '" role="option">' +
+        cleanName(v.name).slice(0, 30) + '<span class="lang">' + v.lang + (v.localService ? ' · LOCAL' : '') + '</span></div>').join('');
+  }
+  function openVox(){
+    buildVoxPanel();                                   /* voices load async — rebuild fresh each open */
+    const r = voxBtn.getBoundingClientRect();
+    voxPanel.style.top = (r.bottom + 6) + 'px';
+    voxPanel.style.left = Math.max(8, Math.min(innerWidth - 348, r.right - 340)) + 'px';
+    voxPanel.hidden = false; voxBtn.classList.add('open'); voxBtn.setAttribute('aria-expanded', 'true');
+    const act = voxPanel.querySelector('.vx.active'); if (act) act.scrollIntoView({ block: 'nearest' });
+  }
+  function closeVox(){ voxPanel.hidden = true; voxBtn.classList.remove('open'); voxBtn.setAttribute('aria-expanded', 'false'); }
   if ('speechSynthesis' in window){
-    voice = pickVoice(); fillVox();
-    speechSynthesis.onvoiceschanged = () => { voice = pickVoice(); fillVox(); };
-    voxSel.addEventListener('change', () => {
-      voxName = voxSel.value; localStorage.setItem('nn-voxname', voxName);
-      voice = pickVoice();
-      say('Voice calibration accepted. This is how I sound now, sir.');
+    voice = pickVoice(); paintVoxBtn();
+    speechSynthesis.onvoiceschanged = () => { voice = pickVoice(); };
+    voxBtn.addEventListener('click', () => { voxPanel.hidden ? openVox() : closeVox(); });
+    voxPanel.addEventListener('click', e => {
+      const row = e.target.closest('.vx'); if (!row) return;
+      voxName = row.dataset.v; localStorage.setItem('nn-voxname', voxName);
+      voice = pickVoice(); paintVoxBtn(); closeVox();
+      say('Voice calibration accepted. This is how I sound now, sir.');   /* instant audible preview */
       T('VOX PROFILE :: ' + (voxName || 'AUTO ' + VOXP.label), 'info');
     });
+    document.addEventListener('click', e => { if (!voxPanel.hidden && !voxPanel.contains(e.target) && e.target !== voxBtn) closeVox(); });
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') closeVox(); });
     T('VOICE CORE :: ' + VOXP.label + ' PROFILE ARMED', 'ok');
-  } else { voxSel.style.display = 'none'; T('WEB SPEECH API UNAVAILABLE — TEXT-ONLY MODE', 'warn'); }
+  } else { voxBtn.style.display = 'none'; T('WEB SPEECH API UNAVAILABLE — TEXT-ONLY MODE', 'warn'); }
   /* gesture-context warm-up — unlocks mobile audio; safe to call repeatedly */
   function warmVoice(){
     if (voiceWarmed || !('speechSynthesis' in window)) return;
