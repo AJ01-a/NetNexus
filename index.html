@@ -1163,6 +1163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       NN.galaxy = gal;
       document.documentElement.dataset.galaxy = gal;
+      try { localStorage.setItem('nn-galaxy', gal); } catch (e) {}   /* remember the tab for tool round-trips */
       $('.gi').classList.toggle('on', gal === 'it');
       $('.gg').classList.toggle('on', gal === 'gen');
     }, 380);
@@ -1363,9 +1364,20 @@ document.addEventListener('DOMContentLoaded', () => {
   boot.addEventListener('click', finishBoot);
 
   /* ================= IGNITION ================= */
+  /* restore the galaxy the user was last in, so returning from a tool lands
+     back in the same tab instead of always resetting to IT (persists in nn-galaxy) */
+  try {
+    const savedGal = localStorage.getItem('nn-galaxy');
+    if ((savedGal === 'it' || savedGal === 'gen') && savedGal !== NN.galaxy){
+      NN.galaxy = savedGal;
+      document.documentElement.dataset.galaxy = savedGal;
+      $('.gi').classList.toggle('on', savedGal === 'it');
+      $('.gg').classList.toggle('on', savedGal === 'gen');
+    }
+  } catch (e) {}
   applyLayout();
-  buildPlanets('it', false);
-  T('ORBITAL FIELD POPULATED :: IT GALAXY — 12 BODIES', 'ok');
+  buildPlanets(NN.galaxy, false);
+  T('ORBITAL FIELD POPULATED :: ' + (NN.galaxy === 'gen' ? 'GENERAL' : 'IT') + ' GALAXY — ' + (NN.galaxy === 'gen' ? genCount : itCount) + ' BODIES', 'ok');
   T('AWAITING COMMAND, SIR.', 'sys');   /* VOICE FEATURE REMOVED: no SR reference */
 });
 </script>
