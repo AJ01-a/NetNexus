@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" onerror="window.__twFail=1"></script>
 <script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+<link rel="modulepreload" href="./vendor/three.module.min.js">
 <script defer src="./vendor/gsap.min.js"></script>
 <style>
 /* ============ STARK-CORE VISUAL ENGINE v2.1 ============ */
@@ -544,7 +544,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('keydown', e => { if (e.ctrlKey && e.key === '`') { e.preventDefault(); termToggle(); } });
   T('STARK-CORE KERNEL v2.1 :: INTERFACE ATTACHED', 'ok');
   T('ERROR STREAM INTERCEPTOR :: ARMED', 'ok');
-  if (window.__twFail) T('TAILWIND CDN UNREACHABLE — LOCAL STYLE CORE ENGAGED', 'warn');
 
   /* ================= MODULE REGISTRY ================= */
   const toolRegistry = [
