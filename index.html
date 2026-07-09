@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#02050a">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><polygon points='32,5 55,18.5 55,45.5 32,59 9,45.5 9,18.5' fill='%23041018' stroke='%2300e5ff' stroke-width='2.5'/><circle cx='32' cy='32' r='15' fill='none' stroke='%2300e5ff' stroke-width='1.5' opacity='.55'/><circle cx='32' cy='32' r='8' fill='%2300e5ff'/><circle cx='47' cy='32' r='2.6' fill='%237df9ff'/></svg>">
-<title>NETNEXUS // STARK-CORE COMMAND DECK</title>
+<title>NETNEXUS // AJ-CORE COMMAND DECK</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
 <link rel="modulepreload" href="./vendor/three.module.min.js">
 <script defer src="./vendor/gsap.min.js"></script>
 <style>
-/* ============ STARK-CORE VISUAL ENGINE v2.1 ============ */
+/* ============ AJ-CORE VISUAL ENGINE v1.1.1.1 ============ */
 :root{
   --red:#ff4757; --grn:#2eff9e; --yel:#ffd166; --or:#ff9d33;
   --bg0:#02050a; --bg1:#07131d; --ink:#d9f4ff; --mut:#6b93ab;
@@ -52,7 +52,7 @@ body.gl-active #coreGlow{opacity:.55}
 /* ---------- command bar ---------- */
 #cmdbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:14px;
   padding:10px 18px;border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg,rgba(4,12,20,.92),rgba(4,12,20,.55));backdrop-filter:blur(10px);
+  background:transparent;   /* transparent command bar — the HUD floats over the starfield */
   transition:border-color .6s;}
 .brand{font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.24em;color:var(--acc);
   text-shadow:0 0 14px var(--acc-glow);white-space:nowrap;transition:color .6s}
@@ -244,7 +244,10 @@ select.cbtn option{background:#04121c;color:var(--ink)}
 body.mobile{overflow-x:hidden;overflow-y:auto;height:auto;min-height:100dvh;-webkit-text-size-adjust:100%}
 /* header collapses to a clean stacked bar — fixes the cut-off */
 body.mobile #cmdbar{position:sticky;flex-wrap:wrap;height:auto;gap:8px 9px;
-  padding:calc(7px + env(safe-area-inset-top)) 12px 8px;row-gap:8px}
+  padding:calc(7px + env(safe-area-inset-top)) 12px 8px;row-gap:8px;
+  /* mobile keeps a soft backdrop: tool cards scroll beneath the sticky bar */
+  background:linear-gradient(180deg,rgba(2,5,10,.88),rgba(2,5,10,.55));
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 body.mobile .brand{font-size:13px;letter-spacing:.16em}
 body.mobile .brand b,body.mobile .chip,body.mobile #clk{display:none}
 body.mobile #sform{order:10;flex:1 1 100%;max-width:none;margin:0}
@@ -327,6 +330,44 @@ body:not(.mobile) #space.dragging .planet{pointer-events:none}   /* no accidenta
 body.mobile .orbarrow,body.locked .orbarrow{display:none}   /* mobile grid scrolls natively */
 
 /* ============ NEXUS CORE GATEWAY ============ */
+/* ============ MODULE INDEX (one-panel catalog of every tool) ============
+   Opened from the ☰ INDEX button or the M key. Lists BOTH galaxies at once —
+   click any row to warp straight there (cross-galaxy warps auto-switch). */
+#mindex{position:fixed;inset:0;z-index:95;display:grid;place-items:center}
+#mindex[hidden]{display:none}
+#mixBack{position:absolute;inset:0;background:rgba(1,4,8,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#mixPanel{position:relative;width:min(880px,94vw);max-height:82vh;display:flex;flex-direction:column;
+  background:linear-gradient(160deg,rgba(8,18,28,.97),rgba(4,10,17,.95));border:1px solid var(--line);
+  box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 40px var(--accd),inset 0 1px 0 rgba(255,255,255,.06)}
+#mixHead{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.mixTitle{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:.3em;color:var(--acc);
+  text-shadow:0 0 12px var(--acc-glow);white-space:nowrap}
+#mixQ{flex:1;background:rgba(2,8,14,.85);border:1px solid var(--line);color:var(--ink);
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;padding:8px 12px;outline:none;min-width:0}
+#mixQ:focus{border-color:var(--acc);box-shadow:0 0 0 1px var(--accd)}
+.mixX{cursor:pointer;color:var(--mut);font-size:15px;padding:2px 6px;transition:.2s}
+.mixX:hover{color:var(--red)}
+#mixBody{display:grid;grid-template-columns:1fr 1fr;gap:0;overflow-y:auto;padding:6px 4px 12px}
+.mixCol h3{font-family:var(--disp);font-size:9.5px;letter-spacing:.34em;padding:12px 14px 7px;position:sticky;top:0;
+  background:linear-gradient(180deg,rgba(6,14,22,.98),rgba(6,14,22,.86));z-index:1}
+.mixCol.it h3{color:#19f0ff;text-shadow:0 0 10px rgba(25,240,255,.4)}
+.mixCol.gen h3{color:#ff9d33;text-shadow:0 0 10px rgba(255,157,51,.4)}
+.mixRow{display:flex;align-items:center;gap:10px;padding:7px 14px;cursor:pointer;border-left:2px solid transparent;transition:.16s}
+.mixRow .mg{width:20px;text-align:center;font-size:14px;flex:0 0 auto}
+.mixRow .mc{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--mut);width:52px;flex:0 0 auto}
+.mixRow .mn{font-family:var(--ui);font-weight:600;font-size:13.5px;color:var(--ink);letter-spacing:.03em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mixCol.it .mixRow .mg{color:#19f0ff}
+.mixCol.gen .mixRow .mg{color:#ff9d33}
+.mixCol.it .mixRow:hover,.mixCol.it .mixRow:focus-visible{background:rgba(25,240,255,.08);border-left-color:#19f0ff;outline:none}
+.mixCol.gen .mixRow:hover,.mixCol.gen .mixRow:focus-visible{background:rgba(255,157,51,.08);border-left-color:#ff9d33;outline:none}
+.mixRow.hide{display:none}
+.mixEmpty{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.14em;padding:10px 14px}
+body.mobile #mixPanel{width:100vw;height:100dvh;max-height:none;border:none}
+body.mobile #mixBody{grid-template-columns:1fr}
+body.mobile .mixRow{padding:11px 14px}
+body.locked #mindex{display:none}
+
 /* ============ EXTERNAL UPLINKS (sister sites docked to the core) ============
    Two persistent shortcuts flanking the reactor — present in BOTH galaxies.
    Frame retints with the active galaxy accent; each icon keeps its brand color. */
@@ -439,8 +480,7 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
 }
 .hidden{display:none!important}
 /* ---------- glassmorphism / depth polish (safe: no transform props) ---------- */
-#cmdbar{backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 10px 34px rgba(0,0,0,.42)}
+/* cmdbar deliberately excluded from the glass treatment — it is fully transparent */
 .planet{backdrop-filter:blur(11px) saturate(1.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 8px 22px rgba(0,0,0,.3)}
 #holo{backdrop-filter:blur(18px) saturate(1.35);-webkit-backdrop-filter:blur(18px) saturate(1.35);
   box-shadow:0 24px 66px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08)}
@@ -476,11 +516,11 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
 
 <!-- ============ COMMAND BAR ============ -->
 <header id="cmdbar">
-  <div class="brand"><span class="dia">◈</span> NETNEXUS <b>// STARK-CORE OS</b></div>
-  <span class="chip">v2.1</span>
+  <div class="brand"><span class="dia">◈</span> NETNEXUS <b>// AJ-CORE OS</b></div>
+  <span class="chip">v1.1.1.1</span>
   <form id="sform" autocomplete="off">
     <span class="qicon">⌖</span>
-    <input id="q" type="text" placeholder="QUERY MAIN DATA BANKS — MODULES, TAGS, PROTOCOLS…" spellcheck="false">
+    <input id="q" type="text" placeholder="QUERY MODULES, TAGS…" spellcheck="false">
     <span class="qkey">ENTER</span>
     <div id="sugg"></div>
     <div id="qwarn">▲ QUERY UNRESOLVED IN MAIN DATA BANKS ▲</div>
@@ -494,6 +534,8 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
   <!-- VOX SELECTOR: change the reactor core's voice; persisted in nn-voxname -->
   <!-- VOX PICKER: custom Stark-styled panel (native <select> options were
        OS-drawn — cramped and near-invisible on the dark theme) -->
+  <button class="cbtn" id="idxBtn" type="button" title="Module index — every tool in one panel [M]"
+          aria-haspopup="dialog">☰ INDEX</button>
   <button class="cbtn" id="voxBtn" type="button" title="Change the voice of the reactor core"
           aria-haspopup="listbox" aria-expanded="false">VOX ▾</button>
   <button class="cbtn" id="vbtn" type="button" title="Toggle NEXUS voice feedback">◈ VOICE: ON</button>
@@ -503,6 +545,22 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
 
 <!-- VOX PICKER PANEL: readable, glass-styled voice list (replaces native dropdown) -->
 <div id="voxPanel" role="listbox" aria-label="Choose the reactor core's voice" hidden></div>
+
+<!-- MODULE INDEX: full catalog of both galaxies; click a row to warp -->
+<div id="mindex" role="dialog" aria-modal="true" aria-label="Module index" hidden>
+  <div id="mixBack"></div>
+  <div id="mixPanel">
+    <div id="mixHead">
+      <span class="mixTitle">◈ MODULE INDEX</span>
+      <input id="mixQ" type="text" placeholder="FILTER — NAME, TAG, CODE…" spellcheck="false" aria-label="Filter modules">
+      <span class="mixX" id="mixX" role="button" tabindex="0" aria-label="Close index">✕</span>
+    </div>
+    <div id="mixBody">
+      <div class="mixCol it"><h3>IT GALAXY</h3><div class="mixList" id="mixIT"></div></div>
+      <div class="mixCol gen"><h3>GENERAL GALAXY</h3><div class="mixList" id="mixGEN"></div></div>
+    </div>
+  </div>
+</div>
 
 <!-- ============ ORBITAL SPACE ============ -->
 <main id="space">
@@ -558,7 +616,7 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
 
 <!-- ============ DIAGNOSTIC TERMINAL ============ -->
 <aside id="term">
-  <div id="termHead"><span class="tdot"></span> STARK-CORE DIAGNOSTIC TERMINAL — COMMAND DECK <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div>
+  <div id="termHead"><span class="tdot"></span> AJ-CORE DIAGNOSTIC TERMINAL — COMMAND DECK <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div>
   <div id="termBody"></div>
 </aside>
 
@@ -600,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#tbtn').addEventListener('click', () => termToggle());
   $('#termX').addEventListener('click', () => termToggle(false));
   window.addEventListener('keydown', e => { if (e.ctrlKey && e.key === '`') { e.preventDefault(); termToggle(); } });
-  T('STARK-CORE KERNEL v2.1 :: INTERFACE ATTACHED', 'ok');
+  T('AJ-CORE KERNEL v1.1.1.1 :: INTERFACE ATTACHED', 'ok');
   T('ERROR STREAM INTERCEPTOR :: ARMED', 'ok');
 
   /* ================= MODULE REGISTRY ================= */
@@ -701,7 +759,16 @@ document.addEventListener('DOMContentLoaded', () => {
       m:[['LANES','SET',3],['PERSIST','%',100],['DRAG OPS','RDY',2]], line:'Deploying the mission board, sir.' },
     { id:'tool-stopwatch', title:'Chrono Deck', tags:['stopwatch','timer','countdown','laps','time','alarm','clock','pomodoro'], path:'./tool-stopwatch/index.html',
       galaxy:'gen', code:'GEN-27', glyph:'⧗', desc:'Precision stopwatch with lap deltas plus a countdown timer with audible alarm — the space bar drives it.',
-      m:[['RESOLUTION','cs',1],['LAP BANK','CAP',99],['ALARM','CH',3]], line:'Chronometry deck engaged, sir.' }
+      m:[['RESOLUTION','cs',1],['LAP BANK','CAP',99],['ALARM','CH',3]], line:'Chronometry deck engaged, sir.' },
+    { id:'tool-worldclock', title:'World Clock Atlas', tags:['time','timezone','world','clock','utc','convert','meeting','cities'], path:'./tool-worldclock/index.html',
+      galaxy:'gen', code:'GEN-28', glyph:'⊕', desc:'Live clock grid for the cities you track plus a timezone converter — see any moment everywhere at once.',
+      m:[['ZONE DB','TZ',400],['DRIFT','ms',0],['GRID','CAP',12]], line:'Temporal atlas projected. Every timezone at your fingertips, sir.' },
+    { id:'tool-notes', title:'Data Pad', tags:['notes','notepad','text','write','memo','autosave','scratch','draft'], path:'./tool-notes/index.html',
+      galaxy:'gen', code:'GEN-29', glyph:'✎', desc:'Multi-note scratchpad with instant autosave, search, word counts and one-click export — nothing ever leaves the device.',
+      m:[['AUTOSAVE','ms',400],['VAULT','LOC',100],['EXPORT','fmt',2]], line:'Data pad unlocked. Your thoughts are safe with me, sir.' },
+    { id:'tool-billsplit', title:'Split Deck', tags:['bill','split','tip','share','settle','dinner','money','group'], path:'./tool-billsplit/index.html',
+      galaxy:'gen', code:'GEN-30', glyph:'⛁', desc:'Split any bill — even splits with tip and tax, itemized shares per person, and a who-pays-who settlement plan.',
+      m:[['ROUNDING','¢',1],['PARTY','CAP',24],['SETTLE','tx',0]], line:'Ledger arbitration online. No friendship need end over a dinner bill, sir.' }
   ];
   window.toolRegistry = toolRegistry;
   T('MODULE REGISTRY :: ' + toolRegistry.length + ' MODULES INDEXED', 'ok');
@@ -871,7 +938,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const itCount  = toolRegistry.filter(t => t.galaxy === 'it').length;
   const genCount = toolRegistry.filter(t => t.galaxy === 'gen').length;
   $('#tick').innerHTML = Array(2).fill(
-    '<b>◈ NETNEXUS v2.1</b> — STARK-CORE DIGITAL ENVIRONMENT &nbsp;·&nbsp; ' + toolRegistry.length + ' MODULES REGISTERED &nbsp;·&nbsp; ' +
+    '<b>◈ NETNEXUS v1.1.1.1</b> — AJ-CORE DIGITAL ENVIRONMENT &nbsp;·&nbsp; ' + toolRegistry.length + ' MODULES REGISTERED &nbsp;·&nbsp; ' +
     '<b>IT GALAXY</b> ' + itCount + ' BODIES &nbsp;·&nbsp; <b>GENERAL GALAXY</b> ' + genCount + ' BODIES &nbsp;·&nbsp; ORBITAL MECHANICS: TRUE-3D PERSPECTIVE &nbsp;·&nbsp; ' +
     'NEXUS NEURAL LATTICE: SYNCED &nbsp;·&nbsp; EMITTER ARRAY: NOMINAL &nbsp;·&nbsp; ERROR INTERCEPTOR: ARMED [CTRL+`] &nbsp;·&nbsp; '
   ).join('');
@@ -1237,7 +1304,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tool.galaxy !== NN.galaxy){
       if (!opts.fast) say('Rerouting across galaxies, sir.');
       switchGalaxy(tool.galaxy, true);
-      setTimeout(() => warpTo(tool, opts), opts.fast ? 1050 : 1750);
+      /* switchGalaxy holds NN.mode='warp' until its 640ms+840ms timer chain
+         finishes — under load those timers drift, so a fixed re-entry delay
+         races the guard above and the warp can silently die (bit the module
+         index's fast cross-galaxy jumps). Poll until the lock clears. */
+      const reenter = () => { if (NN.mode === 'warp') { setTimeout(reenter, 150); return; } warpTo(tool, opts); };
+      setTimeout(reenter, opts.fast ? 1500 : 1750);
       return;
     }
     NN.mode = 'warp';
@@ -1263,6 +1335,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   window.NN_warpTo = warpTo;
+
+  /* ================= MODULE INDEX (catalog overlay) ================= */
+  const mindex = $('#mindex'), mixQ = $('#mixQ');
+  (function buildIndex(){
+    const frag = { it: $('#mixIT'), gen: $('#mixGEN') };
+    toolRegistry.forEach(tool => {
+      const r = document.createElement('div');
+      r.className = 'mixRow'; r.tabIndex = 0; r.setAttribute('role', 'button');
+      r.dataset.k = (tool.title + ' ' + tool.code + ' ' + tool.tags.join(' ')).toLowerCase();
+      r.innerHTML = '<span class="mg">' + tool.glyph + '</span><span class="mc">' + tool.code + '</span>' +
+                    '<span class="mn">' + tool.title + '</span>';
+      const goTool = () => { idxClose(); warpTo(tool, { fast: true }); };
+      r.addEventListener('click', goTool);
+      r.addEventListener('keydown', e => { if (e.key === 'Enter') goTool(); });
+      frag[tool.galaxy].appendChild(r);
+    });
+  })();
+  function idxOpen(){
+    mindex.hidden = false; mixQ.value = '';
+    $$('.mixRow').forEach(r => r.classList.remove('hide'));
+    if (!NN.mobile) mixQ.focus();
+    T('MODULE INDEX :: OPEN — ' + toolRegistry.length + ' MODULES', 'sys');
+  }
+  function idxClose(){ mindex.hidden = true; }
+  $('#idxBtn').addEventListener('click', idxOpen);
+  $('#mixX').addEventListener('click', idxClose);
+  $('#mixX').addEventListener('keydown', e => { if (e.key === 'Enter') idxClose(); });
+  $('#mixBack').addEventListener('click', idxClose);
+  mixQ.addEventListener('input', () => {
+    const v = mixQ.value.trim().toLowerCase();
+    $$('.mixRow').forEach(r => r.classList.toggle('hide', !!v && !r.dataset.k.includes(v)));
+  });
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !mindex.hidden){ e.preventDefault(); idxClose(); return; }
+    if (document.body.classList.contains('locked')) return;
+    const tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (/INPUT|SELECT|TEXTAREA/.test(tag)) return;
+    if ((e.key === 'm' || e.key === 'M') && !e.ctrlKey && !e.metaKey && !e.altKey){
+      e.preventDefault(); mindex.hidden ? idxOpen() : idxClose();
+    }
+  });
 
   /* ================= SEARCH ENGINE ================= */
   const q = $('#q'), sform = $('#sform'), sugg = $('#sugg'), qwarn = $('#qwarn');
@@ -1374,8 +1487,8 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ================= BOOT SEQUENCE ================= */
   const boot = $('#boot'), bootLines = $('#bootLines'), bootBarI = $('#bootBar i');
   const BL = [
-    ['STARK INDUSTRIES UNIFIED OS', 'dim'],
-    ['NETNEXUS COMMAND DECK — BUILD v2.1', 'dim'],
+    ['AJ SYSTEMS UNIFIED OS', 'dim'],
+    ['NETNEXUS COMMAND DECK — BUILD v1.1.1.1', 'dim'],
     ['HOLOGRAPHIC EMITTER ARRAY........... <span class="ok">ONLINE</span>'],
     ['PARALLAX LAB ENVIRONMENT............ <span class="ok">3 LAYERS</span>'],
     ['ORBITAL MECHANICS ENGINE............ <span class="ok">CALIBRATED</span>'],

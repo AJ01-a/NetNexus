@@ -164,9 +164,9 @@ pre.code .cm{color:#5f8ba3}
   </section>
 </main>
 
-<footer id="foot"><span class="dot"></span><span>OPS-05 ACTIVE</span><span>TEMPLATES RENDER LOCALLY — NOTHING EXECUTES FROM THIS PAGE</span><span style="margin-left:auto">NETNEXUS v2.1</span></footer>
+<footer id="foot"><span class="dot"></span><span>OPS-05 ACTIVE</span><span>TEMPLATES RENDER LOCALLY — NOTHING EXECUTES FROM THIS PAGE</span><span style="margin-left:auto">NETNEXUS v1.1.1.1</span></footer>
 <button id="termBtn">⌬ SYS TERMINAL</button>
-<aside id="term"><div id="termHead"><span class="tdot"></span> STARK-CORE DIAGNOSTIC TERMINAL — OPS-05 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
+<aside id="term"><div id="termHead"><span class="tdot"></span> AJ-CORE DIAGNOSTIC TERMINAL — OPS-05 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
 
 <script>
 'use strict';
@@ -184,7 +184,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('#termBtn').addEventListener('click',()=>term.classList.toggle('open'));
   $('#termX').addEventListener('click',()=>term.classList.remove('open'));
   window.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='`'){e.preventDefault();term.classList.toggle('open');}});
-  if(window.__twFail)T('TAILWIND CDN UNREACHABLE — LOCAL STYLE CORE ENGAGED','warn');
   let _jt=null;function jsay(t){T('NEXUS :: '+t,'sys');const el=$('#jtext');clearInterval(_jt);let i=0;_jt=setInterval(()=>{el.textContent=t.slice(0,++i)+(i<t.length?'▊':'');if(i>=t.length)clearInterval(_jt);},14);}
   setInterval(()=>{const d=new Date();$('#clk').innerHTML='<b>'+d.toTimeString().slice(0,8)+'</b> L · '+d.toISOString().slice(11,19)+' U';},1000);
   function copyTxt(btn,txt){const done=()=>{const o=btn.textContent;btn.textContent='COPIED ✓';btn.classList.add('ok');setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok');},1400);T('CLIPBOARD :: PAYLOAD TRANSFERRED','ok');};

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#02050a">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><polygon points='32,5 55,18.5 55,45.5 32,59 9,45.5 9,18.5' fill='%23041018' stroke='%2300e5ff' stroke-width='2.5'/><circle cx='32' cy='32' r='15' fill='none' stroke='%2300e5ff' stroke-width='1.5' opacity='.55'/><circle cx='32' cy='32' r='8' fill='%2300e5ff'/><circle cx='47' cy='32' r='2.6' fill='%237df9ff'/></svg>">
-<title>NETNEXUS // GEN-26 MISSION BOARD</title>
+<title>NETNEXUS // GEN-30 SPLIT DECK</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -44,43 +44,29 @@ input,select,textarea{width:100%;background:rgba(2,8,14,.85);border:1px solid va
 input:focus,select:focus,textarea:focus{border-color:var(--acc);box-shadow:0 0 0 1px var(--accd),0 0 18px var(--accd)}
 textarea{resize:vertical;line-height:1.5}
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .inl{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--mut);margin-top:10px}
 .cb{width:auto;accent-color:var(--acc)}
-.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
-@media(max-width:840px){.lanes{grid-template-columns:1fr}}
-.lane{border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(10px);min-height:180px;padding:12px}
-.lane.dragover{border-color:var(--acc);box-shadow:0 0 22px var(--accd)}
-.lane h3{font-family:var(--disp);font-size:11px;letter-spacing:.28em;color:var(--acc);text-shadow:0 0 10px var(--acc-glow);display:flex;gap:8px;align-items:center}
-.lane h3 .n{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--mut);border:1px solid var(--line);padding:1px 7px}
-.card{border:1px solid rgba(107,147,171,.3);background:rgba(2,8,14,.6);padding:9px 10px;margin-top:9px;cursor:grab}
-.card:active{cursor:grabbing}
-.card .tx{font-size:14px;line-height:1.45;word-break:break-word}
-.card .meta{display:flex;gap:6px;align-items:center;margin-top:7px}
-.card .ts{font-family:var(--mono);font-size:9px;color:var(--mut);letter-spacing:.08em;margin-right:auto}
-.card button{background:none;border:1px solid var(--line);color:var(--acc2);font-family:var(--mono);font-size:11px;width:26px;height:22px;cursor:pointer;padding:0}
-.card button:hover{border-color:var(--acc);color:var(--acc)}
-.card button.del:hover{border-color:var(--red);color:var(--red)}
-.card.done .tx{color:var(--mut);text-decoration:line-through}
-.addrow{display:flex;gap:8px;margin-bottom:14px}
-.addrow input{flex:1}
-
 .roll{width:100%;margin-top:16px;font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:.24em;color:#02131c;background:var(--acc);border:none;padding:13px;cursor:pointer;transition:.2s;box-shadow:0 0 18px var(--acc-glow)}
 .roll:hover{filter:brightness(1.1);box-shadow:0 0 28px var(--acc-glow)}
 .roll:active{transform:translateY(1px)}
 .rmain{font-family:var(--disp);font-size:44px;font-weight:900;color:var(--acc);text-shadow:0 0 22px var(--acc-glow);line-height:1.05;word-break:break-word}
 .rsub{font-family:var(--mono);font-size:11.5px;color:var(--mut);letter-spacing:.08em;margin:8px 0 14px}
-.dice{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
-.die{min-width:42px;height:42px;padding:0 8px;display:flex;align-items:center;justify-content:center;border:1px solid var(--acc);color:var(--acc2);font-family:var(--disp);font-size:18px;font-weight:700;background:var(--accd)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .pill{font-family:var(--mono);font-size:12px;color:var(--acc2);border:1px solid var(--line);padding:5px 10px;background:rgba(2,8,14,.5)}
 .pill b{color:var(--acc);font-weight:400}
 .list{font-family:var(--mono);font-size:13px;line-height:1.9;margin-top:6px}
 .list .i{color:var(--mut);margin-right:8px}
-.teamgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:8px}
-.team{border:1px solid var(--line);padding:10px}
-.team h4{font-family:var(--disp);font-size:11px;letter-spacing:.16em;color:var(--acc);margin-bottom:6px}
-.team div{font-family:var(--mono);font-size:12px;color:var(--acc2);padding:2px 0}
-.hist{font-family:var(--mono);font-size:10.5px;color:var(--mut);letter-spacing:.05em;margin-top:14px;line-height:1.7;max-height:110px;overflow:auto;border-top:1px solid rgba(107,147,171,.12);padding-top:8px}
+.tiprow{display:flex;gap:6px;margin-top:6px}
+.tipb{flex:1;background:none;border:1px solid var(--line);color:var(--mut);font-family:var(--mono);font-size:11px;padding:7px 0;cursor:pointer;transition:.2s}
+.tipb.on{background:var(--accd);border-color:var(--acc);color:var(--acc)}
+.prow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;font-family:var(--mono);font-size:13px;padding:7px 4px;border-bottom:1px solid rgba(107,147,171,.12)}
+.prow .n{color:var(--acc2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow .v{color:var(--ink)}
+.prow .sub{grid-column:1/-1;font-size:10.5px;color:var(--mut);padding-left:8px}
+.settle{font-family:var(--mono);font-size:13.5px;line-height:2;margin-top:4px}
+.settle b{color:var(--acc)}
+.settle .arr{color:var(--mut);padding:0 6px}
 @keyframes blink{50%{opacity:.25}}
 #foot{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;gap:22px;align-items:center;font-family:var(--mono);font-size:10px;color:rgba(107,147,171,.7);letter-spacing:.2em;padding:6px 18px;border-top:1px solid rgba(107,147,171,.15);background:rgba(3,9,14,.8);backdrop-filter:blur(6px)}
 #foot .dot{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
@@ -130,8 +116,8 @@ textarea{resize:vertical;line-height:1.5}
 <canvas id="bgfx"></canvas>
 <div class="scan"></div>
 <header id="topbar">
-  <div class="brand">◈ NETNEXUS <b>// MISSION BOARD</b></div>
-  <span class="chip">GEN-26</span>
+  <div class="brand">◈ NETNEXUS <b>// SPLIT DECK</b></div>
+  <span class="chip">GEN-30</span>
   <span class="chip ghost">GENERAL GALAXY</span>
   <div class="spacer"></div>
   <div id="clk"></div>
@@ -140,17 +126,76 @@ textarea{resize:vertical;line-height:1.5}
 <div id="jstrip"><span class="jj">◤ NEXUS // </span><span id="jtext"></span></div>
 
 <main id="wrap">
-  <section class="panel" style="margin-bottom:16px">
-    <div class="ptitle">MISSION BOARD</div>
-    <div class="psub">queue · active · done — drag cards or use ◂ ▸ · stored locally, never uploaded</div>
-    <div class="addrow"><input id="newtask" placeholder="new mission objective…" maxlength="140"><button class="roll" id="add" style="width:auto;margin:0;padding:11px 22px">DEPLOY</button></div>
-    <div class="lanes" id="lanes"></div>
-  </section>
+  <div class="mode-tabs" id="modes">
+    <button class="mtab on" data-m="equal" type="button">EQUAL SPLIT</button>
+    <button class="mtab" data-m="items" type="button">ITEMIZED</button>
+    <button class="mtab" data-m="settle" type="button">SETTLE UP</button>
+  </div>
+  <div class="cols">
+    <section class="panel">
+      <div class="ptitle">INPUT</div>
+      <div class="psub" id="pdesc">everyone pays the same</div>
+
+      <div class="fm" data-fm="equal">
+        <div class="duo">
+          <div><label class="f">BILL SUBTOTAL ($)</label><input type="number" id="e_bill" value="86.40" min="0" step="0.01"></div>
+          <div><label class="f">TAX ($)</label><input type="number" id="e_tax" value="0" min="0" step="0.01"></div>
+        </div>
+        <label class="f">TIP</label>
+        <div class="tiprow" id="tips">
+          <button class="tipb" data-t="0" type="button">0%</button>
+          <button class="tipb" data-t="10" type="button">10%</button>
+          <button class="tipb on" data-t="15" type="button">15%</button>
+          <button class="tipb" data-t="18" type="button">18%</button>
+          <button class="tipb" data-t="20" type="button">20%</button>
+        </div>
+        <div class="duo" style="margin-top:10px">
+          <div><label class="f">CUSTOM TIP %</label><input type="number" id="e_tipc" placeholder="—" min="0" step="0.5"></div>
+          <div><label class="f">PEOPLE</label><input type="number" id="e_ppl" value="4" min="1" max="99"></div>
+        </div>
+        <label class="inl"><input type="checkbox" id="e_round" class="cb" checked> round each share UP to the cent</label>
+      </div>
+
+      <div class="fm" data-fm="items" hidden>
+        <label class="f">PEOPLE — ONE PER LINE</label>
+        <textarea id="i_ppl" rows="4" spellcheck="false">Alice
+Ben
+Cody</textarea>
+        <label class="f">ITEMS — "NAME  PRICE  @WHO,WHO" (no @ = everyone)</label>
+        <textarea id="i_items" rows="7" spellcheck="false">Nachos 14.50
+Steak 32.00 @Alice
+Pasta 21.00 @Ben
+Salmon 26.00 @Cody
+Wine 24.00 @Alice,Ben</textarea>
+        <div class="duo">
+          <div><label class="f">TIP %</label><input type="number" id="i_tip" value="15" min="0" step="0.5"></div>
+          <div><label class="f">TAX ($)</label><input type="number" id="i_tax" value="0" min="0" step="0.01"></div>
+        </div>
+      </div>
+
+      <div class="fm" data-fm="settle" hidden>
+        <label class="f">WHO PAID WHAT — "NAME  AMOUNT" PER LINE</label>
+        <textarea id="s_paid" rows="7" spellcheck="false">Alice 120
+Ben 45
+Cody 0
+Dana 35</textarea>
+        <div class="rsub" style="margin-top:8px">Everyone owes an equal share of the total. I’ll compute the fewest transfers to even it out.</div>
+      </div>
+
+      <button class="roll" id="go" type="button">÷ CALCULATE</button>
+    </section>
+
+    <section class="panel">
+      <div class="ptitle">VERDICT</div>
+      <div class="psub">to the cent — no one overpays</div>
+      <div id="out"><div class="rsub">Press calculate.</div></div>
+    </section>
+  </div>
 </main>
 
-<footer id="foot"><span class="dot"></span><span>GEN-26 ACTIVE</span><span>QUEUE · ACTIVE · DONE — DRAG OR STEP — STORED LOCALLY, NEVER UPLOADED</span><span style="margin-left:auto">NETNEXUS v1.1.1.1</span></footer>
+<footer id="foot"><span class="dot"></span><span>GEN-30 ACTIVE</span><span>EQUAL · ITEMIZED · MIN-TRANSFER SETTLEMENTS — ALL MATH STAYS ON DEVICE</span><span style="margin-left:auto">NETNEXUS v1.1.1.1</span></footer>
 <button id="termBtn">⌬ SYS TERMINAL</button>
-<aside id="term"><div id="termHead"><span class="tdot"></span> AJ-CORE DIAGNOSTIC TERMINAL — GEN-26 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
+<aside id="term"><div id="termHead"><span class="tdot"></span> AJ-CORE DIAGNOSTIC TERMINAL — GEN-30 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
 
 <script>
 'use strict';
@@ -177,52 +222,111 @@ document.addEventListener('DOMContentLoaded',()=>{
   const pts=Array.from({length:30},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14}));
   let sweep=-200;
   (function bg(){const dt=1/60;tt+=dt;cg.clearRect(0,0,W,H);cg.strokeStyle='rgba('+AR+',.045)';cg.lineWidth=1;const sp=92,off=(tt*5)%sp;cg.beginPath();for(let x=off;x<W;x+=sp){cg.moveTo(x,0);cg.lineTo(x,H)}for(let y=off*.6;y<H;y+=sp){cg.moveTo(0,y);cg.lineTo(W,y)}cg.stroke();cg.fillStyle='rgba('+AR+',.5)';for(const p of pts){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;cg.fillRect(p.x,p.y,1.6,1.6);}sweep+=2.2;if(sweep>H+200)sweep=-200;const gr=cg.createLinearGradient(0,sweep-60,0,sweep);gr.addColorStop(0,'rgba('+AR+',0)');gr.addColorStop(1,'rgba('+AR+',.05)');cg.fillStyle=gr;cg.fillRect(0,sweep-60,W,60);if(!document.hidden)requestAnimationFrame(bg);else setTimeout(bg,400);})();
-  T('MODULE KERNEL ONLINE :: GEN-26 MISSION BOARD','ok');
+  T('MODULE KERNEL ONLINE :: GEN-30 SPLIT DECK','ok');
 
-  
-  /* ===== MISSION BOARD CORE ===== */
-  const LKEY='nn-kanban',LANES=[['queue','MISSION QUEUE'],['active','IN PROGRESS'],['done','COMPLETE']];
-  let cards=[];try{cards=JSON.parse(localStorage.getItem(LKEY)||'[]');}catch(e){cards=[];}
-  const save=()=>{try{localStorage.setItem(LKEY,JSON.stringify(cards));}catch(e){T('STORAGE FAULT :: '+e.message,'warn');}};
-  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const lanes=$('#lanes');
-  function paint(){
-    lanes.innerHTML=LANES.map(([id,label])=>{
-      const set=cards.filter(c=>c.lane===id);
-      return '<div class="lane" data-lane="'+id+'"><h3>'+label+'<span class="n">'+set.length+'</span></h3>'+
-        set.map(c=>'<div class="card'+(id==='done'?' done':'')+'" draggable="true" data-id="'+c.id+'">'+
-          '<div class="tx">'+esc(c.tx)+'</div><div class="meta"><span class="ts">'+c.ts+'</span>'+
-          '<button type="button" data-mv="-1" title="move left">◂</button><button type="button" data-mv="1" title="move right">▸</button>'+
-          '<button type="button" class="del" data-del="1" title="delete">✕</button></div></div>').join('')+
-        '</div>';}).join('');
+  /* ===== SPLIT CORE ===== */
+  const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const $out=$('#out');
+  const fmt=n=>'$'+n.toFixed(2);
+  const cents=n=>Math.round(n*100);
+  let mode='equal',tipPct=15;
+
+  $('#tips').addEventListener('click',e=>{
+    const b=e.target.closest('.tipb');if(!b)return;
+    tipPct=+b.dataset.t;$('#e_tipc').value='';
+    $$('.tipb').forEach(x=>x.classList.toggle('on',x===b));
+  });
+  $('#e_tipc').addEventListener('input',function(){
+    if(this.value!==''){tipPct=Math.max(0,+this.value||0);$$('.tipb').forEach(x=>x.classList.remove('on'));}
+  });
+
+  function calcEqual(){
+    const bill=Math.max(0,+$('#e_bill').value||0),tax=Math.max(0,+$('#e_tax').value||0);
+    const ppl=Math.max(1,Math.min(99,Math.round(+$('#e_ppl').value||1)));
+    const tip=(bill)*tipPct/100,total=bill+tax+tip;
+    let share=total/ppl;
+    if($('#e_round').checked)share=Math.ceil(cents(share))/100;
+    const collected=share*ppl,over=collected-total;
+    $out.innerHTML='<div class="rmain">'+fmt(share)+'</div><div class="rsub">each · '+ppl+' people</div>'+
+      '<div class="chips">'+
+      '<span class="pill">subtotal <b>'+fmt(bill)+'</b></span>'+
+      '<span class="pill">tip '+tipPct+'% <b>'+fmt(tip)+'</b></span>'+
+      (tax?'<span class="pill">tax <b>'+fmt(tax)+'</b></span>':'')+
+      '<span class="pill">grand total <b>'+fmt(total)+'</b></span>'+
+      (over>0.001?'<span class="pill">rounding surplus <b>'+fmt(over)+'</b></span>':'')+
+      '</div>';
+    T('EQUAL SPLIT :: '+fmt(share)+' × '+ppl,'ok');
   }
-  $('#add').addEventListener('click',add);
-  $('#newtask').addEventListener('keydown',e=>{if(e.key==='Enter')add();});
-  function add(){
-    const v=$('#newtask').value.trim();if(!v)return;
-    cards.unshift({id:Date.now()+''+Math.floor(Math.random()*999),tx:v,lane:'queue',ts:new Date().toLocaleDateString(undefined,{month:'short',day:'2-digit'})});
-    $('#newtask').value='';save();paint();T('MISSION DEPLOYED :: "'+v.slice(0,40)+'"','ok');
+
+  function calcItems(){
+    const people=$('#i_ppl').value.split('\n').map(s=>s.trim()).filter(Boolean);
+    if(!people.length){$out.innerHTML='<div class="rsub" style="color:var(--yel)">Add at least one person.</div>';return;}
+    const lower={};people.forEach(p=>lower[p.toLowerCase()]=p);
+    const shares={};people.forEach(p=>shares[p]=0);
+    const bad=[];let subtotal=0;
+    $('#i_items').value.split('\n').map(s=>s.trim()).filter(Boolean).forEach(line=>{
+      const m=line.match(/^(.*?)\s+([\d.]+)\s*(?:@(.+))?$/);
+      if(!m){bad.push(line);return;}
+      const price=+m[2];if(!(price>=0)){bad.push(line);return;}
+      let who=people;
+      if(m[3]){
+        who=m[3].split(',').map(s=>lower[s.trim().toLowerCase()]).filter(Boolean);
+        if(!who.length){bad.push(line+'  (unknown name)');return;}
+      }
+      subtotal+=price;
+      who.forEach(p=>shares[p]+=price/who.length);
+    });
+    if(!subtotal){$out.innerHTML='<div class="rsub" style="color:var(--yel)">No valid items yet. Format: <br>Steak 32.00 @Alice</div>';return;}
+    const tip=Math.max(0,+$('#i_tip').value||0)/100,tax=Math.max(0,+$('#i_tax').value||0);
+    let grand=0;
+    const rows=people.map(p=>{
+      const base=shares[p],extra=base/subtotal*(subtotal*tip+tax),tot=base+extra;grand+=tot;
+      return '<div class="prow"><span class="n">'+esc(p)+'</span><span class="v">'+fmt(tot)+'</span>'+
+             '<span class="sub">items '+fmt(base)+' · tip+tax '+fmt(extra)+'</span></div>';
+    }).join('');
+    $out.innerHTML='<div class="rsub">'+people.length+' people · items '+fmt(subtotal)+' · grand total '+fmt(grand)+'</div>'+rows+
+      (bad.length?'<div class="rsub" style="color:var(--yel);margin-top:10px">skipped: '+bad.map(esc).join(' · ')+'</div>':'');
+    T('ITEMIZED :: '+people.length+'p '+fmt(grand),'ok');
   }
-  lanes.addEventListener('click',e=>{
-    const card=e.target.closest('.card');if(!card)return;
-    const c=cards.find(x=>x.id===card.dataset.id);if(!c)return;
-    if(e.target.dataset.del){cards=cards.filter(x=>x!==c);save();paint();T('MISSION SCRUBBED','warn');return;}
-    if(e.target.dataset.mv){
-      const order=['queue','active','done'],i=order.indexOf(c.lane)+ +e.target.dataset.mv;
-      if(i>=0&&i<3){c.lane=order[i];save();paint();T('MISSION → '+order[i].toUpperCase(),'info');}
+
+  function calcSettle(){
+    const paid=[];const badLines=[];
+    $('#s_paid').value.split('\n').map(s=>s.trim()).filter(Boolean).forEach(line=>{
+      const m=line.match(/^(.*?)\s+(-?[\d.]+)$/);
+      if(!m){badLines.push(line);return;}
+      paid.push({n:m[1],v:+m[2]});
+    });
+    if(paid.length<2){$out.innerHTML='<div class="rsub" style="color:var(--yel)">Need at least two people. Format:<br>Alice 120</div>';return;}
+    const total=paid.reduce((a,b)=>a+b.v,0),share=total/paid.length;
+    /* net position in cents; positive = is owed money */
+    let net=paid.map(p=>({n:p.n,c:cents(p.v-share)}));
+    const drift=net.reduce((a,b)=>a+b.c,0);net[0].c-=drift; /* absorb rounding dust */
+    const debt=net.filter(p=>p.c<0).map(p=>({n:p.n,c:-p.c})).sort((a,b)=>b.c-a.c);
+    const cred=net.filter(p=>p.c>0).map(p=>({n:p.n,c:p.c})).sort((a,b)=>b.c-a.c);
+    const tx=[];let i=0,j=0;
+    while(i<debt.length&&j<cred.length){
+      const pay=Math.min(debt[i].c,cred[j].c);
+      if(pay>0)tx.push(debt[i].n+'|'+cred[j].n+'|'+(pay/100));
+      debt[i].c-=pay;cred[j].c-=pay;
+      if(debt[i].c===0)i++;
+      if(cred[j].c===0)j++;
     }
-  });
-  /* desktop drag & drop (buttons cover touch) */
-  let dragId=null;
-  lanes.addEventListener('dragstart',e=>{const c=e.target.closest('.card');if(c){dragId=c.dataset.id;e.dataTransfer.effectAllowed='move';}});
-  lanes.addEventListener('dragover',e=>{const l=e.target.closest('.lane');if(l){e.preventDefault();l.classList.add('dragover');}});
-  lanes.addEventListener('dragleave',e=>{const l=e.target.closest('.lane');if(l)l.classList.remove('dragover');});
-  lanes.addEventListener('drop',e=>{
-    const l=e.target.closest('.lane');if(!l)return;e.preventDefault();l.classList.remove('dragover');
-    const c=cards.find(x=>x.id===dragId);if(c&&c.lane!==l.dataset.lane){c.lane=l.dataset.lane;save();paint();T('MISSION → '+l.dataset.lane.toUpperCase(),'info');}
-  });
-  paint();
-  jsay('Mission board deployed, sir. Objectives in, excuses out.');
+    $out.innerHTML='<div class="rsub">total '+fmt(total)+' · fair share '+fmt(share)+' each</div>'+
+      (tx.length?'<div class="settle">'+tx.map(t=>{const[a,b,v]=t.split('|');return '<div><b>'+esc(a)+'</b><span class="arr">▸ pays ▸</span><b>'+esc(b)+'</b> '+fmt(+v)+'</div>';}).join('')+'</div>'
+                :'<div class="rmain" style="font-size:26px">ALL SQUARE</div><div class="rsub">no transfers needed</div>')+
+      '<div class="chips">'+net.map(p=>'<span class="pill">'+esc(p.n)+' '+(p.c>=0?'is owed':'owes')+' <b>'+fmt(Math.abs(p.c)/100)+'</b></span>').join('')+'</div>'+
+      (badLines.length?'<div class="rsub" style="color:var(--yel);margin-top:10px">skipped: '+badLines.map(esc).join(' · ')+'</div>':'');
+    T('SETTLE :: '+tx.length+' transfer'+(tx.length===1?'':'s'),'ok');
+  }
+
+  $('#go').addEventListener('click',()=>({equal:calcEqual,items:calcItems,settle:calcSettle})[mode]());
+  $('#modes').addEventListener('click',e=>{const b=e.target.closest('.mtab');if(!b)return;mode=b.dataset.m;
+    $$('.mtab').forEach(x=>x.classList.toggle('on',x===b));$$('.fm').forEach(f=>f.hidden=f.dataset.fm!==mode);
+    $('#pdesc').textContent=({equal:'everyone pays the same',items:'each pays for what they had',settle:'even out who already paid'})[mode];
+    T('MODE :: '+mode.toUpperCase(),'info');});
+
+  calcEqual();
+  jsay('Ledger arbitration online. Bring me the bill, sir.');
 });
 </script>
 </body>

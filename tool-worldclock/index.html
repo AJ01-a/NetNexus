@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#02050a">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><polygon points='32,5 55,18.5 55,45.5 32,59 9,45.5 9,18.5' fill='%23041018' stroke='%2300e5ff' stroke-width='2.5'/><circle cx='32' cy='32' r='15' fill='none' stroke='%2300e5ff' stroke-width='1.5' opacity='.55'/><circle cx='32' cy='32' r='8' fill='%2300e5ff'/><circle cx='47' cy='32' r='2.6' fill='%237df9ff'/></svg>">
-<title>NETNEXUS // GEN-26 MISSION BOARD</title>
+<title>NETNEXUS // GEN-28 WORLD CLOCK ATLAS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -46,41 +46,16 @@ textarea{resize:vertical;line-height:1.5}
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .inl{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--mut);margin-top:10px}
 .cb{width:auto;accent-color:var(--acc)}
-.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
-@media(max-width:840px){.lanes{grid-template-columns:1fr}}
-.lane{border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(10px);min-height:180px;padding:12px}
-.lane.dragover{border-color:var(--acc);box-shadow:0 0 22px var(--accd)}
-.lane h3{font-family:var(--disp);font-size:11px;letter-spacing:.28em;color:var(--acc);text-shadow:0 0 10px var(--acc-glow);display:flex;gap:8px;align-items:center}
-.lane h3 .n{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--mut);border:1px solid var(--line);padding:1px 7px}
-.card{border:1px solid rgba(107,147,171,.3);background:rgba(2,8,14,.6);padding:9px 10px;margin-top:9px;cursor:grab}
-.card:active{cursor:grabbing}
-.card .tx{font-size:14px;line-height:1.45;word-break:break-word}
-.card .meta{display:flex;gap:6px;align-items:center;margin-top:7px}
-.card .ts{font-family:var(--mono);font-size:9px;color:var(--mut);letter-spacing:.08em;margin-right:auto}
-.card button{background:none;border:1px solid var(--line);color:var(--acc2);font-family:var(--mono);font-size:11px;width:26px;height:22px;cursor:pointer;padding:0}
-.card button:hover{border-color:var(--acc);color:var(--acc)}
-.card button.del:hover{border-color:var(--red);color:var(--red)}
-.card.done .tx{color:var(--mut);text-decoration:line-through}
-.addrow{display:flex;gap:8px;margin-bottom:14px}
-.addrow input{flex:1}
-
 .roll{width:100%;margin-top:16px;font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:.24em;color:#02131c;background:var(--acc);border:none;padding:13px;cursor:pointer;transition:.2s;box-shadow:0 0 18px var(--acc-glow)}
 .roll:hover{filter:brightness(1.1);box-shadow:0 0 28px var(--acc-glow)}
 .roll:active{transform:translateY(1px)}
 .rmain{font-family:var(--disp);font-size:44px;font-weight:900;color:var(--acc);text-shadow:0 0 22px var(--acc-glow);line-height:1.05;word-break:break-word}
 .rsub{font-family:var(--mono);font-size:11.5px;color:var(--mut);letter-spacing:.08em;margin:8px 0 14px}
-.dice{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
-.die{min-width:42px;height:42px;padding:0 8px;display:flex;align-items:center;justify-content:center;border:1px solid var(--acc);color:var(--acc2);font-family:var(--disp);font-size:18px;font-weight:700;background:var(--accd)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .pill{font-family:var(--mono);font-size:12px;color:var(--acc2);border:1px solid var(--line);padding:5px 10px;background:rgba(2,8,14,.5)}
 .pill b{color:var(--acc);font-weight:400}
 .list{font-family:var(--mono);font-size:13px;line-height:1.9;margin-top:6px}
 .list .i{color:var(--mut);margin-right:8px}
-.teamgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:8px}
-.team{border:1px solid var(--line);padding:10px}
-.team h4{font-family:var(--disp);font-size:11px;letter-spacing:.16em;color:var(--acc);margin-bottom:6px}
-.team div{font-family:var(--mono);font-size:12px;color:var(--acc2);padding:2px 0}
-.hist{font-family:var(--mono);font-size:10.5px;color:var(--mut);letter-spacing:.05em;margin-top:14px;line-height:1.7;max-height:110px;overflow:auto;border-top:1px solid rgba(107,147,171,.12);padding-top:8px}
 @keyframes blink{50%{opacity:.25}}
 #foot{position:fixed;bottom:0;left:0;right:0;z-index:40;display:flex;gap:22px;align-items:center;font-family:var(--mono);font-size:10px;color:rgba(107,147,171,.7);letter-spacing:.2em;padding:6px 18px;border-top:1px solid rgba(107,147,171,.15);background:rgba(3,9,14,.8);backdrop-filter:blur(6px)}
 #foot .dot{width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.6s steps(1) infinite}
@@ -124,14 +99,31 @@ textarea{resize:vertical;line-height:1.5}
   .panel img,.panel svg,.panel canvas{max-width:100%;height:auto}
   input,select,textarea,button{max-width:100%}
 }
+
+/* ===== WORLD CLOCK ATLAS specifics ===== */
+.clkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px;margin-top:6px}
+.city{position:relative;border:1px solid var(--line);background:rgba(2,8,14,.55);padding:13px 14px 12px}
+.city.home{border-color:var(--acc);box-shadow:0 0 14px var(--accd)}
+.city .cn{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--acc2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:18px}
+.city .ct{font-family:var(--mono);font-size:26px;color:var(--ink);margin:6px 0 2px;letter-spacing:.04em}
+.city .ct b{color:var(--acc);font-weight:400}
+.city .cd{font-family:var(--mono);font-size:10px;color:var(--mut);letter-spacing:.1em}
+.city .co{position:absolute;right:10px;bottom:10px;font-family:var(--mono);font-size:10px;color:var(--acc2)}
+.city .cx{position:absolute;top:7px;right:9px;cursor:pointer;color:var(--mut);font-size:12px;line-height:1;transition:.2s}
+.city .cx:hover{color:var(--red)}
+.city .dn{margin-left:6px;font-size:12px}
+.cvrow{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;font-family:var(--mono);font-size:13px;padding:7px 4px;border-bottom:1px solid rgba(107,147,171,.12)}
+.cvrow .n{color:var(--acc2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cvrow .t{color:var(--ink)}
+.cvrow .d{color:var(--mut);font-size:10.5px;width:40px;text-align:right}
 </style>
 </head>
 <body>
 <canvas id="bgfx"></canvas>
 <div class="scan"></div>
 <header id="topbar">
-  <div class="brand">◈ NETNEXUS <b>// MISSION BOARD</b></div>
-  <span class="chip">GEN-26</span>
+  <div class="brand">◈ NETNEXUS <b>// WORLD CLOCK ATLAS</b></div>
+  <span class="chip">GEN-28</span>
   <span class="chip ghost">GENERAL GALAXY</span>
   <div class="spacer"></div>
   <div id="clk"></div>
@@ -140,17 +132,34 @@ textarea{resize:vertical;line-height:1.5}
 <div id="jstrip"><span class="jj">◤ NEXUS // </span><span id="jtext"></span></div>
 
 <main id="wrap">
-  <section class="panel" style="margin-bottom:16px">
-    <div class="ptitle">MISSION BOARD</div>
-    <div class="psub">queue · active · done — drag cards or use ◂ ▸ · stored locally, never uploaded</div>
-    <div class="addrow"><input id="newtask" placeholder="new mission objective…" maxlength="140"><button class="roll" id="add" style="width:auto;margin:0;padding:11px 22px">DEPLOY</button></div>
-    <div class="lanes" id="lanes"></div>
-  </section>
+  <div class="cols">
+    <section class="panel" style="grid-column:1/-1">
+      <div class="ptitle">TRACKED CITIES</div>
+      <div class="psub">live — updates every second · your zone is highlighted</div>
+      <div class="clkgrid" id="grid"></div>
+      <label class="f">ADD A CITY / ZONE</label>
+      <div class="duo">
+        <input id="addq" list="tzlist" placeholder="type a city… e.g. Winnipeg, Tokyo, Paris" spellcheck="false">
+        <button class="roll" style="margin-top:0" id="addBtn" type="button">+ TRACK CITY</button>
+      </div>
+      <datalist id="tzlist"></datalist>
+    </section>
+
+    <section class="panel" style="grid-column:1/-1">
+      <div class="ptitle">TIME CONVERTER</div>
+      <div class="psub">pick a moment anywhere — read it everywhere</div>
+      <div class="duo">
+        <div><label class="f">DATE &amp; TIME</label><input type="datetime-local" id="cvWhen"></div>
+        <div><label class="f">…IN THIS ZONE</label><select id="cvZone"></select></div>
+      </div>
+      <div id="cvOut" style="margin-top:14px"></div>
+    </section>
+  </div>
 </main>
 
-<footer id="foot"><span class="dot"></span><span>GEN-26 ACTIVE</span><span>QUEUE · ACTIVE · DONE — DRAG OR STEP — STORED LOCALLY, NEVER UPLOADED</span><span style="margin-left:auto">NETNEXUS v1.1.1.1</span></footer>
+<footer id="foot"><span class="dot"></span><span>GEN-28 ACTIVE</span><span>LIVE ZONE GRID · CONVERTER — POWERED BY THE Intl TIMEZONE DATABASE, FULLY LOCAL</span><span style="margin-left:auto">NETNEXUS v1.1.1.1</span></footer>
 <button id="termBtn">⌬ SYS TERMINAL</button>
-<aside id="term"><div id="termHead"><span class="tdot"></span> AJ-CORE DIAGNOSTIC TERMINAL — GEN-26 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
+<aside id="term"><div id="termHead"><span class="tdot"></span> AJ-CORE DIAGNOSTIC TERMINAL — GEN-28 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
 
 <script>
 'use strict';
@@ -177,52 +186,109 @@ document.addEventListener('DOMContentLoaded',()=>{
   const pts=Array.from({length:30},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14}));
   let sweep=-200;
   (function bg(){const dt=1/60;tt+=dt;cg.clearRect(0,0,W,H);cg.strokeStyle='rgba('+AR+',.045)';cg.lineWidth=1;const sp=92,off=(tt*5)%sp;cg.beginPath();for(let x=off;x<W;x+=sp){cg.moveTo(x,0);cg.lineTo(x,H)}for(let y=off*.6;y<H;y+=sp){cg.moveTo(0,y);cg.lineTo(W,y)}cg.stroke();cg.fillStyle='rgba('+AR+',.5)';for(const p of pts){p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;cg.fillRect(p.x,p.y,1.6,1.6);}sweep+=2.2;if(sweep>H+200)sweep=-200;const gr=cg.createLinearGradient(0,sweep-60,0,sweep);gr.addColorStop(0,'rgba('+AR+',0)');gr.addColorStop(1,'rgba('+AR+',.05)');cg.fillStyle=gr;cg.fillRect(0,sweep-60,W,60);if(!document.hidden)requestAnimationFrame(bg);else setTimeout(bg,400);})();
-  T('MODULE KERNEL ONLINE :: GEN-26 MISSION BOARD','ok');
+  T('MODULE KERNEL ONLINE :: GEN-28 WORLD CLOCK ATLAS','ok');
 
-  
-  /* ===== MISSION BOARD CORE ===== */
-  const LKEY='nn-kanban',LANES=[['queue','MISSION QUEUE'],['active','IN PROGRESS'],['done','COMPLETE']];
-  let cards=[];try{cards=JSON.parse(localStorage.getItem(LKEY)||'[]');}catch(e){cards=[];}
-  const save=()=>{try{localStorage.setItem(LKEY,JSON.stringify(cards));}catch(e){T('STORAGE FAULT :: '+e.message,'warn');}};
-  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const lanes=$('#lanes');
-  function paint(){
-    lanes.innerHTML=LANES.map(([id,label])=>{
-      const set=cards.filter(c=>c.lane===id);
-      return '<div class="lane" data-lane="'+id+'"><h3>'+label+'<span class="n">'+set.length+'</span></h3>'+
-        set.map(c=>'<div class="card'+(id==='done'?' done':'')+'" draggable="true" data-id="'+c.id+'">'+
-          '<div class="tx">'+esc(c.tx)+'</div><div class="meta"><span class="ts">'+c.ts+'</span>'+
-          '<button type="button" data-mv="-1" title="move left">◂</button><button type="button" data-mv="1" title="move right">▸</button>'+
-          '<button type="button" class="del" data-del="1" title="delete">✕</button></div></div>').join('')+
-        '</div>';}).join('');
+  /* ===== WORLD CLOCK CORE ===== */
+  const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const HOME=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
+  /* zone catalog: prefer the full IANA db when the browser exposes it */
+  let ZONES=[];
+  try{ZONES=Intl.supportedValuesOf('timeZone');}catch(e){}
+  if(!ZONES.length)ZONES=['UTC','America/Winnipeg','America/New_York','America/Chicago','America/Denver','America/Los_Angeles','America/Toronto','America/Vancouver','America/Mexico_City','America/Sao_Paulo','Europe/London','Europe/Paris','Europe/Berlin','Europe/Madrid','Europe/Rome','Europe/Moscow','Africa/Cairo','Africa/Lagos','Africa/Johannesburg','Asia/Dubai','Asia/Karachi','Asia/Kolkata','Asia/Dhaka','Asia/Bangkok','Asia/Singapore','Asia/Hong_Kong','Asia/Shanghai','Asia/Tokyo','Asia/Seoul','Asia/Manila','Australia/Sydney','Australia/Perth','Pacific/Auckland','Pacific/Honolulu'];
+  const nice=z=>z.split('/').pop().replace(/_/g,' ');
+  /* datalist */
+  const dl=$('#tzlist');ZONES.forEach(z=>{const o=document.createElement('option');o.value=z;dl.appendChild(o);});
+  /* tracked set — persisted */
+  const DEFAULTS=[HOME,'UTC','America/Winnipeg','America/New_York','Europe/London','Asia/Tokyo'];
+  let tracked;
+  try{tracked=JSON.parse(localStorage.getItem('nn-worldclock')||'null');}catch(e){tracked=null;}
+  if(!Array.isArray(tracked)||!tracked.length)tracked=[...new Set(DEFAULTS)];
+  tracked=tracked.filter(z=>{try{new Intl.DateTimeFormat('en',{timeZone:z});return true;}catch(e){return false;}});
+  const save=()=>{try{localStorage.setItem('nn-worldclock',JSON.stringify(tracked));}catch(e){}};
+
+  function zoneOffsetMin(d,tz){ /* minutes ahead of UTC at instant d */
+    const f=new Intl.DateTimeFormat('en-US',{timeZone:tz,hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const p={};f.formatToParts(d).forEach(x=>p[x.type]=x.value);
+    const asUTC=Date.UTC(+p.year,+p.month-1,+p.day,+p.hour%24,+p.minute,+p.second);
+    return Math.round((asUTC-d.getTime())/60000);
   }
-  $('#add').addEventListener('click',add);
-  $('#newtask').addEventListener('keydown',e=>{if(e.key==='Enter')add();});
+  const offStr=m=>{const s=m<0?'-':'+';m=Math.abs(m);return 'UTC'+s+Math.floor(m/60)+(m%60?':'+String(m%60).padStart(2,'0'):'');};
+
+  const grid=$('#grid');
+  function buildGrid(){
+    grid.innerHTML='';
+    tracked.forEach(z=>{
+      const el=document.createElement('div');el.className='city'+(z===HOME?' home':'');el.dataset.z=z;
+      el.innerHTML='<div class="cn">'+esc(nice(z))+(z===HOME?' ◈':'')+'<span class="dn"></span></div>'+
+        '<div class="ct">--:--<b>:--</b></div><div class="cd"></div><div class="co"></div>'+
+        (z===HOME?'':'<span class="cx" title="Stop tracking">✕</span>');
+      const x=el.querySelector('.cx');
+      if(x)x.addEventListener('click',()=>{tracked=tracked.filter(t=>t!==z);save();buildGrid();T('UNTRACKED :: '+z,'info');});
+      grid.appendChild(el);
+    });
+    tick();
+  }
+  function tick(){
+    const now=new Date();
+    $$('.city').forEach(el=>{
+      const z=el.dataset.z;
+      try{
+        const t=new Intl.DateTimeFormat('en-GB',{timeZone:z,hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(now);
+        const d=new Intl.DateTimeFormat('en-GB',{timeZone:z,weekday:'short',day:'2-digit',month:'short'}).format(now);
+        const h=+t.slice(0,2);
+        el.querySelector('.ct').innerHTML=t.slice(0,5)+'<b>:'+t.slice(6,8)+'</b>';
+        el.querySelector('.cd').textContent=d.toUpperCase();
+        el.querySelector('.co').textContent=offStr(zoneOffsetMin(now,z));
+        el.querySelector('.dn').textContent=(h>=6&&h<18)?'☀':'☾';
+      }catch(e){}
+    });
+  }
+  setInterval(tick,1000);
+  $('#addBtn').addEventListener('click',add);
+  $('#addq').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();add();}});
   function add(){
-    const v=$('#newtask').value.trim();if(!v)return;
-    cards.unshift({id:Date.now()+''+Math.floor(Math.random()*999),tx:v,lane:'queue',ts:new Date().toLocaleDateString(undefined,{month:'short',day:'2-digit'})});
-    $('#newtask').value='';save();paint();T('MISSION DEPLOYED :: "'+v.slice(0,40)+'"','ok');
+    const v=$('#addq').value.trim();if(!v)return;
+    let z=ZONES.find(x=>x.toLowerCase()===v.toLowerCase())||
+          ZONES.find(x=>nice(x).toLowerCase()===v.toLowerCase())||
+          ZONES.find(x=>x.toLowerCase().includes(v.toLowerCase().replace(/ /g,'_')));
+    if(!z){jsay('No such zone in the atlas, sir. Try a major city name.');T('ZONE NOT FOUND :: '+v,'warn');return;}
+    if(tracked.includes(z)){jsay(nice(z)+' is already on the grid, sir.');$('#addq').value='';return;}
+    if(tracked.length>=12){jsay('Grid at capacity — retire a city first, sir.');return;}
+    tracked.push(z);save();buildGrid();buildZoneSel();$('#addq').value='';
+    T('TRACKING :: '+z,'ok');jsay(nice(z)+' added to the atlas, sir.');
   }
-  lanes.addEventListener('click',e=>{
-    const card=e.target.closest('.card');if(!card)return;
-    const c=cards.find(x=>x.id===card.dataset.id);if(!c)return;
-    if(e.target.dataset.del){cards=cards.filter(x=>x!==c);save();paint();T('MISSION SCRUBBED','warn');return;}
-    if(e.target.dataset.mv){
-      const order=['queue','active','done'],i=order.indexOf(c.lane)+ +e.target.dataset.mv;
-      if(i>=0&&i<3){c.lane=order[i];save();paint();T('MISSION → '+order[i].toUpperCase(),'info');}
-    }
-  });
-  /* desktop drag & drop (buttons cover touch) */
-  let dragId=null;
-  lanes.addEventListener('dragstart',e=>{const c=e.target.closest('.card');if(c){dragId=c.dataset.id;e.dataTransfer.effectAllowed='move';}});
-  lanes.addEventListener('dragover',e=>{const l=e.target.closest('.lane');if(l){e.preventDefault();l.classList.add('dragover');}});
-  lanes.addEventListener('dragleave',e=>{const l=e.target.closest('.lane');if(l)l.classList.remove('dragover');});
-  lanes.addEventListener('drop',e=>{
-    const l=e.target.closest('.lane');if(!l)return;e.preventDefault();l.classList.remove('dragover');
-    const c=cards.find(x=>x.id===dragId);if(c&&c.lane!==l.dataset.lane){c.lane=l.dataset.lane;save();paint();T('MISSION → '+l.dataset.lane.toUpperCase(),'info');}
-  });
-  paint();
-  jsay('Mission board deployed, sir. Objectives in, excuses out.');
+
+  /* ===== CONVERTER ===== */
+  const cvWhen=$('#cvWhen'),cvZone=$('#cvZone'),cvOut=$('#cvOut');
+  function buildZoneSel(){
+    cvZone.innerHTML='';
+    tracked.forEach(z=>{const o=document.createElement('option');o.value=z;o.textContent=nice(z)+' ('+z+')';if(z===HOME)o.selected=true;cvZone.appendChild(o);});
+  }
+  function wallToInstant(parts,tz){ /* wall-clock parts in tz -> Date; two passes handle DST edges */
+    let guess=new Date(Date.UTC(parts.y,parts.mo-1,parts.d,parts.h,parts.mi));
+    for(let i=0;i<2;i++)guess=new Date(Date.UTC(parts.y,parts.mo-1,parts.d,parts.h,parts.mi)-zoneOffsetMin(guess,tz)*60000);
+    return guess;
+  }
+  function convert(){
+    const v=cvWhen.value;if(!v){cvOut.innerHTML='<div class="rsub">Pick a date and time above.</div>';return;}
+    const m=v.match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+)/);if(!m)return;
+    const inst=wallToInstant({y:+m[1],mo:+m[2],d:+m[3],h:+m[4],mi:+m[5]},cvZone.value);
+    const srcDay=new Intl.DateTimeFormat('en-CA',{timeZone:cvZone.value,year:'numeric',month:'2-digit',day:'2-digit'}).format(inst);
+    cvOut.innerHTML=tracked.map(z=>{
+      const t=new Intl.DateTimeFormat('en-GB',{timeZone:z,hour12:false,hour:'2-digit',minute:'2-digit'}).format(inst);
+      const day=new Intl.DateTimeFormat('en-CA',{timeZone:z,year:'numeric',month:'2-digit',day:'2-digit'}).format(inst);
+      const wd=new Intl.DateTimeFormat('en-GB',{timeZone:z,weekday:'short'}).format(inst);
+      const dd=Math.round((new Date(day)-new Date(srcDay))/86400000);
+      return '<div class="cvrow"><span class="n">'+esc(nice(z))+(z===HOME?' ◈':'')+'</span><span class="t">'+wd.toUpperCase()+' '+t+'</span><span class="d">'+(dd?(dd>0?'+':'')+dd+'d':'')+'</span></div>';
+    }).join('');
+  }
+  cvWhen.addEventListener('input',convert);
+  cvZone.addEventListener('change',convert);
+  /* prime converter with "now" in the home zone */
+  (function(){const n=new Date();n.setMinutes(n.getMinutes()-n.getTimezoneOffset());cvWhen.value=n.toISOString().slice(0,16);})();
+
+  buildGrid();buildZoneSel();convert();
+  jsay('Temporal atlas projected. '+tracked.length+' zones on the grid, sir.');
 });
 </script>
 </body>

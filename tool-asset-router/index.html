@@ -155,9 +155,9 @@ input:focus{border-color:var(--acc);box-shadow:0 0 0 1px var(--accd),0 0 18px va
   </div>
 </main>
 
-<footer id="foot"><span class="dot"></span><span>AST-09 ACTIVE</span><span>REGEX BANK: DELL · LENOVO · HP · APPLE · CISCO · SURFACE</span><span style="margin-left:auto">NETNEXUS v2.1</span></footer>
+<footer id="foot"><span class="dot"></span><span>AST-09 ACTIVE</span><span>REGEX BANK: DELL · LENOVO · HP · APPLE · CISCO · SURFACE</span><span style="margin-left:auto">NETNEXUS v1.1.1.1</span></footer>
 <button id="termBtn">⌬ SYS TERMINAL</button>
-<aside id="term"><div id="termHead"><span class="tdot"></span> STARK-CORE DIAGNOSTIC TERMINAL — AST-09 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
+<aside id="term"><div id="termHead"><span class="tdot"></span> AJ-CORE DIAGNOSTIC TERMINAL — AST-09 <span style="opacity:.5">[CTRL+`]</span><span class="tx" id="termX">✕</span></div><div id="termBody"></div></aside>
 
 <script>
 'use strict';
@@ -175,7 +175,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('#termBtn').addEventListener('click',()=>term.classList.toggle('open'));
   $('#termX').addEventListener('click',()=>term.classList.remove('open'));
   window.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='`'){e.preventDefault();term.classList.toggle('open');}});
-  if(window.__twFail)T('TAILWIND CDN UNREACHABLE — LOCAL STYLE CORE ENGAGED','warn');
   let _jt=null;function jsay(t){T('NEXUS :: '+t,'sys');const el=$('#jtext');clearInterval(_jt);let i=0;_jt=setInterval(()=>{el.textContent=t.slice(0,++i)+(i<t.length?'▊':'');if(i>=t.length)clearInterval(_jt);},14);}
   setInterval(()=>{const d=new Date();$('#clk').innerHTML='<b>'+d.toTimeString().slice(0,8)+'</b> L · '+d.toISOString().slice(11,19)+' U';},1000);
   function copyPlain(txt){const fb=()=>{try{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();T('CLIPBOARD :: '+txt,'ok');}catch(e){T('CLIPBOARD FAULT','err');}};
