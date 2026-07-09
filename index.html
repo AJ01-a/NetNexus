@@ -327,10 +327,53 @@ body:not(.mobile) #space.dragging .planet{pointer-events:none}   /* no accidenta
 body.mobile .orbarrow,body.locked .orbarrow{display:none}   /* mobile grid scrolls natively */
 
 /* ============ NEXUS CORE GATEWAY ============ */
+/* ============ EXTERNAL UPLINKS (sister sites docked to the core) ============
+   Two persistent shortcuts flanking the reactor — present in BOTH galaxies.
+   Frame retints with the active galaxy accent; each icon keeps its brand color. */
+#uplinks{position:absolute;left:50%;top:52%;width:0;height:0;z-index:116;pointer-events:none}
+.uplink{position:absolute;top:50%;display:flex;align-items:center;gap:10px;width:184px;
+  padding:9px 12px;pointer-events:auto;text-decoration:none;cursor:pointer;
+  background:linear-gradient(152deg,rgba(10,22,34,.93),rgba(6,14,22,.86));
+  border:1px solid var(--line);border-radius:13px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.35),0 12px 30px rgba(0,0,0,.46);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  transition:transform .3s cubic-bezier(.2,.8,.3,1),border-color .3s,box-shadow .3s,background .3s}
+.uplink.ul-l{transform:translate(calc(-100% - 24vmin),-50%)}
+.uplink.ul-r{transform:translate(24vmin,-50%)}
+/* faint tether toward the core */
+.uplink::before{content:"";position:absolute;top:50%;width:3.2vmin;height:1px;pointer-events:none;opacity:.5;
+  background:linear-gradient(90deg,var(--line),transparent)}
+.uplink.ul-l::before{left:100%;transform:translateY(-50%) scaleX(-1)}
+.uplink.ul-r::before{right:100%;transform:translateY(-50%)}
+.uplink:hover,.uplink:focus-visible{outline:none;border-color:var(--acc);
+  background:linear-gradient(152deg,rgba(13,30,45,.97),rgba(8,18,28,.92));
+  box-shadow:0 0 22px var(--acc-glow),0 14px 34px rgba(0,0,0,.5)}
+.uplink.ul-l:hover,.uplink.ul-l:focus-visible{transform:translate(calc(-100% - 24vmin),-50%) translateX(-4px)}
+.uplink.ul-r:hover,.uplink.ul-r:focus-visible{transform:translate(24vmin,-50%) translateX(4px)}
+.ul-ico{flex:0 0 auto;width:30px;height:30px;border-radius:8px;overflow:hidden;display:grid;place-items:center;
+  box-shadow:0 0 12px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.06)}
+.ul-ico svg{width:30px;height:30px;display:block}
+.ul-txt{display:flex;flex-direction:column;gap:2px;min-width:0;line-height:1.16}
+.ul-txt b{font-family:var(--disp);font-weight:700;font-size:12px;letter-spacing:.05em;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ul-txt i{font-family:var(--mono);font-style:normal;font-size:8.5px;letter-spacing:.05em;color:var(--mut);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ul-arw{position:absolute;top:6px;right:9px;font-family:var(--mono);font-size:10px;color:var(--acc2);
+  opacity:.55;transition:opacity .3s,transform .3s}
+.uplink:hover .ul-arw,.uplink:focus-visible .ul-arw{opacity:1;transform:translate(1px,-1px)}
+/* mobile: reflow into a two-pill row between the core and the tool grid */
+body.mobile #uplinks{position:relative;left:auto;top:auto;width:auto;height:auto;
+  display:flex;gap:11px;justify-content:center;padding:0 12px 15px;pointer-events:auto}
+body.mobile .uplink{position:relative;top:auto;transform:none!important;flex:1 1 0;max-width:230px;width:auto}
+body.mobile .uplink:active{border-color:var(--acc);box-shadow:0 0 22px var(--acc-glow)}
+body.mobile .uplink::before{display:none}
+/* gateway: children are unclickable too (parent already fades via the locked rule) */
+body.locked #uplinks .uplink{pointer-events:none!important}
+
 /* Locked: hide the hub UI so ONLY the reactor core floats in the starfield */
 body.locked{overflow:hidden}
 body.locked #cmdbar,body.locked #field,body.locked #holo,body.locked #ticker,
-body.locked .hud,body.locked #term,
+body.locked .hud,body.locked #term,body.locked #uplinks,
 body.locked #jcap{
   opacity:0!important;pointer-events:none!important;transition:opacity .7s ease}
 /* focus vignette (starfield edges dimmed; core sits above it) */
@@ -383,7 +426,7 @@ body:not(.locked) #gwtitle{opacity:0;pointer-events:none}
 /* Unlock: core scale-pulse + hub fades/scales in with precise easing */
 body.online:not(.mobile) #corewrap{animation:gwCorePulse 1s cubic-bezier(.2,.8,.3,1)}
 @keyframes gwCorePulse{0%{transform:translate(-50%,-50%) scale(1)}38%{transform:translate(-50%,-50%) scale(1.14)}100%{transform:translate(-50%,-50%) scale(1)}}
-body.online #cmdbar,body.online #field,body.online #holo,body.online #ticker,body.online .hud{
+body.online #cmdbar,body.online #field,body.online #holo,body.online #ticker,body.online .hud,body.online #uplinks{
   animation:gwFadeIn .9s ease .1s both}
 @keyframes gwFadeIn{from{opacity:0}to{opacity:1}}
 body.online:not(.mobile) #space{animation:gwProject 1.05s cubic-bezier(.16,.84,.28,1) both}
@@ -476,6 +519,21 @@ body.mobile.locked #corewrap{position:fixed;left:50%;top:44%;transform:translate
       <div id="jcap" style="position:absolute;left:50%;top:calc(100% + 72px);transform:translateX(-50%);font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--mut);white-space:nowrap;max-width:82vw;overflow:hidden;text-overflow:ellipsis;text-align:center"></div>
     </div>
   </div>
+  <!-- EXTERNAL UPLINKS: sister sites docked to the core; shown in both galaxies, desktop + mobile -->
+  <nav id="uplinks" aria-label="External uplinks">
+    <a class="uplink ul-l" href="https://aj01-a.github.io/rustwire/" target="_blank" rel="noopener noreferrer"
+       title="TechPulse — a working tech briefing: AI-generated TL;DRs from Reddit, Hacker News, Lobsters and engineering blogs, refreshed around the clock.">
+      <span class="ul-ico"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="13" fill="#06080c"/><text x="32" y="45" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="34" font-weight="700" fill="#00d9ff">//</text></svg></span>
+      <span class="ul-txt"><b>TechPulse</b><i>Tech briefing · TL;DR</i></span>
+      <span class="ul-arw" aria-hidden="true">↗</span>
+    </a>
+    <a class="uplink ul-r" href="https://aj01-a.github.io/citypulse/" target="_blank" rel="noopener noreferrer"
+       title="CityPulse — live status dashboard for Neepawa, Manitoba: weather, road incidents, highway cameras, wildfire hazards and river levels, updated automatically.">
+      <span class="ul-ico"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="cp-bg" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2f7fdd"/><stop offset="1" stop-color="#1c5cab"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#cp-bg)"/><path d="M4 17.5h6.5L13 12l3 10 2.4-14" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><circle cx="24.2" cy="16.6" r="4.3" fill="#2bd44f" opacity=".28"/><circle cx="24.2" cy="16.6" r="2.9" fill="#2bd44f" stroke="#fff" stroke-width="1"/></svg></span>
+      <span class="ul-txt"><b>CityPulse</b><i>Neepawa live status</i></span>
+      <span class="ul-arw" aria-hidden="true">↗</span>
+    </a>
+  </nav>
   <div id="field"></div>
   <div class="hud" id="hudTL"></div>
   <div class="hud" id="hudBL"></div>
@@ -1087,7 +1145,7 @@ document.addEventListener('DOMContentLoaded', () => {
      start OUTSIDE them, so tool clicks are never hijacked. */
   space.addEventListener('pointerdown', e => {
     if (NN.small || document.body.classList.contains('locked')) return;
-    if (e.target.closest('.planet,#holo,#corewrap,.orbarrow')) return;
+    if (e.target.closest('.planet,#holo,#corewrap,.orbarrow,#uplinks')) return;
     dragging = true; dragLastX = e.clientX; rotVel = 0; spinRem = 0;
     space.classList.add('dragging');
     try { space.setPointerCapture(e.pointerId); } catch(_){}
