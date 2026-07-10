@@ -61,7 +61,19 @@ body.gl-active #coreGlow{opacity:.55}
 @keyframes diaspin{to{transform:rotate(360deg)}}
 .chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;border:1px solid var(--line);
   color:var(--acc2);padding:3px 9px;background:var(--accd);white-space:nowrap;transition:.6s}
-#sform{position:relative;flex:1;max-width:520px;margin:0 auto}
+#sform{position:relative;flex:1;max-width:520px;margin:0 auto;min-width:0}
+/* ---- RESPONSIVE COMMAND BAR (desktop) ----
+   The bar has no shrink strategy of its own: below ~1350px (snapped windows,
+   125–150% browser zoom) the right-side controls — VOX picker, VOICE toggle,
+   TERMINAL, ☰ INDEX, clock — were pushed past the viewport edge: invisible
+   and unclickable. Wrap the search onto its own row first, then shed the
+   informational items, so the interactive controls always stay on screen. */
+@media (max-width:1380px){
+  body:not(.mobile) #cmdbar{flex-wrap:wrap;row-gap:8px}
+  body:not(.mobile) #sform{order:10;flex:1 1 100%;max-width:none;margin:0}
+}
+@media (max-width:1180px){ body:not(.mobile) #clk{display:none} }
+@media (max-width:1080px){ body:not(.mobile) #cmdbar>.chip{display:none} }
 #q{width:100%;background:rgba(2,8,14,.85);border:1px solid var(--line);color:var(--ink);
   font-family:var(--mono);font-size:13px;letter-spacing:.08em;padding:9px 38px 9px 36px;outline:none;transition:.25s}
 #q:focus{border-color:var(--acc);box-shadow:0 0 0 1px var(--accd),0 0 22px var(--accd)}
@@ -1517,11 +1529,16 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => boot.remove(), 800);
     T('BOOT SEQUENCE COMPLETE — ALL SYSTEMS NOMINAL', 'ok');
     /* GSAP: OS-boot cascade of the command chrome (safe elements only —
-       core/planets keep their own per-frame transforms). */
+       core/planets keep their own per-frame transforms). clearProps releases
+       each control's inline opacity/transform the moment its tween lands. */
     if (window.gsap){
-      window.gsap.from('#cmdbar > *', { y: -14, opacity: 0, stagger: 0.05, duration: .5, ease: 'power3.out' });
-      window.gsap.from(['.hud', '#ticker'], { opacity: 0, duration: 1.0, delay: .2, ease: 'power1.out' });
+      window.gsap.from('#cmdbar > *', { y: -14, opacity: 0, stagger: 0.05, duration: .5, ease: 'power3.out', clearProps: 'opacity,transform' });
+      window.gsap.from(['.hud', '#ticker'], { opacity: 0, duration: 1.0, delay: .2, ease: 'power1.out', clearProps: 'opacity' });
     }
+    /* FAILSAFE: a throttled/backgrounded tab (or an interrupted tween) could
+       strand the command-bar controls at inline opacity:0 — invisible AND
+       effectively unclickable. Whatever happens above, force-release them. */
+    setTimeout(() => $$('#cmdbar > *').forEach(el => { el.style.opacity = ''; el.style.transform = ''; }), 2600);
     tryGreet();
   }
   BL.forEach((l, i) => setTimeout(() => {
